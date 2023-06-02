@@ -28,95 +28,95 @@ type EndpointUrlSet struct {
 	placeChangedOrderUrl      string
 }
 
-func (s EndpointUrlSet) GetRequestTokenUrl() string {
+func (s *EndpointUrlSet) GetRequestTokenUrl() string {
 	return s.getRequestTokenUrl
 }
 
-func (s EndpointUrlSet) AuthorizeApplicationUrl() string {
+func (s *EndpointUrlSet) AuthorizeApplicationUrl() string {
 	return s.authorizeApplicationUrl
 }
 
-func (s EndpointUrlSet) GetAccessTokenUrl() string {
+func (s *EndpointUrlSet) GetAccessTokenUrl() string {
 	return s.getAccessTokenUrl
 }
 
-func (s EndpointUrlSet) RenewAccessTokenUrl() string {
+func (s *EndpointUrlSet) RenewAccessTokenUrl() string {
 	return s.renewAccessTokenUrl
 }
 
-func (s EndpointUrlSet) RevokeAccessTokenUrl() string {
+func (s *EndpointUrlSet) RevokeAccessTokenUrl() string {
 	return s.revokeAccessTokenUrl
 }
 
-func (s EndpointUrlSet) ListAccountsUrl() string {
+func (s *EndpointUrlSet) ListAccountsUrl() string {
 	return s.listAccountsUrl
 }
 
-func (s EndpointUrlSet) GetAccountBalancesUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) GetAccountBalancesUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.getAccountBalancesUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) ListTransactionsUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) ListTransactionsUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.listTransactionsUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) ListTransactionDetailsUrl(accountIdKey string, transactionId string) string {
+func (s *EndpointUrlSet) ListTransactionDetailsUrl(accountIdKey string, transactionId string) string {
 	return fmt.Sprintf(s.listTransactionDetailsUrl, accountIdKey, transactionId)
 }
 
-func (s EndpointUrlSet) ViewPortfolioUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) ViewPortfolioUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.viewPortfolioUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) ListAlertsUrl() string {
+func (s *EndpointUrlSet) ListAlertsUrl() string {
 	return s.listAlertsUrl
 }
 
-func (s EndpointUrlSet) ListAlertDetailsUrl(alertId string) string {
+func (s *EndpointUrlSet) ListAlertDetailsUrl(alertId string) string {
 	return fmt.Sprintf(s.listAlertDetailsUrl, alertId)
 }
 
-func (s EndpointUrlSet) DeleteAlertUrl(alertIdList string) string {
+func (s *EndpointUrlSet) DeleteAlertUrl(alertIdList string) string {
 	return fmt.Sprintf(s.deleteAlertUrl, alertIdList)
 }
 
-func (s EndpointUrlSet) GetQuotesUrl(symbols string) string {
+func (s *EndpointUrlSet) GetQuotesUrl(symbols string) string {
 	return fmt.Sprintf(s.getQuotesUrl, symbols)
 }
 
-func (s EndpointUrlSet) LookUpProductUrl(search string) string {
+func (s *EndpointUrlSet) LookUpProductUrl(search string) string {
 	return fmt.Sprintf(s.lookUpProductUrl, search)
 }
 
-func (s EndpointUrlSet) GetOptionChainsUrl() string {
+func (s *EndpointUrlSet) GetOptionChainsUrl() string {
 	return s.getOptionChainsUrl
 }
 
-func (s EndpointUrlSet) GetOptionExpireDatesUrl() string {
+func (s *EndpointUrlSet) GetOptionExpireDatesUrl() string {
 	return s.getOptionExpireDatesUrl
 }
 
-func (s EndpointUrlSet) ListOrdersUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) ListOrdersUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.listOrdersUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) PreviewOrderUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) PreviewOrderUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.previewOrderUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) PlaceOrderUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) PlaceOrderUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.placeOrderUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) CancelOrderUrl(accountIdKey string) string {
+func (s *EndpointUrlSet) CancelOrderUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.cancelOrderUrl, accountIdKey)
 }
 
-func (s EndpointUrlSet) ChangePreviewedOrderUrl(accountIdKey string, orderId string) string {
+func (s *EndpointUrlSet) ChangePreviewedOrderUrl(accountIdKey string, orderId string) string {
 	return fmt.Sprintf(s.changePreviewedOrderUrl, accountIdKey, orderId)
 }
 
-func (s EndpointUrlSet) PlaceChangedOrderUrl(accountIdKey string, orderId string) string {
+func (s *EndpointUrlSet) PlaceChangedOrderUrl(accountIdKey string, orderId string) string {
 	return fmt.Sprintf(s.placeChangedOrderUrl, accountIdKey, orderId)
 }
 
