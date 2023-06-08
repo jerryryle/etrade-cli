@@ -25,10 +25,12 @@ func CreateETradeClient(urls EndpointUrls, httpClient *http.Client) ETradeClient
 
 func (c *eTradeClient) ListAccounts() (string, error) {
 	response, err := c.httpClient.Get(c.urls.ListAccountsUrl())
+	if response != nil {
+		defer response.Body.Close()
+	}
 	if err != nil {
 		return "", err
 	}
-	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		return "", errors.New(fmt.Sprintf("request failed: %s", response.Status))
 	}

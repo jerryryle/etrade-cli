@@ -67,10 +67,12 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCu
 	token := oauth1.NewToken(s.accessToken, oauth1.PercentEncode(s.accessSecret))
 	httpClient := s.config.Client(oauth1.NoContext, token)
 	response, err := httpClient.Get(s.urls.RenewAccessTokenUrl())
+	if response != nil {
+		defer response.Body.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
-	defer response.Body.Close()
 	if response.StatusCode != http.StatusOK {
 		return nil, errors.New("invalid access token")
 	}

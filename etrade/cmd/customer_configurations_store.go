@@ -36,10 +36,12 @@ func LoadCustomerConfigurationsStore(reader io.Reader) (*CustomerConfigurationsS
 
 func LoadCustomerConfigurationsStoreFromFile(filename string) (*CustomerConfigurationsStore, error) {
 	file, err := os.Open(filename)
+	if file != nil {
+		defer file.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
 	return LoadCustomerConfigurationsStore(file)
 }
 
@@ -54,10 +56,12 @@ func SaveCustomerConfigurationsStore(writer io.Writer, cc *CustomerConfiguration
 
 func SaveCustomerConfigurationsStoreToFile(filename string, cc *CustomerConfigurationsStore) error {
 	file, err := os.Create(filename)
+	if file != nil {
+		defer file.Close()
+	}
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 	return SaveCustomerConfigurationsStore(file, cc)
 }
 

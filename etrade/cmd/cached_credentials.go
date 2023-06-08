@@ -28,10 +28,12 @@ func LoadCachedCredentials(reader io.Reader) (*CachedCredentials, error) {
 
 func LoadCachedCredentialsFromFile(filename string) (*CachedCredentials, error) {
 	file, err := os.Open(filename)
+	if file != nil {
+		defer file.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
-	defer file.Close()
 	return LoadCachedCredentials(file)
 }
 
@@ -51,9 +53,11 @@ func SaveCachedCredentialsToFile(filename string, credentials *CachedCredentials
 	}
 
 	file, err := os.Create(filename)
+	if file != nil {
+		defer file.Close()
+	}
 	if err != nil {
 		return err
 	}
-	defer file.Close()
 	return SaveCachedCredentials(file, credentials)
 }
