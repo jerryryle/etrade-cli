@@ -11,12 +11,6 @@ import (
 	"testing"
 )
 
-type RoundTripFunc func(req *http.Request) *http.Response
-
-func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
-	return f(req), nil
-}
-
 func TestCreateSessionWithEmptyConsumerCredentialsFails(t *testing.T) {
 	session, err := CreateSession("TestCustomerName", false, "", "")
 	assert.EqualError(t, err, "invalid consumer credentials provided")
@@ -75,31 +69,31 @@ func (s *ETradeSessionTestSuite) TestNoAccessTokenOrSecretReturnsError() {
 
 func (s *ETradeSessionTestSuite) TestBadAccessTokenReturnsError() {
 	// Create a fake HTTP client that will return 400 (Bad request) for the renewal request
-	client := &http.Client{Transport: RoundTripFunc(func(req *http.Request) *http.Response {
+	client := NewHttpClientFake(func(req *http.Request) *http.Response {
 		return &http.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       io.NopCloser(strings.NewReader(`Bad Request`)),
 		}
-	})}
+	})
 
 	// Set up mock Client() call to return the fake HTTP client.
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(client)
 
 	customer, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
-	s.Nil(err)
-	s.NotNil(customer)
+	s.Nil(customer)
+	s.NotNil(err)
 
 	s.configMock.AssertExpectations(s.T())
 }
 
 func (s *ETradeSessionTestSuite) TestGoodRenewalSessionReturnsCustomer() {
 	// Create a fake HTTP client that will return 200 (Ok) for the renewal request
-	client := &http.Client{Transport: RoundTripFunc(func(req *http.Request) *http.Response {
+	client := NewHttpClientFake(func(req *http.Request) *http.Response {
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(strings.NewReader(`Access Token has been renewed`)),
 		}
-	})}
+	})
 
 	// Set up mock Client() call to return the fake HTTP client.
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(client)
