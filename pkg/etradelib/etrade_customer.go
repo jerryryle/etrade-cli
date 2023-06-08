@@ -12,7 +12,7 @@ type ETradeCustomer interface {
 
 type eTradeCustomer struct {
 	customerName string
-	client       eTradeClient
+	client       ETradeClient
 }
 
 func (c *eTradeCustomer) GetCustomerName() string {

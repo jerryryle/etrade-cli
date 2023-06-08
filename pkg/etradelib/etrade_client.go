@@ -2,20 +2,20 @@ package etradelib
 
 import "net/http"
 
-type eTradeClient interface {
+type ETradeClient interface {
 	Urls() EndpointUrls
 	HttpClient() *http.Client
 }
 
-type eTradeClientStruct struct {
+type eTradeClient struct {
 	urls       EndpointUrls
 	httpClient *http.Client
 }
 
-func (c *eTradeClientStruct) Urls() EndpointUrls {
+func (c *eTradeClient) Urls() EndpointUrls {
 	return c.urls
 }
 
-func (c *eTradeClientStruct) HttpClient() *http.Client {
+func (c *eTradeClient) HttpClient() *http.Client {
 	return c.httpClient
 }

@@ -73,7 +73,7 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCu
 	// TODO: read body
 	return &eTradeCustomer{
 		customerName: s.customerName,
-		client: &eTradeClientStruct{
+		client: &eTradeClient{
 			urls:       s.urls,
 			httpClient: httpClient,
 		},
@@ -104,7 +104,7 @@ func (s *eTradeSession) Verify(verifyKey string) (customer ETradeCustomer, acces
 	httpClient := s.config.Client(oauth1.NoContext, token)
 	return &eTradeCustomer{
 		customerName: s.customerName,
-		client: &eTradeClientStruct{
+		client: &eTradeClient{
 			urls:       s.urls,
 			httpClient: httpClient,
 		},
