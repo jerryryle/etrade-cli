@@ -1,5 +1,7 @@
 package etradelib
 
+import "fmt"
+
 type ETradeCustomer interface {
 	GetCustomerName() string
 	ListAccounts() (string, error)
@@ -20,7 +22,8 @@ func (c *eTradeCustomer) GetCustomerName() string {
 }
 
 func (c *eTradeCustomer) ListAccounts() (string, error) {
-	return c.client.ListAccounts()
+	response, err := c.client.ListAccounts()
+	return fmt.Sprintf("%#v", response), err
 }
 
 func (c *eTradeCustomer) ListAlerts() (string, error) {

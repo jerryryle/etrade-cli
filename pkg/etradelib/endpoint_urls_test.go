@@ -24,55 +24,55 @@ func TestSandboxUrls(t *testing.T) {
 		"https://apisb.etrade.com/oauth/revoke_access_token",
 		urls.RevokeAccessTokenUrl())
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/list.json",
+		"https://apisb.etrade.com/v1/accounts/list",
 		urls.ListAccountsUrl())
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/balance.json",
+		"https://apisb.etrade.com/v1/accounts/1234/balance",
 		urls.GetAccountBalancesUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/transactions.json",
+		"https://apisb.etrade.com/v1/accounts/1234/transactions",
 		urls.ListTransactionsUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/portfolio.json",
+		"https://apisb.etrade.com/v1/accounts/1234/portfolio",
 		urls.ViewPortfolioUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/user/alerts.json",
+		"https://apisb.etrade.com/v1/user/alerts",
 		urls.ListAlertsUrl())
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/user/alerts/1234.json",
+		"https://apisb.etrade.com/v1/user/alerts/1234",
 		urls.ListAlertDetailsUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/user/alerts/1234,5678.json",
+		"https://apisb.etrade.com/v1/user/alerts/1234,5678",
 		urls.DeleteAlertUrl("1234,5678"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/market/quote/FLIP,FLOP.json",
+		"https://apisb.etrade.com/v1/market/quote/FLIP,FLOP",
 		urls.GetQuotesUrl("FLIP,FLOP"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/market/lookup/FLIP.json",
+		"https://apisb.etrade.com/v1/market/lookup/FLIP",
 		urls.LookUpProductUrl("FLIP"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/market/optionchains.json",
+		"https://apisb.etrade.com/v1/market/optionchains",
 		urls.GetOptionChainsUrl())
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/market/optionexpiredate.json",
+		"https://apisb.etrade.com/v1/market/optionexpiredate",
 		urls.GetOptionExpireDatesUrl())
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/orders.json",
+		"https://apisb.etrade.com/v1/accounts/1234/orders",
 		urls.ListOrdersUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/orders/preview.json",
+		"https://apisb.etrade.com/v1/accounts/1234/orders/preview",
 		urls.PreviewOrderUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/orders/place.json",
+		"https://apisb.etrade.com/v1/accounts/1234/orders/place",
 		urls.PlaceOrderUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/orders/cancel.json",
+		"https://apisb.etrade.com/v1/accounts/1234/orders/cancel",
 		urls.CancelOrderUrl("1234"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/orders/5678/change/preview.json",
+		"https://apisb.etrade.com/v1/accounts/1234/orders/5678/change/preview",
 		urls.ChangePreviewedOrderUrl("1234", "5678"))
 	assert.Equal(t,
-		"https://apisb.etrade.com/v1/accounts/1234/orders/5678/change/place.json",
+		"https://apisb.etrade.com/v1/accounts/1234/orders/5678/change/place",
 		urls.PlaceChangedOrderUrl("1234", "5678"))
 }
 
@@ -95,54 +95,54 @@ func TestProductionUrls(t *testing.T) {
 		"https://api.etrade.com/oauth/revoke_access_token",
 		urls.RevokeAccessTokenUrl())
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/list.json",
+		"https://api.etrade.com/v1/accounts/list",
 		urls.ListAccountsUrl())
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/balance.json",
+		"https://api.etrade.com/v1/accounts/1234/balance",
 		urls.GetAccountBalancesUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/transactions.json",
+		"https://api.etrade.com/v1/accounts/1234/transactions",
 		urls.ListTransactionsUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/portfolio.json",
+		"https://api.etrade.com/v1/accounts/1234/portfolio",
 		urls.ViewPortfolioUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/user/alerts.json",
+		"https://api.etrade.com/v1/user/alerts",
 		urls.ListAlertsUrl())
 	assert.Equal(t,
-		"https://api.etrade.com/v1/user/alerts/1234.json",
+		"https://api.etrade.com/v1/user/alerts/1234",
 		urls.ListAlertDetailsUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/user/alerts/1234,5678.json",
+		"https://api.etrade.com/v1/user/alerts/1234,5678",
 		urls.DeleteAlertUrl("1234,5678"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/market/quote/FLIP,FLOP.json",
+		"https://api.etrade.com/v1/market/quote/FLIP,FLOP",
 		urls.GetQuotesUrl("FLIP,FLOP"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/market/lookup/FLIP.json",
+		"https://api.etrade.com/v1/market/lookup/FLIP",
 		urls.LookUpProductUrl("FLIP"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/market/optionchains.json",
+		"https://api.etrade.com/v1/market/optionchains",
 		urls.GetOptionChainsUrl())
 	assert.Equal(t,
-		"https://api.etrade.com/v1/market/optionexpiredate.json",
+		"https://api.etrade.com/v1/market/optionexpiredate",
 		urls.GetOptionExpireDatesUrl())
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/orders.json",
+		"https://api.etrade.com/v1/accounts/1234/orders",
 		urls.ListOrdersUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/orders/preview.json",
+		"https://api.etrade.com/v1/accounts/1234/orders/preview",
 		urls.PreviewOrderUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/orders/place.json",
+		"https://api.etrade.com/v1/accounts/1234/orders/place",
 		urls.PlaceOrderUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/orders/cancel.json",
+		"https://api.etrade.com/v1/accounts/1234/orders/cancel",
 		urls.CancelOrderUrl("1234"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/orders/5678/change/preview.json",
+		"https://api.etrade.com/v1/accounts/1234/orders/5678/change/preview",
 		urls.ChangePreviewedOrderUrl("1234", "5678"))
 	assert.Equal(t,
-		"https://api.etrade.com/v1/accounts/1234/orders/5678/change/place.json",
+		"https://api.etrade.com/v1/accounts/1234/orders/5678/change/place",
 		urls.PlaceChangedOrderUrl("1234", "5678"))
 }

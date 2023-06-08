@@ -1,14 +1,16 @@
 package etradelib
 
 import (
+	"encoding/xml"
 	"errors"
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"io"
 	"net/http"
 )
 
 type ETradeClient interface {
-	ListAccounts() (string, error)
+	ListAccounts() (*responses.AccountListResponse, error)
 }
 
 type eTradeClient struct {
@@ -23,20 +25,25 @@ func CreateETradeClient(urls EndpointUrls, httpClient *http.Client) ETradeClient
 	}
 }
 
-func (c *eTradeClient) ListAccounts() (string, error) {
-	response, err := c.httpClient.Get(c.urls.ListAccountsUrl())
-	if response != nil {
-		defer response.Body.Close()
+func (c *eTradeClient) ListAccounts() (*responses.AccountListResponse, error) {
+	httpResponse, err := c.httpClient.Get(c.urls.ListAccountsUrl())
+	if httpResponse != nil {
+		defer httpResponse.Body.Close()
 	}
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	if response.StatusCode != http.StatusOK {
-		return "", errors.New(fmt.Sprintf("request failed: %s", response.Status))
+	if httpResponse.StatusCode != http.StatusOK {
+		return nil, errors.New(fmt.Sprintf("request failed: %s", httpResponse.Status))
 	}
-	responseBytes, err := io.ReadAll(response.Body)
+	responseBytes, err := io.ReadAll(httpResponse.Body)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(responseBytes), nil
+	response := responses.AccountListResponse{}
+	err = xml.Unmarshal(responseBytes, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
 }
