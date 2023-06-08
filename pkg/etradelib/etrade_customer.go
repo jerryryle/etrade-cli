@@ -1,6 +1,7 @@
 package etradelib
 
 type ETradeCustomer interface {
+	GetCustomerName() string
 	ListAccounts() string
 	ListAlerts() string
 	GetQuotes(symbols string) string
@@ -10,29 +11,34 @@ type ETradeCustomer interface {
 }
 
 type eTradeCustomer struct {
-	client eTradeClient
+	customerName string
+	client       eTradeClient
 }
 
-func (e *eTradeCustomer) ListAccounts() string {
+func (c *eTradeCustomer) GetCustomerName() string {
+	return c.customerName
+}
+
+func (c *eTradeCustomer) ListAccounts() string {
 	return ""
 }
 
-func (e *eTradeCustomer) ListAlerts() string {
+func (c *eTradeCustomer) ListAlerts() string {
 	return ""
 }
 
-func (e *eTradeCustomer) GetQuotes(symbols string) string {
+func (c *eTradeCustomer) GetQuotes(symbols string) string {
 	return ""
 }
 
-func (e *eTradeCustomer) LookUpProduct(search string) string {
+func (c *eTradeCustomer) LookUpProduct(search string) string {
 	return ""
 }
 
-func (e *eTradeCustomer) GetOptionChains() string {
+func (c *eTradeCustomer) GetOptionChains() string {
 	return ""
 }
 
-func (e *eTradeCustomer) GetOptionExpireDates() string {
+func (c *eTradeCustomer) GetOptionExpireDates() string {
 	return ""
 }

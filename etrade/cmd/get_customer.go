@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func getCustomerWithCredentialCache(production bool, consumerKey string, consumerSecret string, cacheFilePath string) (etradelib.ETradeCustomer, error) {
+func getCustomerWithCredentialCache(customerName string, production bool, consumerKey string, consumerSecret string, cacheFilePath string) (etradelib.ETradeCustomer, error) {
 	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath)
 	if err != nil {
 		// Create a new, empty credential cache. It will yield empty strings for the cached token, which
@@ -16,7 +16,7 @@ func getCustomerWithCredentialCache(production bool, consumerKey string, consume
 	}
 
 	var customer etradelib.ETradeCustomer
-	session, err := etradelib.CreateSession(production, consumerKey, consumerSecret)
+	session, err := etradelib.CreateSession(customerName, production, consumerKey, consumerSecret)
 	if err != nil {
 		return nil, err
 	}

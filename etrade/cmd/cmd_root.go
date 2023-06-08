@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -14,8 +13,8 @@ type RootCommandFlags struct {
 }
 
 type RootCommand struct {
-	flags    RootCommandFlags
-	customer etradelib.ETradeCustomer
+	AppContext *ApplicationContext
+	flags      RootCommandFlags
 }
 
 func (c *RootCommand) Command() *cobra.Command {
@@ -24,20 +23,17 @@ func (c *RootCommand) Command() *cobra.Command {
 		Short: "E*TRADE CLI",
 		Long:  "E*TRADE Command Line Interface",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			return c.RootSetupResources()
+			return c.RootSetupApplicationContext()
 		},
 	}
 	// Add Global Flags
 	cmd.PersistentFlags().StringVarP(&c.flags.customerId, "customerId", "c", "", "customer identifier")
 	_ = cmd.MarkPersistentFlagRequired("customerId")
 
-	// Add Subcommands
-	cmd.AddCommand((&ListAccountsCommand{c}).Command())
-
 	return cmd
 }
 
-func (c *RootCommand) RootSetupResources() error {
+func (c *RootCommand) RootSetupApplicationContext() error {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -58,7 +54,8 @@ func (c *RootCommand) RootSetupResources() error {
 	cacheFileName := "." + customerConfig.CustomerConsumerKey
 	cacheFilePath := filepath.Join(homeDir, ".etrade", cacheFileName)
 
-	c.customer, err = getCustomerWithCredentialCache(
+	c.AppContext.Customer, err = getCustomerWithCredentialCache(
+		customerConfig.CustomerName,
 		customerConfig.CustomerProduction,
 		customerConfig.CustomerConsumerKey,
 		customerConfig.CustomerConsumerSecret,

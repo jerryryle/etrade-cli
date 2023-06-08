@@ -8,7 +8,7 @@ import (
 )
 
 type CustomerConfiguration struct {
-	CustomerNickname       string `json:"customerNickname"`
+	CustomerName           string `json:"customerName"`
 	CustomerProduction     bool   `json:"customerProduction"`
 	CustomerConsumerKey    string `json:"customerConsumerKey"`
 	CustomerConsumerSecret string `json:"customerConsumerSecret"`

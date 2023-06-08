@@ -6,7 +6,7 @@ import (
 )
 
 type ListAccountsCommand struct {
-	root *RootCommand
+	AppContext *ApplicationContext
 }
 
 func (c *ListAccountsCommand) Command() *cobra.Command {
@@ -22,6 +22,6 @@ func (c *ListAccountsCommand) Command() *cobra.Command {
 }
 
 func (c *ListAccountsCommand) ListAccounts() error {
-	fmt.Println("doListAccounts:", c.root.flags.customerId)
+	fmt.Println("doListAccounts:", c.AppContext.Customer.GetCustomerName())
 	return nil
 }

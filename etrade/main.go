@@ -7,7 +7,10 @@ import (
 )
 
 func main() {
-	rootCmd := (&cmd.RootCommand{}).Command()
+	var appContext cmd.ApplicationContext
+
+	rootCmd := (&cmd.RootCommand{AppContext: &appContext}).Command()
+	rootCmd.AddCommand((&cmd.ListAccountsCommand{AppContext: &appContext}).Command())
 
 	if err := rootCmd.Execute(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

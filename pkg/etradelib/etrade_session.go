@@ -13,6 +13,7 @@ type ETradeSession interface {
 }
 
 type eTradeSession struct {
+	customerName   string
 	urls           EndpointUrls
 	consumerKey    string
 	consumerSecret string
@@ -23,7 +24,7 @@ type eTradeSession struct {
 	config         OAuthConfig
 }
 
-func CreateSession(production bool, consumerKey string, consumerSecret string) (ETradeSession, error) {
+func CreateSession(customerName string, production bool, consumerKey string, consumerSecret string) (ETradeSession, error) {
 	if consumerKey == "" || consumerSecret == "" {
 		return nil, errors.New("invalid consumer credentials provided")
 	}
@@ -43,6 +44,7 @@ func CreateSession(production bool, consumerKey string, consumerSecret string) (
 	}
 
 	return &eTradeSession{
+		customerName:   customerName,
 		urls:           urls,
 		config:         &config,
 		consumerKey:    consumerKey,
@@ -69,7 +71,13 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCu
 	}
 	defer response.Body.Close()
 	// TODO: read body
-	return &eTradeCustomer{client: &eTradeClientStruct{urls: s.urls, httpClient: httpClient}}, nil
+	return &eTradeCustomer{
+		customerName: s.customerName,
+		client: &eTradeClientStruct{
+			urls:       s.urls,
+			httpClient: httpClient,
+		},
+	}, nil
 }
 
 func (s *eTradeSession) Begin() (string, error) {
@@ -94,5 +102,11 @@ func (s *eTradeSession) Verify(verifyKey string) (customer ETradeCustomer, acces
 	}
 	token := oauth1.NewToken(s.accessToken, oauth1.PercentEncode(s.accessSecret))
 	httpClient := s.config.Client(oauth1.NoContext, token)
-	return &eTradeCustomer{client: &eTradeClientStruct{urls: s.urls, httpClient: httpClient}}, s.accessToken, s.accessSecret, nil
+	return &eTradeCustomer{
+		customerName: s.customerName,
+		client: &eTradeClientStruct{
+			urls:       s.urls,
+			httpClient: httpClient,
+		},
+	}, s.accessToken, s.accessSecret, nil
 }
