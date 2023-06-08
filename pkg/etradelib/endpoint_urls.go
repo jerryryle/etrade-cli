@@ -1,6 +1,9 @@
 package etradelib
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type EndpointUrls interface {
 	GetRequestTokenUrl() string
@@ -146,62 +149,69 @@ func (s *endpointUrls) PlaceChangedOrderUrl(accountIdKey string, orderId string)
 	return fmt.Sprintf(s.placeChangedOrderUrl, accountIdKey, orderId)
 }
 
-var sandboxEndpoints = endpointUrls{
-	getRequestTokenUrl:        "https://api.etrade.com/oauth/request_token",
-	authorizeApplicationUrl:   "https://us.etrade.com/e/t/etws/authorize",
-	getAccessTokenUrl:         "https://api.etrade.com/oauth/access_token",
-	renewAccessTokenUrl:       "https://api.etrade.com/oauth/renew_access_token",
-	revokeAccessTokenUrl:      "https://api.etrade.com/oauth/revoke_access_token",
-	listAccountsUrl:           "https://apisb.etrade.com/v1/accounts/list",
-	getAccountBalancesUrl:     "https://apisb.etrade.com/v1/accounts/%s/balance",
-	listTransactionsUrl:       "https://apisb.etrade.com/v1/accounts/%s/transactions",
-	listTransactionDetailsUrl: "https://apisb.etrade.com/v1/accounts/%s/transactions/%s",
-	viewPortfolioUrl:          "https://apisb.etrade.com/v1/accounts/%s/portfolio",
-	listAlertsUrl:             "https://apisb.etrade.com/v1/user/alerts",
-	listAlertDetailsUrl:       "https://apisb.etrade.com/v1/user/alerts/%s",
-	deleteAlertUrl:            "https://apisb.etrade.com/v1/user/alerts/%s",
-	getQuotesUrl:              "https://apisb.etrade.com/v1/market/quote/%s",
-	lookUpProductUrl:          "https://apisb.etrade.com/v1/market/lookup/%s",
-	getOptionChainsUrl:        "https://apisb.etrade.com/v1/market/optionchains",
-	getOptionExpireDatesUrl:   "https://apisb.etrade.com/v1/market/optionexpiredate",
-	listOrdersUrl:             "https://apisb.etrade.com/v1/accounts/%s/orders",
-	previewOrderUrl:           "https://apisb.etrade.com/v1/accounts/%s/orders/preview",
-	placeOrderUrl:             "https://apisb.etrade.com/v1/accounts/%s/orders/place",
-	cancelOrderUrl:            "https://apisb.etrade.com/v1/accounts/%s/orders/cancel",
-	changePreviewedOrderUrl:   "https://apisb.etrade.com/v1/accounts/%s/orders/%s/change/preview",
-	placeChangedOrderUrl:      "https://apisb.etrade.com/v1/accounts/%s/orders/%s/change/place",
-}
+const (
+	productionUrlBase = "https://api.etrade.com"
+	sandboxUrlBase    = "https://apisb.etrade.com"
 
-var prodEndpoints = endpointUrls{
-	getRequestTokenUrl:        "https://api.etrade.com/oauth/request_token",
-	authorizeApplicationUrl:   "https://us.etrade.com/e/t/etws/authorize",
-	getAccessTokenUrl:         "https://api.etrade.com/oauth/access_token",
-	renewAccessTokenUrl:       "https://api.etrade.com/oauth/renew_access_token",
-	revokeAccessTokenUrl:      "https://api.etrade.com/oauth/revoke_access_token",
-	listAccountsUrl:           "https://api.etrade.com/v1/accounts/list",
-	getAccountBalancesUrl:     "https://api.etrade.com/v1/accounts/%s/balance",
-	listTransactionsUrl:       "https://api.etrade.com/v1/accounts/%s/transactions",
-	listTransactionDetailsUrl: "https://api.etrade.com/v1/accounts/%s/transactions/%s",
-	viewPortfolioUrl:          "https://api.etrade.com/v1/accounts/%s/portfolio",
-	listAlertsUrl:             "https://api.etrade.com/v1/user/alerts",
-	listAlertDetailsUrl:       "https://api.etrade.com/v1/user/alerts/%s",
-	deleteAlertUrl:            "https://api.etrade.com/v1/user/alerts/%s",
-	getQuotesUrl:              "https://api.etrade.com/v1/market/quote/%s",
-	lookUpProductUrl:          "https://api.etrade.com/v1/market/lookup/%s",
-	getOptionChainsUrl:        "https://api.etrade.com/v1/market/optionchains",
-	getOptionExpireDatesUrl:   "https://api.etrade.com/v1/market/optionexpiredate",
-	listOrdersUrl:             "https://api.etrade.com/v1/accounts/%s/orders",
-	previewOrderUrl:           "https://api.etrade.com/v1/accounts/%s/orders/preview",
-	placeOrderUrl:             "https://api.etrade.com/v1/accounts/%s/orders/place",
-	cancelOrderUrl:            "https://api.etrade.com/v1/accounts/%s/orders/cancel",
-	changePreviewedOrderUrl:   "https://api.etrade.com/v1/accounts/%s/orders/%s/change/preview",
-	placeChangedOrderUrl:      "https://api.etrade.com/v1/accounts/%s/orders/%s/change/place",
-}
+	getRequestTokenUrlTemplate        = "{B}/oauth/request_token"
+	authorizeApplicationUrlTemplate   = "https://us.etrade.com/e/t/etws/authorize"
+	getAccessTokenUrlTemplate         = "{B}/oauth/access_token"
+	renewAccessTokenUrlTemplate       = "{B}/oauth/renew_access_token"
+	revokeAccessTokenUrlTemplate      = "{B}/oauth/revoke_access_token"
+	listAccountsUrlTemplate           = "{B}/v1/accounts/list.json"
+	getAccountBalancesUrlTemplate     = "{B}/v1/accounts/%s/balance.json"
+	listTransactionsUrlTemplate       = "{B}/v1/accounts/%s/transactions.json"
+	listTransactionDetailsUrlTemplate = "{B}/v1/accounts/%s/transactions/%s.json"
+	viewPortfolioUrlTemplate          = "{B}/v1/accounts/%s/portfolio.json"
+	listAlertsUrlTemplate             = "{B}/v1/user/alerts.json"
+	listAlertDetailsUrlTemplate       = "{B}/v1/user/alerts/%s.json"
+	deleteAlertUrlTemplate            = "{B}/v1/user/alerts/%s.json"
+	getQuotesUrlTemplate              = "{B}/v1/market/quote/%s.json"
+	lookUpProductUrlTemplate          = "{B}/v1/market/lookup/%s.json"
+	getOptionChainsUrlTemplate        = "{B}/v1/market/optionchains.json"
+	getOptionExpireDatesUrlTemplate   = "{B}/v1/market/optionexpiredate.json"
+	listOrdersUrlTemplate             = "{B}/v1/accounts/%s/orders.json"
+	previewOrderUrlTemplate           = "{B}/v1/accounts/%s/orders/preview.json"
+	placeOrderUrlTemplate             = "{B}/v1/accounts/%s/orders/place.json"
+	cancelOrderUrlTemplate            = "{B}/v1/accounts/%s/orders/cancel.json"
+	changePreviewedOrderUrlTemplate   = "{B}/v1/accounts/%s/orders/%s/change/preview.json"
+	placeChangedOrderUrlTemplate      = "{B}/v1/accounts/%s/orders/%s/change/place.json"
+)
 
 func GetEndpointUrls(production bool) EndpointUrls {
+	var urlBase string
 	if production {
-		return &prodEndpoints
+		urlBase = productionUrlBase
 	} else {
-		return &sandboxEndpoints
+		urlBase = sandboxUrlBase
 	}
+	return &endpointUrls{
+		getRequestTokenUrl:        renderUrlTemplateWithBase(getRequestTokenUrlTemplate, urlBase),
+		authorizeApplicationUrl:   renderUrlTemplateWithBase(authorizeApplicationUrlTemplate, urlBase),
+		getAccessTokenUrl:         renderUrlTemplateWithBase(getAccessTokenUrlTemplate, urlBase),
+		renewAccessTokenUrl:       renderUrlTemplateWithBase(renewAccessTokenUrlTemplate, urlBase),
+		revokeAccessTokenUrl:      renderUrlTemplateWithBase(revokeAccessTokenUrlTemplate, urlBase),
+		listAccountsUrl:           renderUrlTemplateWithBase(listAccountsUrlTemplate, urlBase),
+		getAccountBalancesUrl:     renderUrlTemplateWithBase(getAccountBalancesUrlTemplate, urlBase),
+		listTransactionsUrl:       renderUrlTemplateWithBase(listTransactionsUrlTemplate, urlBase),
+		listTransactionDetailsUrl: renderUrlTemplateWithBase(listTransactionDetailsUrlTemplate, urlBase),
+		viewPortfolioUrl:          renderUrlTemplateWithBase(viewPortfolioUrlTemplate, urlBase),
+		listAlertsUrl:             renderUrlTemplateWithBase(listAlertsUrlTemplate, urlBase),
+		listAlertDetailsUrl:       renderUrlTemplateWithBase(listAlertDetailsUrlTemplate, urlBase),
+		deleteAlertUrl:            renderUrlTemplateWithBase(deleteAlertUrlTemplate, urlBase),
+		getQuotesUrl:              renderUrlTemplateWithBase(getQuotesUrlTemplate, urlBase),
+		lookUpProductUrl:          renderUrlTemplateWithBase(lookUpProductUrlTemplate, urlBase),
+		getOptionChainsUrl:        renderUrlTemplateWithBase(getOptionChainsUrlTemplate, urlBase),
+		getOptionExpireDatesUrl:   renderUrlTemplateWithBase(getOptionExpireDatesUrlTemplate, urlBase),
+		listOrdersUrl:             renderUrlTemplateWithBase(listOrdersUrlTemplate, urlBase),
+		previewOrderUrl:           renderUrlTemplateWithBase(previewOrderUrlTemplate, urlBase),
+		placeOrderUrl:             renderUrlTemplateWithBase(placeOrderUrlTemplate, urlBase),
+		cancelOrderUrl:            renderUrlTemplateWithBase(cancelOrderUrlTemplate, urlBase),
+		changePreviewedOrderUrl:   renderUrlTemplateWithBase(changePreviewedOrderUrlTemplate, urlBase),
+		placeChangedOrderUrl:      renderUrlTemplateWithBase(placeChangedOrderUrlTemplate, urlBase),
+	}
+}
+
+func renderUrlTemplateWithBase(urlTemplate string, base string) string {
+	return strings.Replace(urlTemplate, "{B}", base, 1)
 }

@@ -17,14 +17,20 @@ func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
 	return f(req), nil
 }
 
-func TestCreateSessionWithMissingConsumerCredentialsFails(t *testing.T) {
-	session, err := CreateSession(false, "", "")
+func TestCreateSessionWithEmptyConsumerCredentialsFails(t *testing.T) {
+	session, err := CreateSession("TestCustomerName", false, "", "")
 	assert.EqualError(t, err, "invalid consumer credentials provided")
 	assert.Nil(t, session)
 }
 
 func TestCreateSessionWithConsumerCredentialsSucceeds(t *testing.T) {
-	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret")
+	session, err := CreateSession("TestCustomerName", false, "TestConsumerKey", "TestConsumerSecret")
+	assert.Nil(t, err)
+	assert.NotNil(t, session)
+}
+
+func TestCreateSessionWithEmptyCustomerNameSucceeds(t *testing.T) {
+	session, err := CreateSession("", false, "TestConsumerKey", "TestConsumerSecret")
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 }
@@ -40,12 +46,11 @@ func (s *ETradeSessionTestSuite) SetupTest() {
 
 	// Create a test session manually, so we can use the mock OAuth config
 	s.session = &eTradeSession{
+		customerName:   "TestCustomerName",
 		urls:           GetEndpointUrls(false),
-		config:         s.configMock,
 		consumerKey:    "TestConsumerKey",
 		consumerSecret: "TestConsumerSecret",
-		accessToken:    "",
-		accessSecret:   "",
+		config:         s.configMock,
 	}
 }
 
