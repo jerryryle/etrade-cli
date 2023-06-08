@@ -22,6 +22,10 @@ func (c *ListAccountsCommand) Command() *cobra.Command {
 }
 
 func (c *ListAccountsCommand) ListAccounts() error {
-	fmt.Println("doListAccounts:", c.AppContext.Customer.GetCustomerName())
+	accounts, err := c.AppContext.Customer.ListAccounts()
+	if err != nil {
+		return err
+	}
+	fmt.Println(accounts)
 	return nil
 }

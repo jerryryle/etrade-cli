@@ -3,6 +3,7 @@ package etradelib
 import (
 	"errors"
 	"github.com/dghubble/oauth1"
+	"net/http"
 	"net/url"
 )
 
@@ -70,13 +71,12 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCu
 		return nil, err
 	}
 	defer response.Body.Close()
-	// TODO: read body
+	if response.StatusCode != http.StatusOK {
+		return nil, errors.New("invalid access token")
+	}
 	return &eTradeCustomer{
 		customerName: s.customerName,
-		client: &eTradeClient{
-			urls:       s.urls,
-			httpClient: httpClient,
-		},
+		client:       CreateETradeClient(s.urls, httpClient),
 	}, nil
 }
 
