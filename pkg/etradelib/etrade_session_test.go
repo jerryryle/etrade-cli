@@ -1,0 +1,162 @@
+package etradelib
+
+import (
+	"errors"
+	"github.com/dghubble/oauth1"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
+	"io"
+	"net/http"
+	"strings"
+	"testing"
+)
+
+type RoundTripFunc func(req *http.Request) *http.Response
+
+func (f RoundTripFunc) RoundTrip(req *http.Request) (*http.Response, error) {
+	return f(req), nil
+}
+
+func TestCreateSessionWithMissingConsumerCredentialsFails(t *testing.T) {
+	session, err := CreateSession(false, "", "")
+	assert.EqualError(t, err, "invalid consumer credentials provided")
+	assert.Nil(t, session)
+}
+
+func TestCreateSessionWithConsumerCredentialsSucceeds(t *testing.T) {
+	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret")
+	assert.Nil(t, err)
+	assert.NotNil(t, session)
+}
+
+type ETradeSessionTestSuite struct {
+	suite.Suite
+	configMock *oAuthConfigMock
+	session    ETradeSession
+}
+
+func (s *ETradeSessionTestSuite) SetupTest() {
+	s.configMock = new(oAuthConfigMock)
+
+	// Create a test session manually, so we can use the mock OAuth config
+	s.session = &eTradeSession{
+		urls:           GetEndpointUrls(false),
+		config:         s.configMock,
+		consumerKey:    "TestConsumerKey",
+		consumerSecret: "TestConsumerSecret",
+		accessToken:    "",
+		accessSecret:   "",
+	}
+}
+
+func (s *ETradeSessionTestSuite) TestNoAccessTokenOrSecretReturnsError() {
+	// No Token
+	customer, err := s.session.Renew("", "TestAccessSecret")
+	s.Error(err, "invalid access credentials provided")
+	s.Nil(customer)
+
+	// No secret
+	customer, err = s.session.Renew("TestAccessToken", "")
+	s.Error(err, "invalid access credentials provided")
+	s.Nil(customer)
+
+	// Neither
+	customer, err = s.session.Renew("", "")
+	s.Error(err, "invalid access credentials provided")
+	s.Nil(customer)
+
+	s.configMock.AssertExpectations(s.T())
+}
+
+func (s *ETradeSessionTestSuite) TestBadAccessTokenReturnsError() {
+	// Create a fake HTTP client that will return 400 (Bad request) for the renewal request
+	client := &http.Client{Transport: RoundTripFunc(func(req *http.Request) *http.Response {
+		return &http.Response{
+			StatusCode: http.StatusBadRequest,
+			Body:       io.NopCloser(strings.NewReader(`Bad Request`)),
+		}
+	})}
+
+	// Set up mock Client() call to return the fake HTTP client.
+	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(client)
+
+	customer, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
+	s.Nil(err)
+	s.NotNil(customer)
+
+	s.configMock.AssertExpectations(s.T())
+}
+
+func (s *ETradeSessionTestSuite) TestGoodRenewalSessionReturnsCustomer() {
+	// Create a fake HTTP client that will return 200 (Ok) for the renewal request
+	client := &http.Client{Transport: RoundTripFunc(func(req *http.Request) *http.Response {
+		return &http.Response{
+			StatusCode: http.StatusOK,
+			Body:       io.NopCloser(strings.NewReader(`Access Token has been renewed`)),
+		}
+	})}
+
+	// Set up mock Client() call to return the fake HTTP client.
+	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(client)
+
+	customer, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
+	s.Nil(err)
+	s.NotNil(customer)
+
+	s.configMock.AssertExpectations(s.T())
+}
+
+func (s *ETradeSessionTestSuite) TestBeginNewSessionFailsIfRequestTokenReturnsError() {
+	// Set up mock RequestToken() call to return an error
+	s.configMock.On("RequestToken").Return("", "", errors.New("mock error"))
+
+	authUrl, err := s.session.Begin()
+	s.Empty(authUrl)
+	s.EqualError(err, "mock error")
+
+	s.configMock.AssertExpectations(s.T())
+}
+
+func (s *ETradeSessionTestSuite) TestBeginNewSessionFailsIfAccessTokenReturnsError() {
+	// Set up mock RequestToken() call to return a fake token
+	s.configMock.On("RequestToken").Return("MockRequestToken", "MockRequestSecret", nil)
+
+	authUrl, err := s.session.Begin()
+	s.Nil(err)
+	s.Equal("https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=MockRequestToken", authUrl)
+
+	// Set up mock AccessToken() call to return a fake token
+	s.configMock.On("AccessToken", "MockRequestToken", "MockRequestSecret", "FakeVerifyKey").Return("", "", errors.New("mock error"))
+
+	customer, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
+	s.Nil(customer)
+	s.Equal(accessToken, "")
+	s.Equal(accessSecret, "")
+	s.EqualError(err, "mock error")
+
+	s.configMock.AssertExpectations(s.T())
+}
+
+func (s *ETradeSessionTestSuite) TestNewSessionSucceeds() {
+	s.configMock.On("RequestToken").Return("MockRequestToken", "MockRequestSecret", nil)
+
+	// This is a new session, so Begin() should only return the authUrl
+	authUrl, err := s.session.Begin()
+	s.Nil(err)
+	s.Equal("https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=MockRequestToken", authUrl)
+
+	s.configMock.On("AccessToken", "MockRequestToken", "MockRequestSecret", "FakeVerifyKey").Return("MockAccessToken", "MockAccessSecret", nil)
+	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("MockAccessToken", "MockAccessSecret")).Return(new(http.Client))
+
+	customer, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
+	s.Nil(err)
+	s.NotNil(customer)
+	s.Equal(accessToken, "MockAccessToken")
+	s.Equal(accessSecret, "MockAccessSecret")
+
+	s.configMock.AssertExpectations(s.T())
+}
+
+func TestETradeSessionTestSuite(t *testing.T) {
+	suite.Run(t, new(ETradeSessionTestSuite))
+}

@@ -1,2 +1,2 @@
-# etrade-dl
-E*TRADE Portfolio Downloader
+# etrade-cli
+E*TRADE Command-line Interface

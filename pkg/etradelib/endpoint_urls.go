@@ -2,7 +2,7 @@ package etradelib
 
 import "fmt"
 
-type EndpointUrlSet interface {
+type EndpointUrls interface {
 	GetRequestTokenUrl() string
 	AuthorizeApplicationUrl() string
 	GetAccessTokenUrl() string
@@ -28,7 +28,7 @@ type EndpointUrlSet interface {
 	PlaceChangedOrderUrl(accountIdKey string, orderId string) string
 }
 
-type endpointUrlSet struct {
+type endpointUrls struct {
 	getRequestTokenUrl        string
 	authorizeApplicationUrl   string
 	getAccessTokenUrl         string
@@ -54,99 +54,99 @@ type endpointUrlSet struct {
 	placeChangedOrderUrl      string
 }
 
-func (s *endpointUrlSet) GetRequestTokenUrl() string {
+func (s *endpointUrls) GetRequestTokenUrl() string {
 	return s.getRequestTokenUrl
 }
 
-func (s *endpointUrlSet) AuthorizeApplicationUrl() string {
+func (s *endpointUrls) AuthorizeApplicationUrl() string {
 	return s.authorizeApplicationUrl
 }
 
-func (s *endpointUrlSet) GetAccessTokenUrl() string {
+func (s *endpointUrls) GetAccessTokenUrl() string {
 	return s.getAccessTokenUrl
 }
 
-func (s *endpointUrlSet) RenewAccessTokenUrl() string {
+func (s *endpointUrls) RenewAccessTokenUrl() string {
 	return s.renewAccessTokenUrl
 }
 
-func (s *endpointUrlSet) RevokeAccessTokenUrl() string {
+func (s *endpointUrls) RevokeAccessTokenUrl() string {
 	return s.revokeAccessTokenUrl
 }
 
-func (s *endpointUrlSet) ListAccountsUrl() string {
+func (s *endpointUrls) ListAccountsUrl() string {
 	return s.listAccountsUrl
 }
 
-func (s *endpointUrlSet) GetAccountBalancesUrl(accountIdKey string) string {
+func (s *endpointUrls) GetAccountBalancesUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.getAccountBalancesUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) ListTransactionsUrl(accountIdKey string) string {
+func (s *endpointUrls) ListTransactionsUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.listTransactionsUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) ListTransactionDetailsUrl(accountIdKey string, transactionId string) string {
+func (s *endpointUrls) ListTransactionDetailsUrl(accountIdKey string, transactionId string) string {
 	return fmt.Sprintf(s.listTransactionDetailsUrl, accountIdKey, transactionId)
 }
 
-func (s *endpointUrlSet) ViewPortfolioUrl(accountIdKey string) string {
+func (s *endpointUrls) ViewPortfolioUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.viewPortfolioUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) ListAlertsUrl() string {
+func (s *endpointUrls) ListAlertsUrl() string {
 	return s.listAlertsUrl
 }
 
-func (s *endpointUrlSet) ListAlertDetailsUrl(alertId string) string {
+func (s *endpointUrls) ListAlertDetailsUrl(alertId string) string {
 	return fmt.Sprintf(s.listAlertDetailsUrl, alertId)
 }
 
-func (s *endpointUrlSet) DeleteAlertUrl(alertIdList string) string {
+func (s *endpointUrls) DeleteAlertUrl(alertIdList string) string {
 	return fmt.Sprintf(s.deleteAlertUrl, alertIdList)
 }
 
-func (s *endpointUrlSet) GetQuotesUrl(symbols string) string {
+func (s *endpointUrls) GetQuotesUrl(symbols string) string {
 	return fmt.Sprintf(s.getQuotesUrl, symbols)
 }
 
-func (s *endpointUrlSet) LookUpProductUrl(search string) string {
+func (s *endpointUrls) LookUpProductUrl(search string) string {
 	return fmt.Sprintf(s.lookUpProductUrl, search)
 }
 
-func (s *endpointUrlSet) GetOptionChainsUrl() string {
+func (s *endpointUrls) GetOptionChainsUrl() string {
 	return s.getOptionChainsUrl
 }
 
-func (s *endpointUrlSet) GetOptionExpireDatesUrl() string {
+func (s *endpointUrls) GetOptionExpireDatesUrl() string {
 	return s.getOptionExpireDatesUrl
 }
 
-func (s *endpointUrlSet) ListOrdersUrl(accountIdKey string) string {
+func (s *endpointUrls) ListOrdersUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.listOrdersUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) PreviewOrderUrl(accountIdKey string) string {
+func (s *endpointUrls) PreviewOrderUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.previewOrderUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) PlaceOrderUrl(accountIdKey string) string {
+func (s *endpointUrls) PlaceOrderUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.placeOrderUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) CancelOrderUrl(accountIdKey string) string {
+func (s *endpointUrls) CancelOrderUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.cancelOrderUrl, accountIdKey)
 }
 
-func (s *endpointUrlSet) ChangePreviewedOrderUrl(accountIdKey string, orderId string) string {
+func (s *endpointUrls) ChangePreviewedOrderUrl(accountIdKey string, orderId string) string {
 	return fmt.Sprintf(s.changePreviewedOrderUrl, accountIdKey, orderId)
 }
 
-func (s *endpointUrlSet) PlaceChangedOrderUrl(accountIdKey string, orderId string) string {
+func (s *endpointUrls) PlaceChangedOrderUrl(accountIdKey string, orderId string) string {
 	return fmt.Sprintf(s.placeChangedOrderUrl, accountIdKey, orderId)
 }
 
-var sandboxEndpoints = endpointUrlSet{
+var sandboxEndpoints = endpointUrls{
 	getRequestTokenUrl:        "https://api.etrade.com/oauth/request_token",
 	authorizeApplicationUrl:   "https://us.etrade.com/e/t/etws/authorize",
 	getAccessTokenUrl:         "https://api.etrade.com/oauth/access_token",
@@ -172,7 +172,7 @@ var sandboxEndpoints = endpointUrlSet{
 	placeChangedOrderUrl:      "https://apisb.etrade.com/v1/accounts/%s/orders/%s/change/place",
 }
 
-var prodEndpoints = endpointUrlSet{
+var prodEndpoints = endpointUrls{
 	getRequestTokenUrl:        "https://api.etrade.com/oauth/request_token",
 	authorizeApplicationUrl:   "https://us.etrade.com/e/t/etws/authorize",
 	getAccessTokenUrl:         "https://api.etrade.com/oauth/access_token",
@@ -198,10 +198,10 @@ var prodEndpoints = endpointUrlSet{
 	placeChangedOrderUrl:      "https://api.etrade.com/v1/accounts/%s/orders/%s/change/place",
 }
 
-func NewEndpointUrlSet(sandbox bool) EndpointUrlSet {
-	if sandbox {
-		return &sandboxEndpoints
-	} else {
+func GetEndpointUrls(production bool) EndpointUrls {
+	if production {
 		return &prodEndpoints
+	} else {
+		return &sandboxEndpoints
 	}
 }

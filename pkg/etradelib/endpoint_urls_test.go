@@ -6,145 +6,143 @@ import (
 )
 
 func TestSandboxUrls(t *testing.T) {
-	assert := assert.New(t)
-	var urlSet = NewEndpointUrlSet(true)
+	var urls = GetEndpointUrls(false)
 
-	assert.Equal(
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/request_token",
-		urlSet.GetRequestTokenUrl())
-	assert.Equal(
+		urls.GetRequestTokenUrl())
+	assert.Equal(t,
 		"https://us.etrade.com/e/t/etws/authorize",
-		urlSet.AuthorizeApplicationUrl())
-	assert.Equal(
+		urls.AuthorizeApplicationUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/access_token",
-		urlSet.GetAccessTokenUrl())
-	assert.Equal(
+		urls.GetAccessTokenUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/renew_access_token",
-		urlSet.RenewAccessTokenUrl())
-	assert.Equal(
+		urls.RenewAccessTokenUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/revoke_access_token",
-		urlSet.RevokeAccessTokenUrl())
-	assert.Equal(
+		urls.RevokeAccessTokenUrl())
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/list",
-		urlSet.ListAccountsUrl())
-	assert.Equal(
+		urls.ListAccountsUrl())
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/balance",
-		urlSet.GetAccountBalancesUrl("1234"))
-	assert.Equal(
+		urls.GetAccountBalancesUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/transactions",
-		urlSet.ListTransactionsUrl("1234"))
-	assert.Equal(
+		urls.ListTransactionsUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/portfolio",
-		urlSet.ViewPortfolioUrl("1234"))
-	assert.Equal(
+		urls.ViewPortfolioUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/user/alerts",
-		urlSet.ListAlertsUrl())
-	assert.Equal(
+		urls.ListAlertsUrl())
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/user/alerts/1234",
-		urlSet.ListAlertDetailsUrl("1234"))
-	assert.Equal(
+		urls.ListAlertDetailsUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/user/alerts/1234,5678",
-		urlSet.DeleteAlertUrl("1234,5678"))
-	assert.Equal(
+		urls.DeleteAlertUrl("1234,5678"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/market/quote/FLIP,FLOP",
-		urlSet.GetQuotesUrl("FLIP,FLOP"))
-	assert.Equal(
+		urls.GetQuotesUrl("FLIP,FLOP"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/market/lookup/FLIP",
-		urlSet.LookUpProductUrl("FLIP"))
-	assert.Equal(
+		urls.LookUpProductUrl("FLIP"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/market/optionchains",
-		urlSet.GetOptionChainsUrl())
-	assert.Equal(
+		urls.GetOptionChainsUrl())
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/market/optionexpiredate",
-		urlSet.GetOptionExpireDatesUrl())
-	assert.Equal(
+		urls.GetOptionExpireDatesUrl())
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/orders",
-		urlSet.ListOrdersUrl("1234"))
-	assert.Equal(
+		urls.ListOrdersUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/orders/preview",
-		urlSet.PreviewOrderUrl("1234"))
-	assert.Equal(
+		urls.PreviewOrderUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/orders/place",
-		urlSet.PlaceOrderUrl("1234"))
-	assert.Equal(
+		urls.PlaceOrderUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/orders/cancel",
-		urlSet.CancelOrderUrl("1234"))
-	assert.Equal(
+		urls.CancelOrderUrl("1234"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/orders/5678/change/preview",
-		urlSet.ChangePreviewedOrderUrl("1234", "5678"))
-	assert.Equal(
+		urls.ChangePreviewedOrderUrl("1234", "5678"))
+	assert.Equal(t,
 		"https://apisb.etrade.com/v1/accounts/1234/orders/5678/change/place",
-		urlSet.PlaceChangedOrderUrl("1234", "5678"))
+		urls.PlaceChangedOrderUrl("1234", "5678"))
 }
 
-func TestProdUrls(t *testing.T) {
-	assert := assert.New(t)
-	var urlSet = NewEndpointUrlSet(false)
+func TestProductionUrls(t *testing.T) {
+	var urls = GetEndpointUrls(true)
 
-	assert.Equal(
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/request_token",
-		urlSet.GetRequestTokenUrl())
-	assert.Equal(
+		urls.GetRequestTokenUrl())
+	assert.Equal(t,
 		"https://us.etrade.com/e/t/etws/authorize",
-		urlSet.AuthorizeApplicationUrl())
-	assert.Equal(
+		urls.AuthorizeApplicationUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/access_token",
-		urlSet.GetAccessTokenUrl())
-	assert.Equal(
+		urls.GetAccessTokenUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/renew_access_token",
-		urlSet.RenewAccessTokenUrl())
-	assert.Equal(
+		urls.RenewAccessTokenUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/oauth/revoke_access_token",
-		urlSet.RevokeAccessTokenUrl())
-	assert.Equal(
+		urls.RevokeAccessTokenUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/list",
-		urlSet.ListAccountsUrl())
-	assert.Equal(
+		urls.ListAccountsUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/balance",
-		urlSet.GetAccountBalancesUrl("1234"))
-	assert.Equal(
+		urls.GetAccountBalancesUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/transactions",
-		urlSet.ListTransactionsUrl("1234"))
-	assert.Equal(
+		urls.ListTransactionsUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/portfolio",
-		urlSet.ViewPortfolioUrl("1234"))
-	assert.Equal(
+		urls.ViewPortfolioUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/user/alerts",
-		urlSet.ListAlertsUrl())
-	assert.Equal(
+		urls.ListAlertsUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/v1/user/alerts/1234",
-		urlSet.ListAlertDetailsUrl("1234"))
-	assert.Equal(
+		urls.ListAlertDetailsUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/user/alerts/1234,5678",
-		urlSet.DeleteAlertUrl("1234,5678"))
-	assert.Equal(
+		urls.DeleteAlertUrl("1234,5678"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/market/quote/FLIP,FLOP",
-		urlSet.GetQuotesUrl("FLIP,FLOP"))
-	assert.Equal(
+		urls.GetQuotesUrl("FLIP,FLOP"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/market/lookup/FLIP",
-		urlSet.LookUpProductUrl("FLIP"))
-	assert.Equal(
+		urls.LookUpProductUrl("FLIP"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/market/optionchains",
-		urlSet.GetOptionChainsUrl())
-	assert.Equal(
+		urls.GetOptionChainsUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/v1/market/optionexpiredate",
-		urlSet.GetOptionExpireDatesUrl())
-	assert.Equal(
+		urls.GetOptionExpireDatesUrl())
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/orders",
-		urlSet.ListOrdersUrl("1234"))
-	assert.Equal(
+		urls.ListOrdersUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/orders/preview",
-		urlSet.PreviewOrderUrl("1234"))
-	assert.Equal(
+		urls.PreviewOrderUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/orders/place",
-		urlSet.PlaceOrderUrl("1234"))
-	assert.Equal(
+		urls.PlaceOrderUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/orders/cancel",
-		urlSet.CancelOrderUrl("1234"))
-	assert.Equal(
+		urls.CancelOrderUrl("1234"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/orders/5678/change/preview",
-		urlSet.ChangePreviewedOrderUrl("1234", "5678"))
-	assert.Equal(
+		urls.ChangePreviewedOrderUrl("1234", "5678"))
+	assert.Equal(t,
 		"https://api.etrade.com/v1/accounts/1234/orders/5678/change/place",
-		urlSet.PlaceChangedOrderUrl("1234", "5678"))
+		urls.PlaceChangedOrderUrl("1234", "5678"))
 }
