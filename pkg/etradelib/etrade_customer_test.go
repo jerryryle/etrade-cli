@@ -23,7 +23,7 @@ func (s *ETradeCustomerTestSuite) SetupTest() {
 }
 
 func (s *ETradeCustomerTestSuite) TestETradeCustomer_GetAllAccounts() {
-	// Initialize a client response with just enough data for the test
+	// Initialize a client response with just enough data to verify the objects are created correctly
 	testAccounts := []responses.AccountListAccount{
 		{AccountId: "TestAccountId1"},
 		{AccountId: "TestAccountId2"},
@@ -54,7 +54,7 @@ func (s *ETradeCustomerTestSuite) TestETradeCustomer_GetAllAccounts() {
 }
 
 func (s *ETradeCustomerTestSuite) TestETradeCustomer_GetAccountById() {
-	// Initialize a client response with just enough data for the test
+	// Initialize a client response with just enough data to verify the objects are created correctly
 	testAccounts := []responses.AccountListAccount{
 		{AccountId: "TestAccountId1"},
 		{AccountId: "TestAccountId2"},
@@ -82,8 +82,73 @@ func (s *ETradeCustomerTestSuite) TestETradeCustomer_GetAccountById() {
 		return nil, errors.New("test error")
 	}
 	// Get an account by ID and ensure the client failure error is propagated
-	account, err = s.testCustomer.GetAccountById("TestAccountNonExistent")
+	account, err = s.testCustomer.GetAccountById("TestAccountId2")
 	s.Assert().Nil(account)
+	s.Assert().EqualError(err, "test error")
+}
+
+func (s *ETradeCustomerTestSuite) TestETradeCustomer_GetAllAlerts() {
+	// Initialize a client response with just enough data to verify the objects are created correctly
+	testAlerts := []responses.AlertsAlert{
+		{Id: 1},
+		{Id: 2},
+	}
+
+	// Configure the client fake to return the test data
+	s.clientFake.ListAlertsFn = func() (*responses.AlertsResponse, error) {
+		return &responses.AlertsResponse{
+			Alerts: testAlerts,
+		}, nil
+	}
+
+	// Get all alerts and ensure all alert objects are returned.
+	alerts, err := s.testCustomer.GetAllAlerts()
+	s.Assert().Nil(err)
+	for idx, alert := range alerts {
+		s.Assert().Equal(testAlerts[idx].Id, alert.GetAlertInfo().Id)
+	}
+
+	// Configure the client fake to return an error
+	s.clientFake.ListAlertsFn = func() (*responses.AlertsResponse, error) {
+		return nil, errors.New("test error")
+	}
+	// Get all alerts and ensure the client failure error is propagated
+	alerts, err = s.testCustomer.GetAllAlerts()
+	s.Assert().Nil(alerts)
+	s.Assert().EqualError(err, "test error")
+}
+
+func (s *ETradeCustomerTestSuite) TestETradeCustomer_GetAlertById() {
+	// Initialize a client response with just enough data to verify the objects are created correctly
+	testAlerts := []responses.AlertsAlert{
+		{Id: 1},
+		{Id: 2},
+	}
+
+	// Configure the client fake to return the test data
+	s.clientFake.ListAlertsFn = func() (*responses.AlertsResponse, error) {
+		return &responses.AlertsResponse{
+			Alerts: testAlerts,
+		}, nil
+	}
+
+	// Get an account by ID and ensure the correct account object is returned.
+	alert, err := s.testCustomer.GetAlertById(2)
+	s.Assert().Nil(err)
+	s.Assert().Equal(int64(2), alert.GetAlertInfo().Id)
+
+	// Get an account by non-existent ID and ensure an error is returned.
+	alert, err = s.testCustomer.GetAlertById(999)
+	s.Assert().Nil(alert)
+	s.Assert().Error(err)
+
+	// Configure the client fake to return an error
+	s.clientFake.ListAlertsFn = func() (*responses.AlertsResponse, error) {
+		return nil, errors.New("test error")
+	}
+	// Get an account by ID and ensure the client failure error is propagated
+	alert, err = s.testCustomer.GetAlertById(2)
+	s.Assert().Nil(alert)
 	s.Assert().EqualError(err, "test error")
 }
 

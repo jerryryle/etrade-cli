@@ -9,7 +9,8 @@ type ETradeCustomer interface {
 	GetCustomerName() string
 	GetAllAccounts() ([]ETradeAccount, error)
 	GetAccountById(accountID string) (ETradeAccount, error)
-	ListAlerts() (string, error)
+	GetAllAlerts() ([]ETradeAlert, error)
+	GetAlertById(alertID int64) (ETradeAlert, error)
 	GetQuotes(symbols string) (string, error)
 	LookUpProduct(search string) (string, error)
 	GetOptionChains() (string, error)
@@ -59,8 +60,31 @@ func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error)
 	return nil, errors.New(fmt.Sprintf("no account found with the id '%s'", accountID))
 }
 
-func (c *eTradeCustomer) ListAlerts() (string, error) {
-	return "", nil
+func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {
+	response, err := c.client.ListAlerts()
+	if err != nil {
+		return nil, err
+	}
+	var alerts = make([]ETradeAlert, 0)
+	for _, alert := range response.Alerts {
+		alerts = append(
+			alerts,
+			CreateETradeAlert(c.client, CreateETradeAlertInfoFromResponse(alert)))
+	}
+	return alerts, err
+}
+
+func (c *eTradeCustomer) GetAlertById(alertID int64) (ETradeAlert, error) {
+	alerts, err := c.GetAllAlerts()
+	if err != nil {
+		return nil, err
+	}
+	for _, alert := range alerts {
+		if alert.GetAlertInfo().Id == alertID {
+			return alert, nil
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("no alert found with the id '%d'", alertID))
 }
 
 func (c *eTradeCustomer) GetQuotes(symbols string) (string, error) {

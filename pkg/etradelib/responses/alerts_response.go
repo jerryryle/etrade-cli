@@ -6,8 +6,8 @@ type AlertsResponse struct {
 }
 
 type AlertsAlert struct {
-	Id         int64  `xml:"id"`
-	CreateTime int64  `xml:"createTime"`
-	Subject    string `xml:"subject"`
-	Status     string `xml:"status"`
+	Id         int64      `xml:"id"`
+	CreateTime ETradeTime `xml:"createTime"`
+	Subject    string     `xml:"subject"`
+	Status     string     `xml:"status"`
 }

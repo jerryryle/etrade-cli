@@ -5,11 +5,17 @@ import (
 )
 
 type ListAccountsFn func() (*responses.AccountListResponse, error)
+type ListAlertsFn func() (*responses.AlertsResponse, error)
 
 type eTradeClientFake struct {
 	ListAccountsFn ListAccountsFn
+	ListAlertsFn   ListAlertsFn
 }
 
 func (c *eTradeClientFake) ListAccounts() (*responses.AccountListResponse, error) {
 	return c.ListAccountsFn()
+}
+
+func (c *eTradeClientFake) ListAlerts() (*responses.AlertsResponse, error) {
+	return c.ListAlertsFn()
 }

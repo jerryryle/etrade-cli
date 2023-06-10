@@ -11,6 +11,7 @@ import (
 
 type ETradeClient interface {
 	ListAccounts() (*responses.AccountListResponse, error)
+	ListAlerts() (*responses.AlertsResponse, error)
 }
 
 type eTradeClient struct {
@@ -41,6 +42,29 @@ func (c *eTradeClient) ListAccounts() (*responses.AccountListResponse, error) {
 		return nil, err
 	}
 	response := responses.AccountListResponse{}
+	err = xml.Unmarshal(responseBytes, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) ListAlerts() (*responses.AlertsResponse, error) {
+	httpResponse, err := c.httpClient.Get(c.urls.ListAlertsUrl())
+	if httpResponse != nil {
+		defer httpResponse.Body.Close()
+	}
+	if err != nil {
+		return nil, err
+	}
+	if httpResponse.StatusCode != http.StatusOK {
+		return nil, errors.New(fmt.Sprintf("request failed: %s", httpResponse.Status))
+	}
+	responseBytes, err := io.ReadAll(httpResponse.Body)
+	if err != nil {
+		return nil, err
+	}
+	response := responses.AlertsResponse{}
 	err = xml.Unmarshal(responseBytes, &response)
 	if err != nil {
 		return nil, err
