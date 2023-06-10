@@ -3,7 +3,7 @@ package responses
 type BalanceResponse struct {
 	AccountId          string                 `xml:"accountId"`
 	InstitutionType    string                 `xml:"institutionType"`
-	AsOfDate           int64                  `xml:"asOfDate"`
+	AsOfDate           ETradeTime             `xml:"asOfDate"`
 	AccountType        string                 `xml:"accountType"`
 	OptionLevel        string                 `xml:"optionLevel"`
 	AccountDescription string                 `xml:"accountDescription"`
@@ -48,17 +48,17 @@ type BalanceComputedBalance struct {
 }
 
 type BalanceLending struct {
-	CurrentBalance          float64 `xml:"currentBalance"`
-	CreditLine              float64 `xml:"creditLine"`
-	OutstandingBalance      float64 `xml:"outstandingBalance"`
-	MinPaymentDue           float64 `xml:"minPaymentDue"`
-	AmountPastDue           float64 `xml:"amountPastDue"`
-	AvailableCredit         float64 `xml:"availableCredit"`
-	YtdInterestPaid         float64 `xml:"ytdInterestPaid"`
-	LastYtdInterestPaid     float64 `xml:"lastYtdInterestPaid"`
-	PaymentDueDate          int64   `xml:"paymentDueDate"`
-	LastPaymentReceivedDate int64   `xml:"lastPaymentReceivedDate"`
-	PaymentReceivedMtd      float64 `xml:"paymentReceivedMtd"`
+	CurrentBalance          float64    `xml:"currentBalance"`
+	CreditLine              float64    `xml:"creditLine"`
+	OutstandingBalance      float64    `xml:"outstandingBalance"`
+	MinPaymentDue           float64    `xml:"minPaymentDue"`
+	AmountPastDue           float64    `xml:"amountPastDue"`
+	AvailableCredit         float64    `xml:"availableCredit"`
+	YtdInterestPaid         float64    `xml:"ytdInterestPaid"`
+	LastYtdInterestPaid     float64    `xml:"lastYtdInterestPaid"`
+	PaymentDueDate          ETradeTime `xml:"paymentDueDate"`
+	LastPaymentReceivedDate ETradeTime `xml:"lastPaymentReceivedDate"`
+	PaymentReceivedMtd      float64    `xml:"paymentReceivedMtd"`
 }
 
 type BalanceMargin struct {

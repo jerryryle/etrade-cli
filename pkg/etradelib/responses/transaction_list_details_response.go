@@ -3,8 +3,8 @@ package responses
 type TransactionDetailsResponse struct {
 	TransactionId   int64                       `xml:"transactionId"`
 	AccountId       string                      `xml:"accountId"`
-	TransactionDate int64                       `xml:"transactionDate"`
-	PostDate        int64                       `xml:"postDate"`
+	TransactionDate ETradeTime                  `xml:"transactionDate"`
+	PostDate        ETradeTime                  `xml:"postDate"`
 	Amount          float64                     `xml:"amount"`
 	Description     string                      `xml:"description"`
 	Category        TransactionDetailsCategory  `xml:"category"`

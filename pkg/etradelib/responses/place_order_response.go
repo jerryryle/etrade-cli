@@ -13,7 +13,7 @@ type PlaceOrderResponse struct {
 	IsEmployee      bool                `xml:"isEmployee"`
 	CommissionMsg   string              `xml:"commissionMsg"`
 	OrderIds        []PlaceOrderOrderId `xml:"orderIds"`
-	PlacedTime      int64               `xml:"placedTime"`
+	PlacedTime      ETradeTime          `xml:"placedTime"`
 	AccountId       string              `xml:"accountId"`
 	PortfolioMargin PortfolioMargin     `xml:"portfolioMargin"`
 	Disclosure      Disclosure          `xml:"disclosure"`

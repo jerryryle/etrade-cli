@@ -2,7 +2,7 @@ package responses
 
 type OptionChainResponse struct {
 	OptionPairs []OptionChainPair     `xml:"optionPairs"`
-	TimeStamp   int64                 `xml:"timeStamp"`
+	TimeStamp   ETradeTime            `xml:"timeStamp"`
 	QuoteType   string                `xml:"quoteType"`
 	NearPrice   float64               `xml:"nearPrice"`
 	Selected    OptionChainSelectedED `xml:"selected"`
@@ -17,7 +17,7 @@ type OptionChainPair struct {
 type OptionChainOptionDetails struct {
 	OptionCategory   string                  `xml:"optionCategory"`
 	OptionRootSymbol string                  `xml:"optionRootSymbol"`
-	TimeStamp        int64                   `xml:"timeStamp"`
+	TimeStamp        ETradeTime              `xml:"timeStamp"`
 	AdjustedFlag     bool                    `xml:"adjustedFlag"`
 	DisplaySymbol    string                  `xml:"displaySymbol"`
 	OptionType       string                  `xml:"optionType"`

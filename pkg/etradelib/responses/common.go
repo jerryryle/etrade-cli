@@ -57,9 +57,9 @@ type MFQuantity struct {
 type OrderDetail struct {
 	OrderNumber           int64        `xml:"orderNumber"`
 	AccountId             string       `xml:"accountId"`
-	PreviewTime           int64        `xml:"previewTime"`
-	PlacedTime            int64        `xml:"placedTime"`
-	ExecutedTime          int64        `xml:"executedTime"`
+	PreviewTime           ETradeTime   `xml:"previewTime"`
+	PlacedTime            ETradeTime   `xml:"placedTime"`
+	ExecutedTime          ETradeTime   `xml:"executedTime"`
 	OrderValue            float64      `xml:"orderValue"`
 	Status                string       `xml:"status"`
 	OrderType             string       `xml:"orderType"`

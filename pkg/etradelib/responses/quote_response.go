@@ -22,7 +22,7 @@ type QuoteAllQuoteDetails struct {
 	Dividend                float64                      `xml:"dividend"`
 	Eps                     float64                      `xml:"eps"`
 	EstEarnings             float64                      `xml:"estEarnings"`
-	ExDividendDate          int64                        `xml:"exDividendDate"`
+	ExDividendDate          ETradeTime                   `xml:"exDividendDate"`
 	High                    float64                      `xml:"high"`
 	High52                  float64                      `xml:"high52"`
 	LastTrade               float64                      `xml:"lastTrade"`
@@ -47,35 +47,35 @@ type QuoteAllQuoteDetails struct {
 	Beta                    float64                      `xml:"beta"`
 	Yield                   float64                      `xml:"yield"`
 	DeclaredDividend        float64                      `xml:"declaredDividend"`
-	DividendPayableDate     int64                        `xml:"dividendPayableDate"`
+	DividendPayableDate     ETradeTime                   `xml:"dividendPayableDate"`
 	Pe                      float64                      `xml:"pe"`
-	Week52LowDate           int64                        `xml:"week52LowDate"`
-	Week52HiDate            int64                        `xml:"week52HiDate"`
+	Week52LowDate           ETradeTime                   `xml:"week52LowDate"`
+	Week52HiDate            ETradeTime                   `xml:"week52HiDate"`
 	IntrinsicValue          float64                      `xml:"intrinsicValue"`
 	TimePremium             float64                      `xml:"timePremium"`
 	OptionMultiplier        float64                      `xml:"optionMultiplier"`
 	ContractSize            float64                      `xml:"contractSize"`
-	ExpirationDate          int64                        `xml:"expirationDate"`
+	ExpirationDate          ETradeTime                   `xml:"expirationDate"`
 	EhQuote                 QuoteExtendedHourQuoteDetail `xml:"ehQuote"`
 	OptionPreviousBidPrice  float64                      `xml:"optionPreviousBidPrice"`
 	OptionPreviousAskPrice  float64                      `xml:"optionPreviousAskPrice"`
 	OsiKey                  string                       `xml:"osiKey"`
-	TimeOfLastTrade         int64                        `xml:"timeOfLastTrade"`
+	TimeOfLastTrade         ETradeTime                   `xml:"timeOfLastTrade"`
 	AverageVolume           int64                        `xml:"averageVolume"`
 }
 
 type QuoteExtendedHourQuoteDetail struct {
-	LastPrice       float64 `xml:"lastPrice"`
-	Change          float64 `xml:"change"`
-	PercentChange   float64 `xml:"percentChange"`
-	Bid             float64 `xml:"bid"`
-	BidSize         int64   `xml:"bidSize"`
-	Ask             float64 `xml:"ask"`
-	AskSize         int64   `xml:"askSize"`
-	Volume          int64   `xml:"volume"`
-	TimeOfLastTrade int64   `xml:"timeOfLastTrade"`
-	TimeZone        string  `xml:"timeZone"`
-	QuoteStatus     string  `xml:"quoteStatus"`
+	LastPrice       float64    `xml:"lastPrice"`
+	Change          float64    `xml:"change"`
+	PercentChange   float64    `xml:"percentChange"`
+	Bid             float64    `xml:"bid"`
+	BidSize         int64      `xml:"bidSize"`
+	Ask             float64    `xml:"ask"`
+	AskSize         int64      `xml:"askSize"`
+	Volume          int64      `xml:"volume"`
+	TimeOfLastTrade ETradeTime `xml:"timeOfLastTrade"`
+	TimeZone        string     `xml:"timeZone"`
+	QuoteStatus     string     `xml:"quoteStatus"`
 }
 
 type QuoteFundamentalQuoteDetails struct {
@@ -123,17 +123,17 @@ type QuoteMutualFund struct {
 	FundFamily               string                  `xml:"fundFamily"`
 	FundName                 string                  `xml:"fundName"`
 	ChangeClosePercentage    float64                 `xml:"changeClosePercentage"`
-	TimeOfLastTrade          int64                   `xml:"timeOfLastTrade"`
+	TimeOfLastTrade          ETradeTime              `xml:"timeOfLastTrade"`
 	NetAssetValue            float64                 `xml:"netAssetValue"`
 	PublicOfferPrice         float64                 `xml:"publicOfferPrice"`
 	NetExpenseRatio          float64                 `xml:"netExpenseRatio"`
 	GrossExpenseRatio        float64                 `xml:"grossExpenseRatio"`
-	OrderCutoffTime          int64                   `xml:"orderCutoffTime"`
+	OrderCutoffTime          ETradeTime              `xml:"orderCutoffTime"`
 	SalesCharge              string                  `xml:"salesCharge"`
 	InitialIraInvestment     float64                 `xml:"initialIraInvestment"`
 	SubsequentIraInvestment  float64                 `xml:"subsequentIraInvestment"`
 	NetAssets                QuoteNetAsset           `xml:"netAssets"`
-	FundInceptionDate        int64                   `xml:"fundInceptionDate"`
+	FundInceptionDate        ETradeTime              `xml:"fundInceptionDate"`
 	AverageAnnualReturns     float64                 `xml:"averageAnnualReturns"`
 	SevenDayCurrentYield     float64                 `xml:"sevenDayCurrentYield"`
 	AnnualTotalReturn        float64                 `xml:"annualTotalReturn"`
@@ -144,8 +144,8 @@ type QuoteMutualFund struct {
 	AverageAnnualReturn10Yr  float64                 `xml:"averageAnnualReturn10Yr"`
 	High52                   float64                 `xml:"high52"`
 	Low52                    float64                 `xml:"low52"`
-	Week52LowDate            int64                   `xml:"week52LowDate"`
-	Week52HiDate             int64                   `xml:"week52HiDate"`
+	Week52LowDate            ETradeTime              `xml:"week52LowDate"`
+	Week52HiDate             ETradeTime              `xml:"week52HiDate"`
 	ExchangeName             string                  `xml:"exchangeName"`
 	SinceInception           float64                 `xml:"sinceInception"`
 	QuarterlySinceInception  float64                 `xml:"quarterlySinceInception"`
@@ -175,8 +175,8 @@ type QuoteMutualFund struct {
 }
 
 type QuoteNetAsset struct {
-	Value    float64 `xml:"value"`
-	AsOfDate int64   `xml:"asOfDate"`
+	Value    float64    `xml:"value"`
+	AsOfDate ETradeTime `xml:"asOfDate"`
 }
 
 type QuoteOptionDeliverable struct {
@@ -222,7 +222,7 @@ type QuoteOptionQuoteDetails struct {
 type QuoteQuoteData struct {
 	All            QuoteAllQuoteDetails         `xml:"all"`
 	DateTime       string                       `xml:"dateTime"`
-	DateTimeUTC    int64                        `xml:"dateTimeUTC"`
+	DateTimeUTC    ETradeTime                   `xml:"dateTimeUTC"`
 	QuoteStatus    string                       `xml:"quoteStatus"`
 	AhFlag         string                       `xml:"ahFlag"`
 	ErrorMessage   string                       `xml:"errorMessage"`

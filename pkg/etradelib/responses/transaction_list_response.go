@@ -13,8 +13,8 @@ type TransactionListResponse struct {
 type TransactionListTransaction struct {
 	TransactionId   string                   `xml:"transactionId"`
 	AccountId       string                   `xml:"accountId"`
-	TransactionDate int64                    `xml:"transactionDate"`
-	PostDate        int64                    `xml:"postDate"`
+	TransactionDate ETradeTime               `xml:"transactionDate"`
+	PostDate        ETradeTime               `xml:"postDate"`
 	Amount          float64                  `xml:"amount"`
 	Description     string                   `xml:"description"`
 	Description2    string                   `xml:"description2"`
@@ -27,11 +27,11 @@ type TransactionListTransaction struct {
 }
 
 type TransactionListBrokerage struct {
-	Product            Product `xml:"product"`
-	Quantity           float64 `xml:"quantity"`
-	Price              float64 `xml:"price"`
-	SettlementCurrency string  `xml:"settlementCurrency"`
-	PaymentCurrency    string  `xml:"paymentCurrency"`
-	Fee                float64 `xml:"fee"`
-	SettlementDate     int64   `xml:"settlementDate"`
+	Product            Product    `xml:"product"`
+	Quantity           float64    `xml:"quantity"`
+	Price              float64    `xml:"price"`
+	SettlementCurrency string     `xml:"settlementCurrency"`
+	PaymentCurrency    string     `xml:"paymentCurrency"`
+	Fee                float64    `xml:"fee"`
+	SettlementDate     ETradeTime `xml:"settlementDate"`
 }

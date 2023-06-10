@@ -7,7 +7,7 @@ type PreviewOrderResponse struct {
 	TotalCommission float64                              `xml:"totalCommission"`
 	Order           []OrderDetail                        `xml:"order"`
 	PreviewIds      []PreviewOrderPreviewId              `xml:"previewIds"`
-	PreviewTime     int64                                `xml:"previewTime"`
+	PreviewTime     ETradeTime                           `xml:"previewTime"`
 	DstFlag         bool                                 `xml:"dstFlag"`
 	AccountId       string                               `xml:"accountId"`
 	OptionLevelCd   int32                                `xml:"optionLevelCd"`
