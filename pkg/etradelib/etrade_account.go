@@ -50,7 +50,7 @@ func CreateETradeAccountInfoFromResponse(response responses.AccountListAccount) 
 
 func CreateETradeAccount(client ETradeClient, accountInfo *ETradeAccountInfo) ETradeAccount {
 	return &eTradeAccount{
-		client:      nil,
+		client:      client,
 		accountInfo: *accountInfo,
 	}
 }
