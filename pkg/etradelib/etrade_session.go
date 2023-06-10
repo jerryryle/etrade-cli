@@ -76,10 +76,9 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCu
 	if response.StatusCode != http.StatusOK {
 		return nil, errors.New("invalid access token")
 	}
-	return &eTradeCustomer{
-		customerName: s.customerName,
-		client:       CreateETradeClient(s.urls, httpClient),
-	}, nil
+	return CreateETradeCustomer(
+		CreateETradeClient(s.urls, httpClient),
+		s.customerName), nil
 }
 
 func (s *eTradeSession) Begin() (string, error) {
@@ -104,11 +103,7 @@ func (s *eTradeSession) Verify(verifyKey string) (customer ETradeCustomer, acces
 	}
 	token := oauth1.NewToken(s.accessToken, oauth1.PercentEncode(s.accessSecret))
 	httpClient := s.config.Client(oauth1.NoContext, token)
-	return &eTradeCustomer{
-		customerName: s.customerName,
-		client: &eTradeClient{
-			urls:       s.urls,
-			httpClient: httpClient,
-		},
-	}, s.accessToken, s.accessSecret, nil
+	return CreateETradeCustomer(
+		CreateETradeClient(s.urls, httpClient),
+		s.customerName), s.accessToken, s.accessSecret, nil
 }

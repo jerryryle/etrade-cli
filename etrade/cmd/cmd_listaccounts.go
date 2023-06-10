@@ -22,10 +22,12 @@ func (c *ListAccountsCommand) Command() *cobra.Command {
 }
 
 func (c *ListAccountsCommand) ListAccounts() error {
-	accounts, err := c.AppContext.Customer.ListAccounts()
+	accounts, err := c.AppContext.Customer.GetAllAccounts()
 	if err != nil {
 		return err
 	}
-	fmt.Println(accounts)
+	for _, account := range accounts {
+		fmt.Printf("%#v\n", account)
+	}
 	return nil
 }

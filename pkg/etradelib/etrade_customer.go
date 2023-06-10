@@ -1,10 +1,8 @@
 package etradelib
 
-import "fmt"
-
 type ETradeCustomer interface {
 	GetCustomerName() string
-	ListAccounts() (string, error)
+	GetAllAccounts() ([]ETradeAccount, error)
 	ListAlerts() (string, error)
 	GetQuotes(symbols string) (string, error)
 	LookUpProduct(search string) (string, error)
@@ -13,17 +11,33 @@ type ETradeCustomer interface {
 }
 
 type eTradeCustomer struct {
-	customerName string
 	client       ETradeClient
+	customerName string
+}
+
+func CreateETradeCustomer(client ETradeClient, customerName string) ETradeCustomer {
+	return &eTradeCustomer{
+		client:       client,
+		customerName: customerName,
+	}
 }
 
 func (c *eTradeCustomer) GetCustomerName() string {
 	return c.customerName
 }
 
-func (c *eTradeCustomer) ListAccounts() (string, error) {
+func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
 	response, err := c.client.ListAccounts()
-	return fmt.Sprintf("%#v", response), err
+	if err != nil {
+		return nil, err
+	}
+	var accounts = make([]ETradeAccount, 0)
+	for _, account := range response.Accounts {
+		accounts = append(
+			accounts,
+			CreateETradeAccount(c.client, CreateETradeAccountInfoFromResponse(account)))
+	}
+	return accounts, err
 }
 
 func (c *eTradeCustomer) ListAlerts() (string, error) {

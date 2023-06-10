@@ -1,10 +1,10 @@
 package responses
 
 type AccountListResponse struct {
-	Accounts []Account `xml:"Accounts>Account"`
+	Accounts []AccountListAccount `xml:"Accounts>Account"`
 }
 
-type Account struct {
+type AccountListAccount struct {
 	AccountId                  string `xml:"accountId"`
 	AccountIdKey               string `xml:"accountIdKey"`
 	AccountMode                string `xml:"accountMode"`
