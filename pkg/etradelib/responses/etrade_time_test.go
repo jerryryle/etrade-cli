@@ -11,33 +11,33 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 		xmlData string
 	}
 	tests := []struct {
-		name    string
-		args    args
-		wantErr bool
-		want    time.Time
+		name      string
+		args      args
+		expectErr bool
+		expect    time.Time
 	}{
 		{
 			name: "Valid Unix timestamp",
 			args: args{
 				xmlData: `<root><unix_epoch>1641582247</unix_epoch></root>`,
 			},
-			wantErr: false,
-			want:    parseTimeOrPanic("2022-01-07T19:04:07Z"),
+			expectErr: false,
+			expect:    parseTimeOrPanic("2022-01-07T19:04:07Z"),
 		},
 		{
 			name: "Valid Zeroed Unix timestamp",
 			args: args{
 				xmlData: `<root><unix_epoch>0</unix_epoch></root>`,
 			},
-			wantErr: false,
-			want:    parseTimeOrPanic("1970-01-01T00:00:00Z"),
+			expectErr: false,
+			expect:    parseTimeOrPanic("1970-01-01T00:00:00Z"),
 		},
 		{
 			name: "Invalid Unix timestamp",
 			args: args{
 				xmlData: `<root><unix_epoch>invalid</unix_epoch></root>`,
 			},
-			wantErr: true,
+			expectErr: true,
 		},
 	}
 	for _, tt := range tests {
@@ -45,11 +45,11 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 			var wrapper struct {
 				Time ETradeTime `xml:"unix_epoch"`
 			}
-			if err := xml.Unmarshal([]byte(tt.args.xmlData), &wrapper); (err != nil) != tt.wantErr {
-				t.Errorf("ETradeTime.UnmarshalXML() error = %v, wantErr %v", err, tt.wantErr)
+			if err := xml.Unmarshal([]byte(tt.args.xmlData), &wrapper); (err != nil) != tt.expectErr {
+				t.Errorf("ETradeTime.UnmarshalXML() error = %v, expectErr %v", err, tt.expectErr)
 			}
-			if !tt.wantErr && !tt.want.Equal(wrapper.Time.Time.UTC()) {
-				t.Errorf("ETradeTime.UnmarshalXML() = %v, want %v", wrapper.Time.Time.UTC(), tt.want)
+			if !tt.expectErr && !tt.expect.Equal(wrapper.Time.Time.UTC()) {
+				t.Errorf("ETradeTime.UnmarshalXML() = %v, expect %v", wrapper.Time.Time.UTC(), tt.expect)
 			}
 		})
 	}
