@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func TestListAccounts(t *testing.T) {
+func TestETradeClient_ListAccounts(t *testing.T) {
 	testXml := `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <AccountListResponse>

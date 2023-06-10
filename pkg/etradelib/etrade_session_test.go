@@ -51,18 +51,18 @@ func (s *ETradeSessionTestSuite) SetupTest() {
 func (s *ETradeSessionTestSuite) TestNoAccessTokenOrSecretReturnsError() {
 	// No Token
 	customer, err := s.session.Renew("", "TestAccessSecret")
-	s.Error(err, "invalid access credentials provided")
-	s.Nil(customer)
+	s.Assert().EqualError(err, "invalid access credentials provided")
+	s.Assert().Nil(customer)
 
 	// No secret
 	customer, err = s.session.Renew("TestAccessToken", "")
-	s.Error(err, "invalid access credentials provided")
-	s.Nil(customer)
+	s.Assert().EqualError(err, "invalid access credentials provided")
+	s.Assert().Nil(customer)
 
 	// Neither
 	customer, err = s.session.Renew("", "")
-	s.Error(err, "invalid access credentials provided")
-	s.Nil(customer)
+	s.Assert().EqualError(err, "invalid access credentials provided")
+	s.Assert().Nil(customer)
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -80,8 +80,8 @@ func (s *ETradeSessionTestSuite) TestBadAccessTokenReturnsError() {
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(client)
 
 	customer, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
-	s.Nil(customer)
-	s.NotNil(err)
+	s.Assert().Nil(customer)
+	s.Assert().Error(err)
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -99,8 +99,8 @@ func (s *ETradeSessionTestSuite) TestGoodRenewalSessionReturnsCustomer() {
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(client)
 
 	customer, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
-	s.Nil(err)
-	s.NotNil(customer)
+	s.Assert().Nil(err)
+	s.Assert().NotNil(customer)
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -110,8 +110,8 @@ func (s *ETradeSessionTestSuite) TestBeginNewSessionFailsIfRequestTokenReturnsEr
 	s.configMock.On("RequestToken").Return("", "", errors.New("mock error"))
 
 	authUrl, err := s.session.Begin()
-	s.Empty(authUrl)
-	s.EqualError(err, "mock error")
+	s.Assert().Empty(authUrl)
+	s.Assert().EqualError(err, "mock error")
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -121,17 +121,17 @@ func (s *ETradeSessionTestSuite) TestBeginNewSessionFailsIfAccessTokenReturnsErr
 	s.configMock.On("RequestToken").Return("MockRequestToken", "MockRequestSecret", nil)
 
 	authUrl, err := s.session.Begin()
-	s.Nil(err)
-	s.Equal("https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=MockRequestToken", authUrl)
+	s.Assert().Nil(err)
+	s.Assert().Equal("https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=MockRequestToken", authUrl)
 
 	// Set up mock AccessToken() call to return a fake token
 	s.configMock.On("AccessToken", "MockRequestToken", "MockRequestSecret", "FakeVerifyKey").Return("", "", errors.New("mock error"))
 
 	customer, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
-	s.Nil(customer)
-	s.Equal(accessToken, "")
-	s.Equal(accessSecret, "")
-	s.EqualError(err, "mock error")
+	s.Assert().Nil(customer)
+	s.Assert().Equal(accessToken, "")
+	s.Assert().Equal(accessSecret, "")
+	s.Assert().EqualError(err, "mock error")
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -141,17 +141,17 @@ func (s *ETradeSessionTestSuite) TestNewSessionSucceeds() {
 
 	// This is a new session, so Begin() should only return the authUrl
 	authUrl, err := s.session.Begin()
-	s.Nil(err)
-	s.Equal("https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=MockRequestToken", authUrl)
+	s.Assert().Nil(err)
+	s.Assert().Equal("https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=MockRequestToken", authUrl)
 
 	s.configMock.On("AccessToken", "MockRequestToken", "MockRequestSecret", "FakeVerifyKey").Return("MockAccessToken", "MockAccessSecret", nil)
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("MockAccessToken", "MockAccessSecret")).Return(new(http.Client))
 
 	customer, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
-	s.Nil(err)
-	s.NotNil(customer)
-	s.Equal(accessToken, "MockAccessToken")
-	s.Equal(accessSecret, "MockAccessSecret")
+	s.Assert().Nil(err)
+	s.Assert().NotNil(customer)
+	s.Assert().Equal(accessToken, "MockAccessToken")
+	s.Assert().Equal(accessSecret, "MockAccessSecret")
 
 	s.configMock.AssertExpectations(s.T())
 }

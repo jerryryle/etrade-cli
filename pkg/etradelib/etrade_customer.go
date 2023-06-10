@@ -1,8 +1,14 @@
 package etradelib
 
+import (
+	"errors"
+	"fmt"
+)
+
 type ETradeCustomer interface {
 	GetCustomerName() string
 	GetAllAccounts() ([]ETradeAccount, error)
+	GetAccountById(accountID string) (ETradeAccount, error)
 	ListAlerts() (string, error)
 	GetQuotes(symbols string) (string, error)
 	LookUpProduct(search string) (string, error)
@@ -38,6 +44,19 @@ func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
 			CreateETradeAccount(c.client, CreateETradeAccountInfoFromResponse(account)))
 	}
 	return accounts, err
+}
+
+func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error) {
+	accounts, err := c.GetAllAccounts()
+	if err != nil {
+		return nil, err
+	}
+	for _, account := range accounts {
+		if account.GetAccountInfo().AccountId == accountID {
+			return account, nil
+		}
+	}
+	return nil, errors.New(fmt.Sprintf("no account found with the id '%s'", accountID))
 }
 
 func (c *eTradeCustomer) ListAlerts() (string, error) {
