@@ -1,8 +1,8 @@
 package responses
 
 type QuoteResponse struct {
-	QuoteData []QuoteQuoteData `xml:"quoteData"`
-	Messages  QuoteMessages    `xml:"messages"` // Include when Messages struct is defined
+	QuoteData []QuoteData   `xml:"QuoteData"`
+	Messages  QuoteMessages `xml:"Messages"`
 }
 
 type QuoteAllQuoteDetails struct {
@@ -219,19 +219,19 @@ type QuoteOptionQuoteDetails struct {
 	OptionGreeks           QuoteOptionGreeks `xml:"optionGreeks"`
 }
 
-type QuoteQuoteData struct {
-	All            QuoteAllQuoteDetails         `xml:"all"`
+type QuoteData struct {
+	All            QuoteAllQuoteDetails         `xml:"All"`
 	DateTime       string                       `xml:"dateTime"`
 	DateTimeUTC    ETradeTime                   `xml:"dateTimeUTC"`
 	QuoteStatus    string                       `xml:"quoteStatus"`
 	AhFlag         string                       `xml:"ahFlag"`
 	ErrorMessage   string                       `xml:"errorMessage"`
-	Fundamental    QuoteFundamentalQuoteDetails `xml:"fundamental"`
-	Intraday       QuoteIntradayQuoteDetails    `xml:"intraday"`
-	Option         QuoteOptionQuoteDetails      `xml:"option"`
-	Product        Product                      `xml:"product"`
-	Week52         QuoteWeek52QuoteDetails      `xml:"week52"`
-	MutualFund     QuoteMutualFund              `xml:"mutualFund"` // MutualFund struct is defined above
+	Fundamental    QuoteFundamentalQuoteDetails `xml:"Fundamental"`
+	Intraday       QuoteIntradayQuoteDetails    `xml:"Intraday"`
+	Option         QuoteOptionQuoteDetails      `xml:"Option"`
+	Product        Product                      `xml:"Product"`
+	Week52         QuoteWeek52QuoteDetails      `xml:"Week52"`
+	MutualFund     QuoteMutualFund              `xml:"MutualFund"`
 	TimeZone       string                       `xml:"timeZone"`
 	DstFlag        bool                         `xml:"dstFlag"`
 	HasMiniOptions bool                         `xml:"hasMiniOptions"`

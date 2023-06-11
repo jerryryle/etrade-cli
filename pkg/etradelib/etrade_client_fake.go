@@ -6,10 +6,12 @@ import (
 
 type ListAccountsFn func() (*responses.AccountListResponse, error)
 type ListAlertsFn func() (*responses.AlertsResponse, error)
+type GetQuotesFn func(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error)
 
 type eTradeClientFake struct {
 	ListAccountsFn ListAccountsFn
 	ListAlertsFn   ListAlertsFn
+	GetQuotesFn    GetQuotesFn
 }
 
 func (c *eTradeClientFake) ListAccounts() (*responses.AccountListResponse, error) {
@@ -18,4 +20,8 @@ func (c *eTradeClientFake) ListAccounts() (*responses.AccountListResponse, error
 
 func (c *eTradeClientFake) ListAlerts() (*responses.AlertsResponse, error) {
 	return c.ListAlertsFn()
+}
+
+func (c *eTradeClientFake) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error) {
+	return c.GetQuotesFn(symbols, detailFlag)
 }
