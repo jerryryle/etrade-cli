@@ -8,13 +8,13 @@ import (
 )
 
 type ETradeSession interface {
-	Renew(accessToken string, accessSecret string) (ETradeCustomer, error)
+	Renew(accessToken string, accessSecret string) (ETradeClient, error)
 	Begin() (string, error)
-	Verify(verifyKey string) (customer ETradeCustomer, accessToken string, accessSecret string, err error)
+	Verify(verifyKey string) (client ETradeClient, accessToken string, accessSecret string, err error)
 }
 
 type eTradeSession struct {
-	customerName   string
+	config         OAuthConfig
 	urls           EndpointUrls
 	consumerKey    string
 	consumerSecret string
@@ -22,10 +22,9 @@ type eTradeSession struct {
 	requestSecret  string
 	accessToken    string
 	accessSecret   string
-	config         OAuthConfig
 }
 
-func CreateSession(customerName string, production bool, consumerKey string, consumerSecret string) (ETradeSession, error) {
+func CreateSession(production bool, consumerKey string, consumerSecret string) (ETradeSession, error) {
 	if consumerKey == "" || consumerSecret == "" {
 		return nil, errors.New("invalid consumer credentials provided")
 	}
@@ -45,7 +44,6 @@ func CreateSession(customerName string, production bool, consumerKey string, con
 	}
 
 	return &eTradeSession{
-		customerName:   customerName,
 		urls:           urls,
 		config:         &config,
 		consumerKey:    consumerKey,
@@ -57,7 +55,7 @@ func CreateSession(customerName string, production bool, consumerKey string, con
 	}, nil
 }
 
-func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCustomer, error) {
+func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeClient, error) {
 	s.accessToken = accessToken
 	s.accessSecret = accessSecret
 
@@ -76,9 +74,7 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCu
 	if response.StatusCode != http.StatusOK {
 		return nil, errors.New("invalid access token")
 	}
-	return CreateETradeCustomer(
-		CreateETradeClient(s.urls, httpClient),
-		s.customerName), nil
+	return CreateETradeClient(s.urls, httpClient), nil
 }
 
 func (s *eTradeSession) Begin() (string, error) {
@@ -96,14 +92,12 @@ func (s *eTradeSession) Begin() (string, error) {
 	return authorizeUrl.String(), nil
 }
 
-func (s *eTradeSession) Verify(verifyKey string) (customer ETradeCustomer, accessToken string, accessSecret string, err error) {
+func (s *eTradeSession) Verify(verifyKey string) (client ETradeClient, accessToken string, accessSecret string, err error) {
 	s.accessToken, s.accessSecret, err = s.config.AccessToken(s.requestToken, oauth1.PercentEncode(s.requestSecret), verifyKey)
 	if err != nil {
 		return nil, "", "", err
 	}
 	token := oauth1.NewToken(s.accessToken, oauth1.PercentEncode(s.accessSecret))
 	httpClient := s.config.Client(oauth1.NoContext, token)
-	return CreateETradeCustomer(
-		CreateETradeClient(s.urls, httpClient),
-		s.customerName), s.accessToken, s.accessSecret, nil
+	return CreateETradeClient(s.urls, httpClient), s.accessToken, s.accessSecret, nil
 }

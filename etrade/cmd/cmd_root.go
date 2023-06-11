@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 	"os"
 	"path/filepath"
@@ -54,8 +55,7 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 	cacheFileName := "." + customerConfig.CustomerConsumerKey
 	cacheFilePath := filepath.Join(homeDir, ".etrade", cacheFileName)
 
-	c.AppContext.Customer, err = getCustomerWithCredentialCache(
-		customerConfig.CustomerName,
+	c.AppContext.Client, err = getClientWithCredentialCache(
 		customerConfig.CustomerProduction,
 		customerConfig.CustomerConsumerKey,
 		customerConfig.CustomerConsumerSecret,
@@ -63,6 +63,7 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 	if err != nil {
 		return err
 	}
+	c.AppContext.Customer = etradelib.CreateETradeCustomer(c.AppContext.Client, customerConfig.CustomerName)
 
 	return nil
 }
