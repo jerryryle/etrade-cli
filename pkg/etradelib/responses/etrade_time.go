@@ -23,10 +23,16 @@ func (et *ETradeTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return err
 	}
 
+	// Allow for an empty tag that results in an zeroed time
+	if v == "" {
+		et.Time = time.Unix(0, 0).UTC()
+		return nil
+	}
+
 	// Try parsing as Unix timestamp first
 	var unixTime int64
 	if unixTime, err = strconv.ParseInt(v, 10, 64); err == nil {
-		et.Time = time.Unix(unixTime, 0)
+		et.Time = time.Unix(unixTime, 0).UTC()
 		return nil
 	}
 
@@ -48,7 +54,7 @@ func (et *ETradeTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 
 	var parsedTime time.Time
 	if parsedTime, err = time.ParseInLocation("15:04:05 MST 01-02-2006", v, location); err == nil {
-		et.Time = parsedTime
+		et.Time = parsedTime.UTC()
 		return nil
 	}
 

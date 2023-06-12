@@ -9,11 +9,11 @@ type QuoteAllQuoteDetails struct {
 	AdjustedFlag            bool                         `xml:"adjustedFlag"`
 	Ask                     float64                      `xml:"ask"`
 	AskSize                 int64                        `xml:"askSize"`
-	AskTime                 string                       `xml:"askTime"`
+	AskTime                 ETradeTime                   `xml:"askTime"`
 	Bid                     float64                      `xml:"bid"`
 	BidExchange             string                       `xml:"bidExchange"`
 	BidSize                 int64                        `xml:"bidSize"`
-	BidTime                 string                       `xml:"bidTime"`
+	BidTime                 ETradeTime                   `xml:"bidTime"`
 	ChangeClose             float64                      `xml:"changeClose"`
 	ChangeClosePercentage   float64                      `xml:"changeClosePercentage"`
 	CompanyName             string                       `xml:"companyName"`
@@ -43,7 +43,7 @@ type QuoteAllQuoteDetails struct {
 	CashDeliverable         float64                      `xml:"cashDeliverable"`
 	MarketCap               float64                      `xml:"marketCap"`
 	SharesOutstanding       float64                      `xml:"sharesOutstanding"`
-	NextEarningDate         string                       `xml:"nextEarningDate"`
+	NextEarningDate         ETradeTime                   `xml:"nextEarningDate"`
 	Beta                    float64                      `xml:"beta"`
 	Yield                   float64                      `xml:"yield"`
 	DeclaredDividend        float64                      `xml:"declaredDividend"`
@@ -151,8 +151,8 @@ type QuoteMutualFund struct {
 	QuarterlySinceInception  float64                 `xml:"quarterlySinceInception"`
 	LastTrade                float64                 `xml:"lastTrade"`
 	Actual12B1Fee            float64                 `xml:"actual12B1Fee"`
-	PerformanceAsOfDate      string                  `xml:"performanceAsOfDate"`
-	QtrlyPerformanceAsOfDate string                  `xml:"qtrlyPerformanceAsOfDate"`
+	PerformanceAsOfDate      ETradeTime              `xml:"performanceAsOfDate"`
+	QtrlyPerformanceAsOfDate ETradeTime              `xml:"qtrlyPerformanceAsOfDate"`
 	Redemption               QuoteRedemption         `xml:"redemption"`
 	MorningStarCategory      string                  `xml:"morningStarCategory"`
 	MonthlyTrailingReturn1Y  float64                 `xml:"monthlyTrailingReturn1Y"`
@@ -221,7 +221,7 @@ type QuoteOptionQuoteDetails struct {
 
 type QuoteData struct {
 	All            QuoteAllQuoteDetails         `xml:"All"`
-	DateTime       string                       `xml:"dateTime"`
+	DateTime       ETradeTime                   `xml:"dateTime"`
 	DateTimeUTC    ETradeTime                   `xml:"dateTimeUTC"`
 	QuoteStatus    string                       `xml:"quoteStatus"`
 	AhFlag         string                       `xml:"ahFlag"`

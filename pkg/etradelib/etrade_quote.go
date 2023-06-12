@@ -19,11 +19,11 @@ type ETradeQuoteAllInfo struct {
 	AdjustedFlag                bool
 	Ask                         float64
 	AskSize                     int64
-	AskTime                     string
+	AskTime                     time.Time
 	Bid                         float64
 	BidExchange                 string
 	BidSize                     int64
-	BidTime                     string
+	BidTime                     time.Time
 	ChangeClose                 float64
 	ChangeClosePercentage       float64
 	CompanyName                 string
@@ -53,7 +53,7 @@ type ETradeQuoteAllInfo struct {
 	CashDeliverable             float64
 	MarketCap                   float64
 	SharesOutstanding           float64
-	NextEarningDate             string
+	NextEarningDate             time.Time
 	Beta                        float64
 	Yield                       float64
 	DeclaredDividend            float64
@@ -190,8 +190,8 @@ type ETradeQuoteMutualFundInfo struct {
 	QuarterlySinceInception          float64
 	LastTrade                        float64
 	Actual12B1Fee                    float64
-	PerformanceAsOfDate              string
-	QtrlyPerformanceAsOfDate         string
+	PerformanceAsOfDate              time.Time
+	QtrlyPerformanceAsOfDate         time.Time
 	RedemptionMinMonth               string
 	RedemptionFeePercent             string
 	RedemptionIsFrontEnd             string
@@ -258,11 +258,11 @@ func CreateETradeQuoteAllInfoFromResponse(response responses.QuoteData) *ETradeQ
 		AdjustedFlag:                response.All.AdjustedFlag,
 		Ask:                         response.All.Ask,
 		AskSize:                     response.All.AskSize,
-		AskTime:                     response.All.AskTime,
+		AskTime:                     response.All.AskTime.GetTime(),
 		Bid:                         response.All.Bid,
 		BidExchange:                 response.All.BidExchange,
 		BidSize:                     response.All.BidSize,
-		BidTime:                     response.All.BidTime,
+		BidTime:                     response.All.BidTime.GetTime(),
 		ChangeClose:                 response.All.ChangeClose,
 		ChangeClosePercentage:       response.All.ChangeClosePercentage,
 		CompanyName:                 response.All.CompanyName,
@@ -292,7 +292,7 @@ func CreateETradeQuoteAllInfoFromResponse(response responses.QuoteData) *ETradeQ
 		CashDeliverable:             response.All.CashDeliverable,
 		MarketCap:                   response.All.MarketCap,
 		SharesOutstanding:           response.All.SharesOutstanding,
-		NextEarningDate:             response.All.NextEarningDate,
+		NextEarningDate:             response.All.NextEarningDate.GetTime(),
 		Beta:                        response.All.Beta,
 		Yield:                       response.All.Yield,
 		DeclaredDividend:            response.All.DeclaredDividend,
@@ -439,8 +439,8 @@ func CreateETradeQuoteMutualFundInfoFromResponse(response responses.QuoteData) *
 		QuarterlySinceInception:          response.MutualFund.QuarterlySinceInception,
 		LastTrade:                        response.MutualFund.LastTrade,
 		Actual12B1Fee:                    response.MutualFund.Actual12B1Fee,
-		PerformanceAsOfDate:              response.MutualFund.PerformanceAsOfDate,
-		QtrlyPerformanceAsOfDate:         response.MutualFund.QtrlyPerformanceAsOfDate,
+		PerformanceAsOfDate:              response.MutualFund.PerformanceAsOfDate.GetTime(),
+		QtrlyPerformanceAsOfDate:         response.MutualFund.QtrlyPerformanceAsOfDate.GetTime(),
 		RedemptionMinMonth:               response.MutualFund.Redemption.MinMonth,
 		RedemptionFeePercent:             response.MutualFund.Redemption.FeePercent,
 		RedemptionIsFrontEnd:             response.MutualFund.Redemption.IsFrontEnd,

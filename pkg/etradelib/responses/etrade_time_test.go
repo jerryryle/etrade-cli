@@ -72,17 +72,25 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 			},
 			expectErr: true,
 		},
+		{
+			name: "Valid Empty field",
+			args: args{
+				xmlData: `<root><time></time></root>`,
+			},
+			expectErr: false,
+			expect:    time.Unix(0, 0),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			var wrapper struct {
-				Time ETradeTime `xml:"time"`
+				ETradeTime ETradeTime `xml:"time"`
 			}
 			if err := xml.Unmarshal([]byte(tt.args.xmlData), &wrapper); (err != nil) != tt.expectErr {
 				t.Errorf("ETradeTime.UnmarshalXML() error = %v, expectErr %v", err, tt.expectErr)
 			}
-			if !tt.expectErr && !tt.expect.Equal(wrapper.Time.Time.UTC()) {
-				t.Errorf("ETradeTime.UnmarshalXML() = %v, expect %v", wrapper.Time.Time.UTC(), tt.expect)
+			if !tt.expectErr && !tt.expect.Equal(wrapper.ETradeTime.GetTime()) {
+				t.Errorf("ETradeTime.UnmarshalXML() = %v, expect %v", wrapper.ETradeTime.GetTime(), tt.expect)
 			}
 		})
 	}
@@ -93,5 +101,5 @@ func parseTimeOrPanic(value string) time.Time {
 	if err != nil {
 		panic(err)
 	}
-	return t
+	return t.UTC()
 }
