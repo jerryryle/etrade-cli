@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"errors"
+	"golang.org/x/exp/slog"
 	"io"
 	"os"
 )
@@ -34,10 +35,15 @@ func LoadCustomerConfigurationsStore(reader io.Reader) (*CustomerConfigurationsS
 	return &cc, nil
 }
 
-func LoadCustomerConfigurationsStoreFromFile(filename string) (*CustomerConfigurationsStore, error) {
+func LoadCustomerConfigurationsStoreFromFile(filename string, logger *slog.Logger) (*CustomerConfigurationsStore, error) {
 	file, err := os.Open(filename)
 	if file != nil {
-		defer file.Close()
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				logger.Error(err.Error())
+			}
+		}(file)
 	}
 	if err != nil {
 		return nil, err
@@ -54,10 +60,15 @@ func SaveCustomerConfigurationsStore(writer io.Writer, cc *CustomerConfiguration
 	return nil
 }
 
-func SaveCustomerConfigurationsStoreToFile(filename string, cc *CustomerConfigurationsStore) error {
+func SaveCustomerConfigurationsStoreToFile(filename string, cc *CustomerConfigurationsStore, logger *slog.Logger) error {
 	file, err := os.Create(filename)
 	if file != nil {
-		defer file.Close()
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				logger.Error(err.Error())
+			}
+		}(file)
 	}
 	if err != nil {
 		return err

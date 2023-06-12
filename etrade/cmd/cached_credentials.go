@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"golang.org/x/exp/slog"
 	"io"
 	"os"
 	"path/filepath"
@@ -26,10 +27,15 @@ func LoadCachedCredentials(reader io.Reader) (*CachedCredentials, error) {
 	return &credentials, nil
 }
 
-func LoadCachedCredentialsFromFile(filename string) (*CachedCredentials, error) {
+func LoadCachedCredentialsFromFile(filename string, logger *slog.Logger) (*CachedCredentials, error) {
 	file, err := os.Open(filename)
 	if file != nil {
-		defer file.Close()
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				logger.Error(err.Error())
+			}
+		}(file)
 	}
 	if err != nil {
 		return nil, err
@@ -46,7 +52,7 @@ func SaveCachedCredentials(writer io.Writer, credentials *CachedCredentials) err
 	return nil
 }
 
-func SaveCachedCredentialsToFile(filename string, credentials *CachedCredentials) error {
+func SaveCachedCredentialsToFile(filename string, credentials *CachedCredentials, logger *slog.Logger) error {
 	dirPath := filepath.Dir(filename)
 	if err := os.MkdirAll(dirPath, 0755); err != nil {
 		return err
@@ -54,7 +60,12 @@ func SaveCachedCredentialsToFile(filename string, credentials *CachedCredentials
 
 	file, err := os.Create(filename)
 	if file != nil {
-		defer file.Close()
+		defer func(file *os.File) {
+			err := file.Close()
+			if err != nil {
+				logger.Error(err.Error())
+			}
+		}(file)
 	}
 	if err != nil {
 		return err

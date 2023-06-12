@@ -9,7 +9,7 @@ import (
 )
 
 func getClientWithCredentialCache(production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger) (etradelib.ETradeClient, error) {
-	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath)
+	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath, logger)
 	if err != nil {
 		// Create a new, empty credential cache. It will yield empty strings for the cached token, which
 		// will indicate that there are no cached credentials for this customer
@@ -48,7 +48,8 @@ func getClientWithCredentialCache(production bool, consumerKey string, consumerS
 	}
 	err = SaveCachedCredentialsToFile(
 		cacheFilePath,
-		&CachedCredentials{accessToken, accessSecret, time.Now()})
+		&CachedCredentials{accessToken, accessSecret, time.Now()},
+		logger)
 	if err != nil {
 		return nil, err
 	}

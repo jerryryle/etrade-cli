@@ -100,7 +100,12 @@ func (c *eTradeClient) doRequestRaw(method string, baseUrl string, queryValues u
 	c.Logger.Debug(method + " " + req.URL.String())
 	httpResponse, err := c.httpClient.Do(req)
 	if httpResponse != nil {
-		defer httpResponse.Body.Close()
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				c.Logger.Error(err.Error())
+			}
+		}(httpResponse.Body)
 	}
 	if err != nil {
 		return nil, err

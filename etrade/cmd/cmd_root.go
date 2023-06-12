@@ -59,7 +59,7 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 	cfgFileName := ".etradecfg"
 	cfgFilePath := filepath.Join(homeDir, cfgFileName)
 
-	customerConfigStore, err := LoadCustomerConfigurationsStoreFromFile(cfgFilePath)
+	customerConfigStore, err := LoadCustomerConfigurationsStoreFromFile(cfgFilePath, c.AppContext.Logger)
 	if err != nil {
 		return err
 	}

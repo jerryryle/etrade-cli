@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/dghubble/oauth1"
 	"golang.org/x/exp/slog"
+	"io"
 	"net/http"
 	"net/url"
 )
@@ -69,7 +70,12 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCl
 	httpClient := s.config.Client(oauth1.NoContext, token)
 	response, err := httpClient.Get(s.urls.RenewAccessTokenUrl())
 	if response != nil {
-		defer response.Body.Close()
+		defer func(Body io.ReadCloser) {
+			err := Body.Close()
+			if err != nil {
+				s.logger.Error(err.Error())
+			}
+		}(response.Body)
 	}
 	if err != nil {
 		return nil, err
