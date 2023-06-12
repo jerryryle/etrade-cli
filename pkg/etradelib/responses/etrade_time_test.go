@@ -4,6 +4,9 @@ import (
 	"encoding/xml"
 	"testing"
 	"time"
+
+	// Ensure the tests have an embedded copy of tzdata in case the host system is missing this.
+	_ "time/tzdata"
 )
 
 func TestETradeTime_UnmarshalXML(t *testing.T) {

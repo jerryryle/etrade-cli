@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/jerryryle/etrade-cli/etrade/cmd"
 	"os"
+
+	// Ensure the program has an embedded copy of tzdata in case the host system is missing this.
+	_ "time/tzdata"
 )
 
 func main() {
