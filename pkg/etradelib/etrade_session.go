@@ -3,6 +3,7 @@ package etradelib
 import (
 	"errors"
 	"github.com/dghubble/oauth1"
+	"golang.org/x/exp/slog"
 	"net/http"
 	"net/url"
 )
@@ -22,9 +23,10 @@ type eTradeSession struct {
 	requestSecret  string
 	accessToken    string
 	accessSecret   string
+	logger         *slog.Logger
 }
 
-func CreateSession(production bool, consumerKey string, consumerSecret string) (ETradeSession, error) {
+func CreateSession(production bool, consumerKey string, consumerSecret string, logger *slog.Logger) (ETradeSession, error) {
 	if consumerKey == "" || consumerSecret == "" {
 		return nil, errors.New("invalid consumer credentials provided")
 	}
@@ -52,6 +54,7 @@ func CreateSession(production bool, consumerKey string, consumerSecret string) (
 		requestSecret:  "",
 		accessToken:    "",
 		accessSecret:   "",
+		logger:         logger,
 	}, nil
 }
 
@@ -74,7 +77,7 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCl
 	if response.StatusCode != http.StatusOK {
 		return nil, errors.New("invalid access token")
 	}
-	return CreateETradeClient(s.urls, httpClient), nil
+	return CreateETradeClient(s.urls, httpClient, s.logger), nil
 }
 
 func (s *eTradeSession) Begin() (string, error) {
@@ -99,5 +102,5 @@ func (s *eTradeSession) Verify(verifyKey string) (client ETradeClient, accessTok
 	}
 	token := oauth1.NewToken(s.accessToken, oauth1.PercentEncode(s.accessSecret))
 	httpClient := s.config.Client(oauth1.NoContext, token)
-	return CreateETradeClient(s.urls, httpClient), s.accessToken, s.accessSecret, nil
+	return CreateETradeClient(s.urls, httpClient, s.logger), s.accessToken, s.accessSecret, nil
 }

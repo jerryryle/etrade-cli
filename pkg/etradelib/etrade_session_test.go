@@ -12,19 +12,19 @@ import (
 )
 
 func TestCreateSessionWithEmptyConsumerCredentialsFails(t *testing.T) {
-	session, err := CreateSession(false, "", "")
+	session, err := CreateSession(false, "", "", CreateNullLogger())
 	assert.EqualError(t, err, "invalid consumer credentials provided")
 	assert.Nil(t, session)
 }
 
 func TestCreateSessionWithConsumerCredentialsSucceeds(t *testing.T) {
-	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret")
+	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret", CreateNullLogger())
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 }
 
 func TestCreateSessionWithEmptyCustomerNameSucceeds(t *testing.T) {
-	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret")
+	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret", CreateNullLogger())
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 }

@@ -84,7 +84,7 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 		}
 	})
 
-	client := CreateETradeClient(GetEndpointUrls(true), httpClient)
+	client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
 	response, err := client.ListAccounts()
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, response)
@@ -158,7 +158,7 @@ func TestETradeClient_ListAlerts(t *testing.T) {
 		}
 	})
 
-	client := CreateETradeClient(GetEndpointUrls(true), httpClient)
+	client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
 	response, err := client.ListAlerts()
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, response)
@@ -323,7 +323,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 		}
 	})
 
-	client := CreateETradeClient(GetEndpointUrls(true), httpClient)
+	client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
 	response, err := client.GetQuotes([]string{"GOOG"}, QuoteDetailAll)
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, response)

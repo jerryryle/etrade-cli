@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
+	"golang.org/x/exp/slog"
 	"os"
 	"path/filepath"
 )
 
 type RootCommandFlags struct {
 	customerId string
+	debug      bool
 }
 
 type RootCommand struct {
@@ -30,11 +32,26 @@ func (c *RootCommand) Command() *cobra.Command {
 	// Add Global Flags
 	cmd.PersistentFlags().StringVarP(&c.flags.customerId, "customerId", "c", "", "customer identifier")
 	_ = cmd.MarkPersistentFlagRequired("customerId")
+	cmd.PersistentFlags().BoolVarP(&c.flags.debug, "debug", "d", false, "debug output")
 
 	return cmd
 }
 
 func (c *RootCommand) RootSetupApplicationContext() error {
+	// Set the default log level, based on the verbose flag.
+	var logLevel = slog.LevelError
+	if c.flags.debug {
+		logLevel = slog.LevelDebug
+	}
+
+	// Create a logger.
+	logHandlerOptions := slog.HandlerOptions{
+		AddSource: false,
+		Level:     logLevel,
+	}
+	c.AppContext.Logger = slog.New(slog.NewJSONHandler(os.Stderr, &logHandlerOptions))
+
+	// Load the configuration file and locate the configuration for the requested customer ID
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return err
@@ -55,14 +72,18 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 	cacheFileName := "." + customerConfig.CustomerConsumerKey
 	cacheFilePath := filepath.Join(homeDir, ".etrade", cacheFileName)
 
+	// Get an ETrade client that's authorized for the customer
 	c.AppContext.Client, err = getClientWithCredentialCache(
 		customerConfig.CustomerProduction,
 		customerConfig.CustomerConsumerKey,
 		customerConfig.CustomerConsumerSecret,
-		cacheFilePath)
+		cacheFilePath,
+		c.AppContext.Logger)
 	if err != nil {
 		return err
 	}
+
+	// Create an ETrade customer object
 	c.AppContext.Customer = etradelib.CreateETradeCustomer(c.AppContext.Client, customerConfig.CustomerName)
 
 	return nil

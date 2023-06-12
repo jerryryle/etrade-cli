@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
+	"golang.org/x/exp/slog"
 	"io"
 	"net/http"
 	"net/url"
@@ -20,12 +21,14 @@ type ETradeClient interface {
 type eTradeClient struct {
 	urls       EndpointUrls
 	httpClient *http.Client
+	Logger     *slog.Logger
 }
 
-func CreateETradeClient(urls EndpointUrls, httpClient *http.Client) ETradeClient {
+func CreateETradeClient(urls EndpointUrls, httpClient *http.Client, logger *slog.Logger) ETradeClient {
 	return &eTradeClient{
 		urls:       urls,
 		httpClient: httpClient,
+		Logger:     logger,
 	}
 }
 
@@ -91,9 +94,10 @@ func (c *eTradeClient) doRequestRaw(method string, baseUrl string, queryValues u
 			queryValues.Add(key, value)
 		}
 	}
+	req.URL.RawQuery = queryValues.Encode()
 
 	// Perform the request
-	req.URL.RawQuery = queryValues.Encode()
+	c.Logger.Debug(method + " " + req.URL.String())
 	httpResponse, err := c.httpClient.Do(req)
 	if httpResponse != nil {
 		defer httpResponse.Body.Close()
@@ -110,5 +114,6 @@ func (c *eTradeClient) doRequestRaw(method string, baseUrl string, queryValues u
 	if err != nil {
 		return nil, err
 	}
+	c.Logger.Debug(string(responseBytes))
 	return responseBytes, nil
 }

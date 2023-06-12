@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	var appContext cmd.ApplicationContext
+	var appContext = cmd.ApplicationContext{}
 
 	rootCmd := (&cmd.RootCommand{AppContext: &appContext}).Command()
 	rootCmd.AddCommand((&cmd.ListAccountsCommand{AppContext: &appContext}).Command())
