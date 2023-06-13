@@ -11,7 +11,7 @@ type LookupCommand struct {
 
 func (c *LookupCommand) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "lookup",
+		Use:   "lookup [search]",
 		Short: "Look up product",
 		Long:  "Look up products based on a full or partial match of any part of the company name.",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
