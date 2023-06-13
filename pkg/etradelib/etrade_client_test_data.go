@@ -9,373 +9,520 @@ const quoteDetailAllTestXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <QuoteResponse>
    <QuoteData>
-      <dateTime>15:17:00 EDT 06-20-2018</dateTime>
-      <dateTimeUTC>1529522220</dateTimeUTC>
-      <quoteStatus>DELAYED</quoteStatus>
-      <ahFlag>false</ahFlag>
-      <hasMiniOptions>false</hasMiniOptions>
       <All>
-         <adjustedFlag>false</adjustedFlag>
-         <ask>1175.79</ask>
-         <askSize>100</askSize>
-         <askTime>15:17:00 EDT 06-20-2018</askTime>
-         <bid>1175.29</bid>
-         <bidExchange />
-         <bidSize>100</bidSize>
-         <bidTime>15:17:00 EDT 06-20-2018</bidTime>
-         <changeClose>7.68</changeClose>
-         <changeClosePercentage>0.66</changeClosePercentage>
-         <companyName>ALPHABET INC CAP STK CL C</companyName>
-         <daysToExpiration>0</daysToExpiration>
-         <dirLast>2</dirLast>
-         <dividend>0.0</dividend>
-         <eps>23.5639</eps>
-         <estEarnings>43.981</estEarnings>
-         <exDividendDate>1430163144</exDividendDate>
-         <high>1186.2856</high>
-         <high52>1186.89</high52>
-         <lastTrade>1175.74</lastTrade>
-         <low>1171.76</low>
-         <low52>894.79</low52>
-         <open>1175.31</open>
-         <openInterest>0</openInterest>
-         <optionStyle />
-         <optionUnderlier />
-         <previousClose>1168.06</previousClose>
-         <previousDayVolume>1620909</previousDayVolume>
-         <primaryExchange>NSDQ</primaryExchange>
-         <symbolDescription>ALPHABET INC CAP STK CL C</symbolDescription>
-         <totalVolume>1167544</totalVolume>
-         <upc>0</upc>
-         <cashDeliverable>0</cashDeliverable>
-         <marketCap>410276824480.00</marketCap>
-         <sharesOutstanding>348952000</sharesOutstanding>
-         <nextEarningDate />
-         <beta>1.4</beta>
-         <yield>0.0</yield>
-         <declaredDividend>0.0</declaredDividend>
-         <dividendPayableDate>1430767944</dividendPayableDate>
-         <pe>49.57</pe>
-         <week52LowDate>1499110344</week52LowDate>
-         <week52HiDate>1517257944</week52HiDate>
-         <intrinsicValue>0.0</intrinsicValue>
-         <timePremium>0.0</timePremium>
-         <optionMultiplier>0.0</optionMultiplier>
-         <contractSize>0.0</contractSize>
-         <expirationDate>0</expirationDate>
-         <timeOfLastTrade>1529522220</timeOfLastTrade>
-         <averageVolume>1451490</averageVolume>
+         <adjustedFlag>true</adjustedFlag>
+         <ask>1</ask>
+         <askSize>2</askSize>
+         <askTime>3</askTime>
+         <bid>4</bid>
+         <bidExchange>5</bidExchange>
+         <bidSize>6</bidSize>
+         <bidTime>7</bidTime>
+         <changeClose>8</changeClose>
+         <changeClosePercentage>9</changeClosePercentage>
+         <companyName>10</companyName>
+         <daysToExpiration>11</daysToExpiration>
+         <dirLast>12</dirLast>
+         <dividend>13</dividend>
+         <eps>14</eps>
+         <estEarnings>15</estEarnings>
+         <exDividendDate>16</exDividendDate>
+         <high>17</high>
+         <high52>18</high52>
+         <lastTrade>19</lastTrade>
+         <low>20</low>
+         <low52>21</low52>
+         <open>22</open>
+         <openInterest>23</openInterest>
+         <optionStyle>24</optionStyle>
+         <optionUnderlier>25</optionUnderlier>
+         <optionUnderlierExchange>26</optionUnderlierExchange>
+         <previousClose>27</previousClose>
+         <previousDayVolume>28</previousDayVolume>
+         <primaryExchange>29</primaryExchange>
+         <symbolDescription>30</symbolDescription>
+         <totalVolume>31</totalVolume>
+         <upc>32</upc>
+         <OptionDeliverableList>
+           <OptionDeliverable>
+             <rootSymbol>33</rootSymbol>
+             <deliverableSymbol>34</deliverableSymbol>
+             <deliverableTypeCode>35</deliverableTypeCode>
+             <deliverableExchangeCode>36</deliverableExchangeCode>
+             <deliverableStrikePercent>37</deliverableStrikePercent>
+             <deliverableCILShares>38</deliverableCILShares>
+             <deliverableWholeShares>39</deliverableWholeShares>
+           </OptionDeliverable>
+         </OptionDeliverableList>
+         <cashDeliverable>40</cashDeliverable>
+         <marketCap>41</marketCap>
+         <sharesOutstanding>42</sharesOutstanding>
+         <nextEarningDate>43</nextEarningDate>
+         <beta>44</beta>
+         <yield>45</yield>
+         <declaredDividend>46</declaredDividend>
+         <dividendPayableDate>47</dividendPayableDate>
+         <pe>48</pe>
+         <week52LowDate>49</week52LowDate>
+         <week52HiDate>50</week52HiDate>
+         <intrinsicValue>51</intrinsicValue>
+         <timePremium>52</timePremium>
+         <optionMultiplier>53</optionMultiplier>
+         <contractSize>54</contractSize>
+         <expirationDate>55</expirationDate>
+         <EhQuote>
+           <lastPrice>56</lastPrice>
+           <change>57</change>
+           <percentChange>58</percentChange>
+           <bid>59</bid>
+           <bidSize>60</bidSize>
+           <ask>61</ask>
+           <askSize>62</askSize>
+           <volume>63</volume>
+           <timeOfLastTrade>64</timeOfLastTrade>
+           <timeZone>65</timeZone>
+           <quoteStatus>66</quoteStatus>
+         </EhQuote>
+         <optionPreviousBidPrice>67</optionPreviousBidPrice>
+         <optionPreviousAskPrice>68</optionPreviousAskPrice>
+         <osiKey>69</osiKey>
+         <timeOfLastTrade>70</timeOfLastTrade>
+         <averageVolume>71</averageVolume>
       </All>
+      <dateTime>72</dateTime>
+      <dateTimeUTC>73</dateTimeUTC>
+      <quoteStatus>74</quoteStatus>
+      <ahFlag>true</ahFlag>
+      <errorMessage>75</errorMessage>
       <Product>
-         <securityType>EQ</securityType>
-         <symbol>GOOG</symbol>
+         <symbol>76</symbol>
+         <securityType>77</securityType>
       </Product>
-   </QuoteData>
+      <timeZone>78</timeZone>
+      <dstFlag>true</dstFlag>
+      <hasMiniOptions>true</hasMiniOptions>
+    </QuoteData>
+    <Messages>
+      <Message>
+        <description>79</description>
+        <code>80</code>
+        <type>81</type>
+      </Message>
+    </Messages>
 </QuoteResponse>`
 
 var quoteDetailAllTestResponse = responses.QuoteResponse{
 	QuoteData: []responses.QuoteData{
 		{
 			All: responses.QuoteAllQuoteDetails{
-				AdjustedFlag:            false,
-				Ask:                     1175.79,
-				AskSize:                 100,
-				AskTime:                 responses.ETradeTime{Time: time.Unix(1529522220, 0).UTC()},
-				Bid:                     1175.29,
-				BidExchange:             "",
-				BidSize:                 100,
-				BidTime:                 responses.ETradeTime{Time: time.Unix(1529522220, 0).UTC()},
-				ChangeClose:             7.68,
-				ChangeClosePercentage:   0.66,
-				CompanyName:             "ALPHABET INC CAP STK CL C",
-				DaysToExpiration:        0,
-				DirLast:                 "2",
-				Dividend:                0.0,
-				Eps:                     23.5639,
-				EstEarnings:             43.981,
-				ExDividendDate:          responses.ETradeTime{Time: time.Unix(1430163144, 0).UTC()},
-				High:                    1186.2856,
-				High52:                  1186.89,
-				LastTrade:               1175.74,
-				Low:                     1171.76,
-				Low52:                   894.79,
-				Open:                    1175.31,
-				OpenInterest:            0,
-				OptionStyle:             "",
-				OptionUnderlier:         "",
-				OptionUnderlierExchange: "",
-				PreviousClose:           1168.06,
-				PreviousDayVolume:       1620909,
-				PrimaryExchange:         "NSDQ",
-				SymbolDescription:       "ALPHABET INC CAP STK CL C",
-				TotalVolume:             1167544,
-				Upc:                     0,
-				OptionDeliverableList:   nil,
-				CashDeliverable:         0,
-				MarketCap:               410276824480.00,
-				SharesOutstanding:       348952000,
-				NextEarningDate:         responses.ETradeTime{Time: time.Unix(0, 0).UTC()},
-				Beta:                    1.4,
-				Yield:                   0.0,
-				DeclaredDividend:        0.0,
-				DividendPayableDate:     responses.ETradeTime{Time: time.Unix(1430767944, 0).UTC()},
-				Pe:                      49.57,
-				Week52LowDate:           responses.ETradeTime{Time: time.Unix(1499110344, 0).UTC()},
-				Week52HiDate:            responses.ETradeTime{Time: time.Unix(1517257944, 0).UTC()},
-				IntrinsicValue:          0.0,
-				TimePremium:             0.0,
-				OptionMultiplier:        0.0,
-				ContractSize:            0.0,
-				ExpirationDate:          responses.ETradeTime{Time: time.Unix(0, 0).UTC()},
-				EhQuote:                 responses.QuoteExtendedHourQuoteDetail{},
-				OptionPreviousBidPrice:  0,
-				OptionPreviousAskPrice:  0,
-				OsiKey:                  "",
-				TimeOfLastTrade:         responses.ETradeTime{Time: time.Unix(1529522220, 0).UTC()},
-				AverageVolume:           1451490,
+				AdjustedFlag:            true,
+				Ask:                     1,
+				AskSize:                 2,
+				AskTime:                 responses.ETradeTime{Time: time.Unix(3, 0).UTC()},
+				Bid:                     4,
+				BidExchange:             "5",
+				BidSize:                 6,
+				BidTime:                 responses.ETradeTime{Time: time.Unix(7, 0).UTC()},
+				ChangeClose:             8,
+				ChangeClosePercentage:   9,
+				CompanyName:             "10",
+				DaysToExpiration:        11,
+				DirLast:                 "12",
+				Dividend:                13,
+				Eps:                     14,
+				EstEarnings:             15,
+				ExDividendDate:          responses.ETradeTime{Time: time.Unix(16, 0).UTC()},
+				High:                    17,
+				High52:                  18,
+				LastTrade:               19,
+				Low:                     20,
+				Low52:                   21,
+				Open:                    22,
+				OpenInterest:            23,
+				OptionStyle:             "24",
+				OptionUnderlier:         "25",
+				OptionUnderlierExchange: "26",
+				PreviousClose:           27,
+				PreviousDayVolume:       28,
+				PrimaryExchange:         "29",
+				SymbolDescription:       "30",
+				TotalVolume:             31,
+				Upc:                     32,
+				OptionDeliverableList: []responses.QuoteOptionDeliverable{
+					{
+						RootSymbol:               "33",
+						DeliverableSymbol:        "34",
+						DeliverableTypeCode:      "35",
+						DeliverableExchangeCode:  "36",
+						DeliverableStrikePercent: 37,
+						DeliverableCILShares:     38,
+						DeliverableWholeShares:   39,
+					},
+				},
+				CashDeliverable:     40,
+				MarketCap:           41,
+				SharesOutstanding:   42,
+				NextEarningDate:     responses.ETradeTime{Time: time.Unix(43, 0).UTC()},
+				Beta:                44,
+				Yield:               45,
+				DeclaredDividend:    46,
+				DividendPayableDate: responses.ETradeTime{Time: time.Unix(47, 0).UTC()},
+				Pe:                  48,
+				Week52LowDate:       responses.ETradeTime{Time: time.Unix(49, 0).UTC()},
+				Week52HiDate:        responses.ETradeTime{Time: time.Unix(50, 0).UTC()},
+				IntrinsicValue:      51,
+				TimePremium:         52,
+				OptionMultiplier:    53,
+				ContractSize:        54,
+				ExpirationDate:      responses.ETradeTime{Time: time.Unix(55, 0).UTC()},
+				EhQuote: responses.QuoteExtendedHourQuoteDetail{
+					LastPrice:     56,
+					Change:        57,
+					PercentChange: 58,
+					Bid:           59,
+					BidSize:       60,
+					Ask:           61,
+					AskSize:       62,
+					Volume:        63,
+					TimeOfLastTrade: responses.ETradeTime{
+						Time: time.Unix(64, 0).UTC(),
+					},
+					TimeZone:    "65",
+					QuoteStatus: "66",
+				},
+				OptionPreviousBidPrice: 67,
+				OptionPreviousAskPrice: 68,
+				OsiKey:                 "69",
+				TimeOfLastTrade:        responses.ETradeTime{Time: time.Unix(70, 0).UTC()},
+				AverageVolume:          71,
 			},
-			DateTime:     responses.ETradeTime{Time: time.Unix(1529522220, 0).UTC()},
-			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(1529522220, 0).UTC()},
-			QuoteStatus:  "DELAYED",
-			AhFlag:       false,
-			ErrorMessage: "",
+			DateTime:     responses.ETradeTime{Time: time.Unix(72, 0).UTC()},
+			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(73, 0).UTC()},
+			QuoteStatus:  "74",
+			AhFlag:       true,
+			ErrorMessage: "75",
 			Fundamental:  responses.QuoteFundamentalQuoteDetails{},
 			Intraday:     responses.QuoteIntradayQuoteDetails{},
 			Option:       responses.QuoteOptionQuoteDetails{},
 			Product: responses.Product{
-				Symbol:       "GOOG",
-				SecurityType: "EQ",
+				Symbol:       "76",
+				SecurityType: "77",
 			},
 			Week52:         responses.QuoteWeek52QuoteDetails{},
 			MutualFund:     responses.QuoteMutualFund{},
-			TimeZone:       "",
-			DstFlag:        false,
-			HasMiniOptions: false,
+			TimeZone:       "78",
+			DstFlag:        true,
+			HasMiniOptions: true,
 		},
 	},
-	Messages: nil,
+	Messages: []responses.QuoteMessage{
+		{
+			Description: "79",
+			Code:        80,
+			Type:        "81",
+		},
+	},
 }
 
 const quoteDetailFundamentalTestXml = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <QuoteResponse>
     <QuoteData>
-        <dateTime>16:00:00 EDT 06-20-2012</dateTime>
-        <dateTimeUTC>1340222400</dateTimeUTC>
-        <quoteStatus>REALTIME</quoteStatus>
-        <ahFlag>false</ahFlag>
+        <dateTime>1</dateTime>
+        <dateTimeUTC>2</dateTimeUTC>
+        <quoteStatus>3</quoteStatus>
+        <ahFlag>true</ahFlag>
+        <errorMessage>4</errorMessage>
         <Fundamental>
-            <companyName>GOOGLE INC CL A</companyName>
-            <eps>32.99727</eps>
-            <estEarnings>43.448</estEarnings>
-            <high52>670.25</high52>
-            <lastTrade>577.51</lastTrade>
-            <low52>0.0</low52>
-            <symbolDescription>GOOGLE INC CL A</symbolDescription>
+            <companyName>5</companyName>
+            <eps>6</eps>
+            <estEarnings>7</estEarnings>
+            <high52>8</high52>
+            <lastTrade>9</lastTrade>
+            <low52>10</low52>
+            <symbolDescription>11</symbolDescription>
         </Fundamental>
         <Product>
-            <securityType>EQ</securityType>
-            <symbol>GOOG</symbol>
+            <symbol>12</symbol>
+            <securityType>13</securityType>
         </Product>
+        <timeZone>14</timeZone>
+        <dstFlag>true</dstFlag>
+        <hasMiniOptions>true</hasMiniOptions>
     </QuoteData>
+    <Messages>
+      <Message>
+        <description>15</description>
+        <code>16</code>
+        <type>17</type>
+      </Message>
+    </Messages>
 </QuoteResponse>`
 
 var quoteDetailFundamentalTestResponse = responses.QuoteResponse{
 	QuoteData: []responses.QuoteData{
 		{
 			All:          responses.QuoteAllQuoteDetails{},
-			DateTime:     responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			QuoteStatus:  "REALTIME",
-			AhFlag:       false,
-			ErrorMessage: "",
+			DateTime:     responses.ETradeTime{Time: time.Unix(1, 0).UTC()},
+			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(2, 0).UTC()},
+			QuoteStatus:  "3",
+			AhFlag:       true,
+			ErrorMessage: "4",
 			Fundamental: responses.QuoteFundamentalQuoteDetails{
-				CompanyName:       "GOOGLE INC CL A",
-				Eps:               32.99727,
-				EstEarnings:       43.448,
-				High52:            670.25,
-				LastTrade:         577.51,
-				Low52:             0.0,
-				SymbolDescription: "GOOGLE INC CL A",
+				CompanyName:       "5",
+				Eps:               6,
+				EstEarnings:       7,
+				High52:            8,
+				LastTrade:         9,
+				Low52:             10,
+				SymbolDescription: "11",
 			},
 			Intraday: responses.QuoteIntradayQuoteDetails{},
 			Option:   responses.QuoteOptionQuoteDetails{},
 			Product: responses.Product{
-				Symbol:       "GOOG",
-				SecurityType: "EQ",
+				Symbol:       "12",
+				SecurityType: "13",
 			},
 			Week52:         responses.QuoteWeek52QuoteDetails{},
 			MutualFund:     responses.QuoteMutualFund{},
-			TimeZone:       "",
-			DstFlag:        false,
-			HasMiniOptions: false,
+			TimeZone:       "14",
+			DstFlag:        true,
+			HasMiniOptions: true,
 		},
 	},
-	Messages: nil,
+	Messages: []responses.QuoteMessage{
+		{
+			Description: "15",
+			Code:        16,
+			Type:        "17",
+		},
+	},
 }
 
 const quoteDetailIntradayTestXml = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <QuoteResponse>
     <QuoteData>
-        <dateTime>16:00:00 EDT 06-20-2012</dateTime>
-        <dateTimeUTC>1340222400</dateTimeUTC>
-        <quoteStatus>REALTIME</quoteStatus>
-        <ahFlag>false</ahFlag>
+        <dateTime>1</dateTime>
+        <dateTimeUTC>2</dateTimeUTC>
+        <quoteStatus>3</quoteStatus>
+        <ahFlag>true</ahFlag>
+        <errorMessage>4</errorMessage>
         <Intraday>
-            <ask>579.94</ask>
-            <bid>574.04</bid>
-            <changeClose>0.0</changeClose>
-            <changeClosePercentage>0.0</changeClosePercentage>
-            <companyName>GOOGLE INC CL A</companyName>
-            <high>0.0</high>
-            <lastTrade>577.51</lastTrade>
-            <low>0.0</low>
-            <totalVolume>0</totalVolume>
+            <ask>5</ask>
+            <bid>6</bid>
+            <changeClose>7</changeClose>
+            <changeClosePercentage>8</changeClosePercentage>
+            <companyName>9</companyName>
+            <high>10</high>
+            <lastTrade>11</lastTrade>
+            <low>12</low>
+            <totalVolume>13</totalVolume>
         </Intraday>
         <Product>
-            <securityType>EQ</securityType>
-            <symbol>GOOG</symbol>
+            <symbol>14</symbol>
+            <securityType>15</securityType>
         </Product>
+        <timeZone>16</timeZone>
+        <dstFlag>true</dstFlag>
+        <hasMiniOptions>true</hasMiniOptions>
     </QuoteData>
+    <Messages>
+      <Message>
+        <description>17</description>
+        <code>18</code>
+        <type>19</type>
+      </Message>
+    </Messages>
 </QuoteResponse>`
 
 var quoteDetailIntradayTestResponse = responses.QuoteResponse{
 	QuoteData: []responses.QuoteData{
 		{
 			All:          responses.QuoteAllQuoteDetails{},
-			DateTime:     responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			QuoteStatus:  "REALTIME",
-			AhFlag:       false,
-			ErrorMessage: "",
+			DateTime:     responses.ETradeTime{Time: time.Unix(1, 0).UTC()},
+			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(2, 0).UTC()},
+			QuoteStatus:  "3",
+			AhFlag:       true,
+			ErrorMessage: "4",
 			Fundamental:  responses.QuoteFundamentalQuoteDetails{},
 			Intraday: responses.QuoteIntradayQuoteDetails{
-				Ask:                   579.94,
-				Bid:                   574.04,
-				ChangeClose:           0.0,
-				ChangeClosePercentage: 0.0,
-				CompanyName:           "GOOGLE INC CL A",
-				High:                  0.0,
-				LastTrade:             577.51,
-				Low:                   0.0,
-				TotalVolume:           0,
+				Ask:                   5,
+				Bid:                   6,
+				ChangeClose:           7,
+				ChangeClosePercentage: 8,
+				CompanyName:           "9",
+				High:                  10,
+				LastTrade:             11,
+				Low:                   12,
+				TotalVolume:           13,
 			},
 			Option: responses.QuoteOptionQuoteDetails{},
 			Product: responses.Product{
-				Symbol:       "GOOG",
-				SecurityType: "EQ",
+				Symbol:       "14",
+				SecurityType: "15",
 			},
 			Week52:         responses.QuoteWeek52QuoteDetails{},
 			MutualFund:     responses.QuoteMutualFund{},
-			TimeZone:       "",
-			DstFlag:        false,
-			HasMiniOptions: false,
+			TimeZone:       "16",
+			DstFlag:        true,
+			HasMiniOptions: true,
 		},
 	},
-	Messages: nil,
+	Messages: []responses.QuoteMessage{
+		{
+			Description: "17",
+			Code:        18,
+			Type:        "19",
+		},
+	},
 }
 
 const quoteDetailOptionsTestXml = `
 <?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 <QuoteResponse>
     <QuoteData>
-        <dateTime>16:00:00 EDT 06-20-2012</dateTime>
-        <dateTimeUTC>1340222400</dateTimeUTC>
-        <quoteStatus>REALTIME</quoteStatus>
-        <ahFlag>false</ahFlag>
+        <dateTime>1</dateTime>
+        <dateTimeUTC>2</dateTimeUTC>
+        <quoteStatus>3</quoteStatus>
+        <ahFlag>true</ahFlag>
+        <errorMessage>4</errorMessage>
         <Option>
-            <ask>579.65</ask>
-            <askSize>100</askSize>
-            <bid>574.04</bid>
-            <bidSize>100</bidSize>
-            <companyName>GOOGLE INC CL A</companyName>
-            <daysToExpiration>0</daysToExpiration>
-            <lastTrade>577.51</lastTrade>
-            <openInterest>0</openInterest>
-            <optionPreviousBidPrice>0</optionPreviousBidPrice>
-            <optionPreviousAskPrice>0</optionPreviousAskPrice>
-            <osiKey></osiKey>
-            <intrinsicValue>0.0</intrinsicValue>
-            <timePremium>0.0</timePremium>
-            <optionMultiplier>0.0</optionMultiplier>
-            <contractSize>0.0</contractSize>
-            <symbolDescription></symbolDescription>
+            <ask>5</ask>
+            <askSize>6</askSize>
+            <bid>7</bid>
+            <bidSize>8</bidSize>
+            <companyName>9</companyName>
+            <daysToExpiration>10</daysToExpiration>
+            <lastTrade>11</lastTrade>
+            <openInterest>12</openInterest>
+            <optionPreviousBidPrice>13</optionPreviousBidPrice>
+            <optionPreviousAskPrice>14</optionPreviousAskPrice>
+            <osiKey>15</osiKey>
+            <intrinsicValue>16</intrinsicValue>
+            <timePremium>17</timePremium>
+            <optionMultiplier>18</optionMultiplier>
+            <contractSize>19</contractSize>
+            <symbolDescription>20</symbolDescription>
+            <OptionGreeks>
+              <rho>21</rho>
+              <vega>22</vega>
+              <theta>23</theta>
+              <delta>24</delta>
+              <gamma>25</gamma>
+              <iv>26</iv>
+              <currentValue>true</currentValue>
+            </OptionGreeks>
         </Option>
         <Product>
-            <securityType>EQ</securityType>
-            <symbol>GOOG</symbol>
+            <symbol>27</symbol>
+            <securityType>28</securityType>
         </Product>
+        <timeZone>29</timeZone>
+        <dstFlag>true</dstFlag>
+        <hasMiniOptions>true</hasMiniOptions>
     </QuoteData>
+    <Messages>
+      <Message>
+        <description>30</description>
+        <code>31</code>
+        <type>32</type>
+      </Message>
+    </Messages>
 </QuoteResponse>`
 
 var quoteDetailOptionsTestResponse = responses.QuoteResponse{
 	QuoteData: []responses.QuoteData{
 		{
 			All:          responses.QuoteAllQuoteDetails{},
-			DateTime:     responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			QuoteStatus:  "REALTIME",
-			AhFlag:       false,
-			ErrorMessage: "",
+			DateTime:     responses.ETradeTime{Time: time.Unix(1, 0).UTC()},
+			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(2, 0).UTC()},
+			QuoteStatus:  "3",
+			AhFlag:       true,
+			ErrorMessage: "4",
 			Fundamental:  responses.QuoteFundamentalQuoteDetails{},
 			Intraday:     responses.QuoteIntradayQuoteDetails{},
 			Option: responses.QuoteOptionQuoteDetails{
-				Ask:                    579.65,
-				AskSize:                100,
-				Bid:                    574.04,
-				BidSize:                100,
-				CompanyName:            "GOOGLE INC CL A",
-				DaysToExpiration:       0,
-				LastTrade:              577.51,
-				OpenInterest:           0,
-				OptionPreviousBidPrice: 0,
-				OptionPreviousAskPrice: 0,
-				OsiKey:                 "",
-				IntrinsicValue:         0.0,
-				TimePremium:            0.0,
-				OptionMultiplier:       0.0,
-				ContractSize:           0.0,
-				SymbolDescription:      "",
-				OptionGreeks:           responses.QuoteOptionGreeks{},
+				Ask:                    5,
+				AskSize:                6,
+				Bid:                    7,
+				BidSize:                8,
+				CompanyName:            "9",
+				DaysToExpiration:       10,
+				LastTrade:              11,
+				OpenInterest:           12,
+				OptionPreviousBidPrice: 13,
+				OptionPreviousAskPrice: 14,
+				OsiKey:                 "15",
+				IntrinsicValue:         16,
+				TimePremium:            17,
+				OptionMultiplier:       18,
+				ContractSize:           19,
+				SymbolDescription:      "20",
+				OptionGreeks: responses.QuoteOptionGreeks{
+					Rho:          21,
+					Vega:         22,
+					Theta:        23,
+					Delta:        24,
+					Gamma:        25,
+					Iv:           26,
+					CurrentValue: true,
+				},
 			},
 			Product: responses.Product{
-				Symbol:       "GOOG",
-				SecurityType: "EQ",
+				Symbol:       "27",
+				SecurityType: "28",
 			},
 			Week52:         responses.QuoteWeek52QuoteDetails{},
 			MutualFund:     responses.QuoteMutualFund{},
-			TimeZone:       "",
-			DstFlag:        false,
-			HasMiniOptions: false,
+			TimeZone:       "29",
+			DstFlag:        true,
+			HasMiniOptions: true,
 		},
 	},
-	Messages: nil,
+	Messages: []responses.QuoteMessage{
+		{
+			Description: "30",
+			Code:        31,
+			Type:        "32",
+		},
+	},
 }
 
 const quoteDetailWeek52TestXml = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <QuoteResponse>
     <QuoteData>
-        <dateTime>16:00:00 EDT 06-20-2012</dateTime>
-        <dateTimeUTC>1340222400</dateTimeUTC>
-        <quoteStatus>REALTIME</quoteStatus>
-        <ahFlag>false</ahFlag>
-        <Week52>
-            <companyName>GOOGLE INC CL A</companyName>
-            <high52>670.25</high52>
-            <lastTrade>577.51</lastTrade>
-            <low52>0.0</low52>
-            <perf12Months>111.0</perf12Months>
-            <previousClose>577.51</previousClose>
-            <symbolDescription>GOOGLE INC CL A</symbolDescription>
-            <totalVolume>0</totalVolume>
-        </Week52>
+        <dateTime>1</dateTime>
+        <dateTimeUTC>2</dateTimeUTC>
+        <quoteStatus>3</quoteStatus>
+        <ahFlag>true</ahFlag>
+        <errorMessage>4</errorMessage>
         <Product>
-            <securityType>EQ</securityType>
-            <symbol>GOOG</symbol>
+            <symbol>5</symbol>
+            <securityType>6</securityType>
         </Product>
+        <Week52>
+            <companyName>7</companyName>
+            <high52>8</high52>
+            <lastTrade>9</lastTrade>
+            <low52>10</low52>
+            <perf12Months>11</perf12Months>
+            <previousClose>12</previousClose>
+            <symbolDescription>13</symbolDescription>
+            <totalVolume>14</totalVolume>
+        </Week52>
+        <timeZone>15</timeZone>
+        <dstFlag>true</dstFlag>
+        <hasMiniOptions>true</hasMiniOptions>
     </QuoteData>
+    <Messages>
+      <Message>
+        <description>16</description>
+        <code>17</code>
+        <type>18</type>
+      </Message>
+    </Messages>
 </QuoteResponse>
 `
 
@@ -383,35 +530,41 @@ var quoteDetailWeek52TestResponse = responses.QuoteResponse{
 	QuoteData: []responses.QuoteData{
 		{
 			All:          responses.QuoteAllQuoteDetails{},
-			DateTime:     responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(1340222400, 0).UTC()},
-			QuoteStatus:  "REALTIME",
-			AhFlag:       false,
-			ErrorMessage: "",
+			DateTime:     responses.ETradeTime{Time: time.Unix(1, 0).UTC()},
+			DateTimeUTC:  responses.ETradeTime{Time: time.Unix(2, 0).UTC()},
+			QuoteStatus:  "3",
+			AhFlag:       true,
+			ErrorMessage: "4",
 			Fundamental:  responses.QuoteFundamentalQuoteDetails{},
 			Intraday:     responses.QuoteIntradayQuoteDetails{},
 			Option:       responses.QuoteOptionQuoteDetails{},
 			Product: responses.Product{
-				Symbol:       "GOOG",
-				SecurityType: "EQ",
+				Symbol:       "5",
+				SecurityType: "6",
 			},
 			Week52: responses.QuoteWeek52QuoteDetails{
-				CompanyName:       "GOOGLE INC CL A",
-				High52:            670.25,
-				LastTrade:         577.51,
-				Low52:             0.0,
-				Perf12Months:      111.0,
-				PreviousClose:     577.51,
-				SymbolDescription: "GOOGLE INC CL A",
-				TotalVolume:       0,
+				CompanyName:       "7",
+				High52:            8,
+				LastTrade:         9,
+				Low52:             10,
+				Perf12Months:      11,
+				PreviousClose:     12,
+				SymbolDescription: "13",
+				TotalVolume:       14,
 			},
 			MutualFund:     responses.QuoteMutualFund{},
-			TimeZone:       "",
-			DstFlag:        false,
-			HasMiniOptions: false,
+			TimeZone:       "15",
+			DstFlag:        true,
+			HasMiniOptions: true,
 		},
 	},
-	Messages: nil,
+	Messages: []responses.QuoteMessage{
+		{
+			Description: "16",
+			Code:        17,
+			Type:        "18",
+		},
+	},
 }
 
 const quoteDetailMutualFundTestXml = `
