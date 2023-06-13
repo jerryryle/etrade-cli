@@ -5,6 +5,72 @@ import (
 	"time"
 )
 
+const listAccountsTestXml = `
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AccountListResponse>
+    <Accounts>
+        <Account>
+            <accountId>1</accountId>
+            <accountIdKey>2</accountIdKey>
+            <accountMode>3</accountMode>
+            <accountDesc>4</accountDesc>
+            <accountName>5</accountName>
+            <accountType>6</accountType>
+            <institutionType>7</institutionType>
+            <accountStatus>8</accountStatus>
+            <closedDate>9</closedDate>
+            <shareWorksAccount>true</shareWorksAccount>
+            <shareWorksSource>10</shareWorksSource>
+            <fcManagedMssbClosedAccount>true</fcManagedMssbClosedAccount>
+        </Account>
+    </Accounts>
+</AccountListResponse>
+`
+
+var listAccountsTestResponse = responses.AccountListResponse{
+	Accounts: []responses.AccountListAccount{
+		{
+			AccountId:                  "1",
+			AccountIdKey:               "2",
+			AccountMode:                "3",
+			AccountDesc:                "4",
+			AccountName:                "5",
+			AccountType:                "6",
+			InstitutionType:            "7",
+			AccountStatus:              "8",
+			ClosedDate:                 responses.ETradeTime{Time: time.Unix(9, 0).UTC()},
+			ShareWorksAccount:          true,
+			ShareWorksSource:           "10",
+			FcManagedMssbClosedAccount: true,
+		},
+	},
+}
+
+const listAlertsTestXml = `
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AlertsResponse>
+    <totalAlerts>1</totalAlerts>
+    <Alert>
+        <id>2</id>
+        <createTime>3</createTime>
+        <subject>4</subject>
+        <status>5</status>
+    </Alert>
+</AlertsResponse>
+`
+
+var listAlertsTestResponse = responses.AlertsResponse{
+	TotalAlerts: 1,
+	Alerts: []responses.AlertsAlert{
+		{
+			Id:         2,
+			CreateTime: responses.ETradeTime{Time: time.Unix(3, 0).UTC()},
+			Subject:    "4",
+			Status:     "5",
+		},
+	},
+}
+
 const quoteDetailAllTestXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <QuoteResponse>
