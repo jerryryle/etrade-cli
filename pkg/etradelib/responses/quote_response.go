@@ -1,8 +1,8 @@
 package responses
 
 type QuoteResponse struct {
-	QuoteData []QuoteData   `xml:"QuoteData"`
-	Messages  QuoteMessages `xml:"Messages"`
+	QuoteData []QuoteData    `xml:"QuoteData"`
+	Messages  []QuoteMessage `xml:"Messages>Message"`
 }
 
 type QuoteAllQuoteDetails struct {
@@ -39,7 +39,7 @@ type QuoteAllQuoteDetails struct {
 	SymbolDescription       string                       `xml:"symbolDescription"`
 	TotalVolume             int64                        `xml:"totalVolume"`
 	Upc                     int64                        `xml:"upc"`
-	OptionDeliverableList   []QuoteOptionDeliverable     `xml:"optionDeliverableList"`
+	OptionDeliverableList   []QuoteOptionDeliverable     `xml:"OptionDeliverableList>OptionDeliverable"`
 	CashDeliverable         float64                      `xml:"cashDeliverable"`
 	MarketCap               float64                      `xml:"marketCap"`
 	SharesOutstanding       float64                      `xml:"sharesOutstanding"`
@@ -56,7 +56,7 @@ type QuoteAllQuoteDetails struct {
 	OptionMultiplier        float64                      `xml:"optionMultiplier"`
 	ContractSize            float64                      `xml:"contractSize"`
 	ExpirationDate          ETradeTime                   `xml:"expirationDate"`
-	EhQuote                 QuoteExtendedHourQuoteDetail `xml:"ehQuote"`
+	EhQuote                 QuoteExtendedHourQuoteDetail `xml:"EhQuote"`
 	OptionPreviousBidPrice  float64                      `xml:"optionPreviousBidPrice"`
 	OptionPreviousAskPrice  float64                      `xml:"optionPreviousAskPrice"`
 	OsiKey                  string                       `xml:"osiKey"`
@@ -106,10 +106,6 @@ type QuoteMessage struct {
 	Type        string `xml:"type"`
 }
 
-type QuoteMessages struct {
-	Message []QuoteMessage `xml:"message"`
-}
-
 type QuoteMutualFund struct {
 	SymbolDescription        string                  `xml:"symbolDescription"`
 	Cusip                    string                  `xml:"cusip"`
@@ -128,11 +124,11 @@ type QuoteMutualFund struct {
 	PublicOfferPrice         float64                 `xml:"publicOfferPrice"`
 	NetExpenseRatio          float64                 `xml:"netExpenseRatio"`
 	GrossExpenseRatio        float64                 `xml:"grossExpenseRatio"`
-	OrderCutoffTime          ETradeTime              `xml:"orderCutoffTime"`
+	OrderCutoffTime          int64                   `xml:"orderCutoffTime"`
 	SalesCharge              string                  `xml:"salesCharge"`
 	InitialIraInvestment     float64                 `xml:"initialIraInvestment"`
 	SubsequentIraInvestment  float64                 `xml:"subsequentIraInvestment"`
-	NetAssets                QuoteNetAsset           `xml:"netAssets"`
+	NetAssets                QuoteNetAsset           `xml:"NetAssets"`
 	FundInceptionDate        ETradeTime              `xml:"fundInceptionDate"`
 	AverageAnnualReturns     float64                 `xml:"averageAnnualReturns"`
 	SevenDayCurrentYield     float64                 `xml:"sevenDayCurrentYield"`
@@ -153,7 +149,7 @@ type QuoteMutualFund struct {
 	Actual12B1Fee            float64                 `xml:"actual12B1Fee"`
 	PerformanceAsOfDate      ETradeTime              `xml:"performanceAsOfDate"`
 	QtrlyPerformanceAsOfDate ETradeTime              `xml:"qtrlyPerformanceAsOfDate"`
-	Redemption               QuoteRedemption         `xml:"redemption"`
+	Redemption               QuoteRedemption         `xml:"Redemption"`
 	MorningStarCategory      string                  `xml:"morningStarCategory"`
 	MonthlyTrailingReturn1Y  float64                 `xml:"monthlyTrailingReturn1Y"`
 	MonthlyTrailingReturn3Y  float64                 `xml:"monthlyTrailingReturn3Y"`
@@ -169,8 +165,8 @@ type QuoteMutualFund struct {
 	QtrlyTrailingReturn1M    float64                 `xml:"qtrlyTrailingReturn1M"`
 	QtrlyTrailingReturn3M    float64                 `xml:"qtrlyTrailingReturn3M"`
 	QtrlyTrailingReturn6M    float64                 `xml:"qtrlyTrailingReturn6M"`
-	DeferredSalesCharges     []QuoteSaleChargeValues `xml:"deferredSalesCharges"`
-	FrontEndSalesCharges     []QuoteSaleChargeValues `xml:"frontEndSalesCharges"`
+	DeferredSalesCharges     []QuoteSaleChargeValues `xml:"DeferredSalesCharges>SaleChargeValues"`
+	FrontEndSalesCharges     []QuoteSaleChargeValues `xml:"FrontEndSalesCharges>SaleChargeValues"`
 	ExchangeCode             string                  `xml:"exchangeCode"`
 }
 
@@ -216,7 +212,7 @@ type QuoteOptionQuoteDetails struct {
 	OptionMultiplier       float64           `xml:"optionMultiplier"`
 	ContractSize           float64           `xml:"contractSize"`
 	SymbolDescription      string            `xml:"symbolDescription"`
-	OptionGreeks           QuoteOptionGreeks `xml:"optionGreeks"`
+	OptionGreeks           QuoteOptionGreeks `xml:"OptionGreeks"`
 }
 
 type QuoteData struct {
@@ -224,7 +220,7 @@ type QuoteData struct {
 	DateTime       ETradeTime                   `xml:"dateTime"`
 	DateTimeUTC    ETradeTime                   `xml:"dateTimeUTC"`
 	QuoteStatus    string                       `xml:"quoteStatus"`
-	AhFlag         string                       `xml:"ahFlag"`
+	AhFlag         bool                         `xml:"ahFlag"`
 	ErrorMessage   string                       `xml:"errorMessage"`
 	Fundamental    QuoteFundamentalQuoteDetails `xml:"Fundamental"`
 	Intraday       QuoteIntradayQuoteDetails    `xml:"Intraday"`
@@ -241,15 +237,15 @@ type QuoteRedemption struct {
 	MinMonth               string        `xml:"minMonth"`
 	FeePercent             string        `xml:"feePercent"`
 	IsFrontEnd             string        `xml:"isFrontEnd"`
-	FrontEndValues         []QuoteValues `xml:"frontEndValues"`
+	FrontEndValues         []QuoteValues `xml:"FrontEndValues>Values"`
 	RedemptionDurationType string        `xml:"redemptionDurationType"`
 	IsSales                string        `xml:"isSales"`
 	SalesDurationType      string        `xml:"salesDurationType"`
-	SalesValues            []QuoteValues `xml:"salesValues"`
+	SalesValues            []QuoteValues `xml:"SalesValues>Values"`
 }
 
 type QuoteSaleChargeValues struct {
-	LowHigh string `xml:"lowhigh"`
+	LowHigh string `xml:"lowHigh"`
 	Percent string `xml:"percent"`
 }
 

@@ -25,7 +25,7 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 				xmlData: `<root><time>1641582247</time></root>`,
 			},
 			expectErr: false,
-			expect:    parseTimeOrPanic("2022-01-07T19:04:07Z"),
+			expect:    MustParseRFC3339("2022-01-07T19:04:07Z"),
 		},
 		{
 			name: "Valid Zeroed Unix timestamp",
@@ -33,7 +33,7 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 				xmlData: `<root><time>0</time></root>`,
 			},
 			expectErr: false,
-			expect:    parseTimeOrPanic("1970-01-01T00:00:00Z"),
+			expect:    MustParseRFC3339("1970-01-01T00:00:00Z"),
 		},
 		{
 			name: "Invalid Unix timestamp",
@@ -48,7 +48,7 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 				xmlData: `<root><time>16:00:00 EDT 06-20-2012</time></root>`,
 			},
 			expectErr: false,
-			expect:    parseTimeOrPanic("2012-06-20T20:00:00Z"),
+			expect:    MustParseRFC3339("2012-06-20T20:00:00Z"),
 		},
 		{
 			name: "Valid ETrade string timestamp (EST)",
@@ -56,7 +56,7 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 				xmlData: `<root><time>16:00:00 EST 05-20-2012</time></root>`,
 			},
 			expectErr: false,
-			expect:    parseTimeOrPanic("2012-05-20T21:00:00Z"),
+			expect:    MustParseRFC3339("2012-05-20T21:00:00Z"),
 		},
 		{
 			name: "Invalid ETrade string timestamp",
@@ -80,6 +80,14 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 			expectErr: false,
 			expect:    time.Unix(0, 0),
 		},
+		{
+			name: "Valid ETrade Date",
+			args: args{
+				xmlData: `<root><time>05/20/2012</time></root>`,
+			},
+			expectErr: false,
+			expect:    MustParseRFC3339("2012-05-20T00:00:00Z"),
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -94,12 +102,4 @@ func TestETradeTime_UnmarshalXML(t *testing.T) {
 			}
 		})
 	}
-}
-
-func parseTimeOrPanic(value string) time.Time {
-	t, err := time.Parse(time.RFC3339, value)
-	if err != nil {
-		panic(err)
-	}
-	return t.UTC()
 }

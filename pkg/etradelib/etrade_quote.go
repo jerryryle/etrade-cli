@@ -8,7 +8,7 @@ import (
 type ETradeQuoteInfo struct {
 	DateTime       time.Time
 	QuoteStatus    string
-	AhFlag         string
+	AhFlag         bool
 	TimeZone       string
 	DstFlag        bool
 	HasMiniOptions bool
@@ -166,7 +166,7 @@ type ETradeQuoteMutualFundInfo struct {
 	PublicOfferPrice                 float64
 	NetExpenseRatio                  float64
 	GrossExpenseRatio                float64
-	OrderCutoffTime                  time.Time
+	OrderCutoffTime                  int64
 	SalesCharge                      string
 	InitialIraInvestment             float64
 	SubsequentIraInvestment          float64
@@ -415,7 +415,7 @@ func CreateETradeQuoteMutualFundInfoFromResponse(response responses.QuoteData) *
 		PublicOfferPrice:                 response.MutualFund.PublicOfferPrice,
 		NetExpenseRatio:                  response.MutualFund.NetExpenseRatio,
 		GrossExpenseRatio:                response.MutualFund.GrossExpenseRatio,
-		OrderCutoffTime:                  response.MutualFund.OrderCutoffTime.GetTime(),
+		OrderCutoffTime:                  response.MutualFund.OrderCutoffTime,
 		SalesCharge:                      response.MutualFund.SalesCharge,
 		InitialIraInvestment:             response.MutualFund.InitialIraInvestment,
 		SubsequentIraInvestment:          response.MutualFund.SubsequentIraInvestment,

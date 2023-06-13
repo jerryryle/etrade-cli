@@ -53,6 +53,9 @@ func (c *eTradeClient) ListAlerts() (*responses.AlertsResponse, error) {
 func (c *eTradeClient) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error) {
 	symbolsList := strings.Join(symbols, ",")
 	queryValues := url.Values{}
+	queryValues.Add("requireEarningsDate", "true")
+	queryValues.Add("overrideSymbolCount", "true")
+	queryValues.Add("skipMiniOptionsCheck", "false")
 	queryValues.Add("detailFlag", detailFlag.String())
 
 	response := responses.QuoteResponse{}

@@ -36,6 +36,13 @@ func (et *ETradeTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return nil
 	}
 
+	// If that fails, try parsing as the date string that ETrade uses.
+	var parsedTime time.Time
+	if parsedTime, err = time.Parse("01/02/2006", v); err == nil {
+		et.Time = parsedTime.UTC()
+		return nil
+	}
+
 	// If that fails, try parsing as the date-time string that ETrade uses.
 	components := strings.Split(v, " ")
 	if len(components) < 2 {
@@ -52,7 +59,6 @@ func (et *ETradeTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error
 		return errors.New(fmt.Sprintf("unknown timezone in date: %s, (%s is not known)", v, components[1]))
 	}
 
-	var parsedTime time.Time
 	if parsedTime, err = time.ParseInLocation("15:04:05 MST 01-02-2006", v, location); err == nil {
 		et.Time = parsedTime.UTC()
 		return nil
