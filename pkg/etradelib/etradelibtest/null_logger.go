@@ -1,4 +1,4 @@
-package etradelib
+package etradelibtest
 
 import (
 	"context"

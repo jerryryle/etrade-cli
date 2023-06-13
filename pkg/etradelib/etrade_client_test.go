@@ -1,6 +1,7 @@
 package etradelib
 
 import (
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/etradelibtest"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"github.com/stretchr/testify/assert"
 	"io"
@@ -84,7 +85,7 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 		}
 	})
 
-	client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
+	client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 	response, err := client.ListAccounts()
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, response)
@@ -158,7 +159,7 @@ func TestETradeClient_ListAlerts(t *testing.T) {
 		}
 	})
 
-	client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
+	client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 	response, err := client.ListAlerts()
 	assert.Nil(t, err)
 	assert.Equal(t, &expectedResponse, response)
@@ -257,7 +258,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				}
 			})
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 			response, err := client.GetQuotes(tt.args.symbols, QuoteDetailAll)
 			if tt.expectErr {
 				assert.Error(t, err)

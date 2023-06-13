@@ -3,6 +3,7 @@ package etradelib
 import (
 	"errors"
 	"github.com/dghubble/oauth1"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/etradelibtest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 	"io"
@@ -12,19 +13,19 @@ import (
 )
 
 func TestCreateSessionWithEmptyConsumerCredentialsFails(t *testing.T) {
-	session, err := CreateSession(false, "", "", CreateNullLogger())
+	session, err := CreateSession(false, "", "", etradelibtest.CreateNullLogger())
 	assert.EqualError(t, err, "invalid consumer credentials provided")
 	assert.Nil(t, session)
 }
 
 func TestCreateSessionWithConsumerCredentialsSucceeds(t *testing.T) {
-	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret", CreateNullLogger())
+	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret", etradelibtest.CreateNullLogger())
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 }
 
 func TestCreateSessionWithEmptyCustomerNameSucceeds(t *testing.T) {
-	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret", CreateNullLogger())
+	session, err := CreateSession(false, "TestConsumerKey", "TestConsumerSecret", etradelibtest.CreateNullLogger())
 	assert.Nil(t, err)
 	assert.NotNil(t, session)
 }

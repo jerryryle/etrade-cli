@@ -1,4 +1,4 @@
-package responses
+package etradelibtest
 
 import "time"
 
