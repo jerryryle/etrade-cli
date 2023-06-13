@@ -30,9 +30,9 @@ func (c *RootCommand) Command() *cobra.Command {
 		},
 	}
 	// Add Global Flags
-	cmd.PersistentFlags().StringVarP(&c.flags.customerId, "customerId", "c", "", "customer identifier")
+	cmd.PersistentFlags().StringVar(&c.flags.customerId, "customerId", "", "customer identifier")
 	_ = cmd.MarkPersistentFlagRequired("customerId")
-	cmd.PersistentFlags().BoolVarP(&c.flags.debug, "debug", "d", false, "debug output")
+	cmd.PersistentFlags().BoolVar(&c.flags.debug, "debug", false, "debug output")
 
 	return cmd
 }

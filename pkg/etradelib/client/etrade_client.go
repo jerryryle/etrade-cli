@@ -17,6 +17,10 @@ type ETradeClient interface {
 	ListAlerts() (*responses.AlertsResponse, error)
 	GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error)
 	LookupProduct(search string) (*responses.LookupResponse, error)
+	GetOptionChains(symbol string,
+		expiryYear int, expiryMonth int, expiryDay int,
+		strikePriceNear int, noOfStrikes int, includeWeekly bool, skipAdjusted bool,
+		optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error)
 }
 
 type eTradeClient struct {
@@ -73,6 +77,41 @@ func (c *eTradeClient) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (
 func (c *eTradeClient) LookupProduct(search string) (*responses.LookupResponse, error) {
 	response := responses.LookupResponse{}
 	err := c.doRequest("GET", c.urls.LookUpProductUrl(search), nil, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) GetOptionChains(symbol string,
+	expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
+	includeWeekly, skipAdjusted bool,
+	optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error) {
+	queryValues := url.Values{}
+	queryValues.Add("symbol", symbol)
+	if expiryYear > 0 {
+		queryValues.Add("expiryYear", fmt.Sprintf("%d", expiryYear))
+	}
+	if expiryMonth > 0 {
+		queryValues.Add("expiryMonth", fmt.Sprintf("%d", expiryMonth))
+	}
+	if expiryDay > 0 {
+		queryValues.Add("expiryDay", fmt.Sprintf("%d", expiryDay))
+	}
+	if strikePriceNear >= 0 {
+		queryValues.Add("strikePriceNear", fmt.Sprintf("%d", strikePriceNear))
+	}
+	if noOfStrikes >= 0 {
+		queryValues.Add("noOfStrikes", fmt.Sprintf("%d", noOfStrikes))
+	}
+	queryValues.Add("includeWeekly", fmt.Sprintf("%t", includeWeekly))
+	queryValues.Add("skipAdjusted", fmt.Sprintf("%t", skipAdjusted))
+	queryValues.Add("optionCategory", optionCategory.String())
+	queryValues.Add("chainType", chainType.String())
+	queryValues.Add("priceType", priceType.String())
+
+	response := responses.OptionChainResponse{}
+	err := c.doRequest("GET", c.urls.GetOptionChainsUrl(), queryValues, &response)
 	if err != nil {
 		return nil, err
 	}

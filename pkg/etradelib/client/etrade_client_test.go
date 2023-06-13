@@ -248,3 +248,55 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 		})
 	}
 }
+
+func TestETradeClient_GetOptionChains(t *testing.T) {
+	type args struct {
+		symbol                             string
+		expiryYear, expiryMonth, expiryDay int
+		strikePriceNear, noOfStrikes       int
+		includeWeekly, skipAdjusted        bool
+		optionCategory                     OptionCategory
+		chainType                          ChainType
+		priceType                          PriceType
+		httpClientFakeXml                  string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		expectErr bool
+		expect    *responses.OptionChainResponse
+	}{
+		{
+			name: "Get Option Chains With Results",
+			args: args{
+				httpClientFakeXml: getOptionChainsTestXml,
+			},
+			expectErr: false,
+			expect:    &getOptionChainsTestResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+				}
+			})
+
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+			response, err := client.GetOptionChains(tt.args.symbol,
+				tt.args.expiryYear, tt.args.expiryMonth, tt.args.expiryDay,
+				tt.args.strikePriceNear, tt.args.noOfStrikes,
+				tt.args.includeWeekly, tt.args.skipAdjusted,
+				tt.args.optionCategory, tt.args.chainType, tt.args.priceType)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
+		})
+	}
+}

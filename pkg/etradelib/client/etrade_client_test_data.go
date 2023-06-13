@@ -924,3 +924,160 @@ const lookupProductNoResultsTestXml = `
 var lookupProductNoResultsTestResponse = responses.LookupResponse{
 	Data: nil,
 }
+
+const getOptionChainsTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<OptionChainResponse>
+   <OptionPair>
+      <Call>
+         <optionCategory>1</optionCategory>
+         <optionRootSymbol>2</optionRootSymbol>
+         <timeStamp>3</timeStamp>
+         <adjustedFlag>true</adjustedFlag>
+         <displaySymbol>4</displaySymbol>
+         <optionType>5</optionType>
+         <strikePrice>6</strikePrice>
+         <symbol>7</symbol>
+         <bid>8</bid>
+         <ask>9</ask>
+         <bidSize>10</bidSize>
+         <askSize>11</askSize>
+         <inTheMoney>12</inTheMoney>
+         <volume>13</volume>
+         <openInterest>14</openInterest>
+         <netChange>15</netChange>
+         <lastPrice>16</lastPrice>
+         <quoteDetail>17</quoteDetail>
+         <osiKey>18</osiKey>
+         <OptionGreeks>
+            <rho>19</rho>
+            <vega>20</vega>
+            <theta>21</theta>
+            <delta>22</delta>
+            <gamma>23</gamma>
+            <iv>24</iv>
+            <currentValue>true</currentValue>
+         </OptionGreeks>
+      </Call>
+      <Put>
+         <optionCategory>25</optionCategory>
+         <optionRootSymbol>26</optionRootSymbol>
+         <timeStamp>27</timeStamp>
+         <adjustedFlag>true</adjustedFlag>
+         <displaySymbol>28</displaySymbol>
+         <optionType>29</optionType>
+         <strikePrice>30</strikePrice>
+         <symbol>31</symbol>
+         <bid>32</bid>
+         <ask>33</ask>
+         <bidSize>34</bidSize>
+         <askSize>35</askSize>
+         <inTheMoney>36</inTheMoney>
+         <volume>37</volume>
+         <openInterest>38</openInterest>
+         <netChange>39</netChange>
+         <lastPrice>40</lastPrice>
+         <quoteDetail>41</quoteDetail>
+         <osiKey>42</osiKey>
+         <OptionGreeks>
+            <rho>43</rho>
+            <vega>44</vega>
+            <theta>45</theta>
+            <delta>46</delta>
+            <gamma>47</gamma>
+            <iv>48</iv>
+            <currentValue>true</currentValue>
+         </OptionGreeks>
+      </Put>
+      <pairType>49</pairType>
+   </OptionPair>
+   <timeStamp>50</timeStamp>
+   <quoteType>51</quoteType>
+   <nearPrice>52</nearPrice>
+   <SelectedED>
+      <month>53</month>
+      <year>54</year>
+      <day>55</day>
+   </SelectedED>
+</OptionChainResponse>
+`
+
+var getOptionChainsTestResponse = responses.OptionChainResponse{
+	OptionPairs: []responses.OptionChainPair{
+		{
+			OptionCall: responses.OptionChainOptionDetails{
+				OptionCategory:   "1",
+				OptionRootSymbol: "2",
+				TimeStamp: responses.ETradeTime{
+					Time: time.Unix(3, 0).UTC(),
+				},
+				AdjustedFlag:  true,
+				DisplaySymbol: "4",
+				OptionType:    "5",
+				StrikePrice:   6,
+				Symbol:        "7",
+				Bid:           8,
+				Ask:           9,
+				BidSize:       10,
+				AskSize:       11,
+				InTheMoney:    "12",
+				Volume:        13,
+				OpenInterest:  14,
+				NetChange:     15,
+				LastPrice:     16,
+				QuoteDetail:   "17",
+				OsiKey:        "18",
+				OptionGreeks: responses.OptionChainOptionGreeks{
+					Rho:          19,
+					Vega:         20,
+					Theta:        21,
+					Delta:        22,
+					Gamma:        23,
+					Iv:           24,
+					CurrentValue: true,
+				},
+			},
+			OptionPut: responses.OptionChainOptionDetails{
+				OptionCategory:   "25",
+				OptionRootSymbol: "26",
+				TimeStamp: responses.ETradeTime{
+					Time: time.Unix(27, 0).UTC(),
+				},
+				AdjustedFlag:  true,
+				DisplaySymbol: "28",
+				OptionType:    "29",
+				StrikePrice:   30,
+				Symbol:        "31",
+				Bid:           32,
+				Ask:           33,
+				BidSize:       34,
+				AskSize:       35,
+				InTheMoney:    "36",
+				Volume:        37,
+				OpenInterest:  38,
+				NetChange:     39,
+				LastPrice:     40,
+				QuoteDetail:   "41",
+				OsiKey:        "42",
+				OptionGreeks: responses.OptionChainOptionGreeks{
+					Rho:          43,
+					Vega:         44,
+					Theta:        45,
+					Delta:        46,
+					Gamma:        47,
+					Iv:           48,
+					CurrentValue: true,
+				},
+			},
+			PairType: "49",
+		},
+	},
+	TimeStamp: responses.ETradeTime{Time: time.Unix(50, 0).UTC()},
+	QuoteType: "51",
+	NearPrice: 52,
+	SelectedED: responses.OptionChainSelectedED{
+		Month: 53,
+		Year:  54,
+		Day:   55,
+	},
+}

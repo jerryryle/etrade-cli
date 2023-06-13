@@ -17,6 +17,7 @@ func main() {
 	rootCmd.AddCommand((&cmd.ListAlertsCommand{AppContext: &appContext}).Command())
 	rootCmd.AddCommand((&cmd.GetQuotesCommand{AppContext: &appContext}).Command())
 	rootCmd.AddCommand((&cmd.LookupCommand{AppContext: &appContext}).Command())
+	rootCmd.AddCommand((&cmd.GetOptionChainsCommand{AppContext: &appContext}).Command())
 
 	if err := rootCmd.Execute(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

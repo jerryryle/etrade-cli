@@ -1,16 +1,16 @@
 package responses
 
 type OptionChainResponse struct {
-	OptionPairs []OptionChainPair     `xml:"optionPairs"`
+	OptionPairs []OptionChainPair     `xml:"OptionPair"`
 	TimeStamp   ETradeTime            `xml:"timeStamp"`
 	QuoteType   string                `xml:"quoteType"`
 	NearPrice   float64               `xml:"nearPrice"`
-	Selected    OptionChainSelectedED `xml:"selected"`
+	SelectedED  OptionChainSelectedED `xml:"SelectedED"`
 }
 
 type OptionChainPair struct {
-	OptionCall OptionChainOptionDetails `xml:"optioncall"`
-	OptionPut  OptionChainOptionDetails `xml:"optionPut"`
+	OptionCall OptionChainOptionDetails `xml:"Call"`
+	OptionPut  OptionChainOptionDetails `xml:"Put"`
 	PairType   string                   `xml:"pairType"`
 }
 
@@ -34,7 +34,7 @@ type OptionChainOptionDetails struct {
 	LastPrice        float64                 `xml:"lastPrice"`
 	QuoteDetail      string                  `xml:"quoteDetail"`
 	OsiKey           string                  `xml:"osiKey"`
-	OptionGreek      OptionChainOptionGreeks `xml:"optionGreek"`
+	OptionGreeks     OptionChainOptionGreeks `xml:"OptionGreeks"`
 }
 
 type OptionChainOptionGreeks struct {

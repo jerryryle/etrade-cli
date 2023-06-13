@@ -31,3 +31,60 @@ func (f QuoteDetailFlag) String() string {
 	}
 	return "UNKNOWN"
 }
+
+type OptionCategory int
+
+const (
+	OptionCategoryStandard OptionCategory = iota
+	OptionCategoryAll
+	OptionCategoryMini
+)
+
+func (f OptionCategory) String() string {
+	switch f {
+	case OptionCategoryStandard:
+		return "STANDARD"
+	case OptionCategoryAll:
+		return "ALL"
+	case OptionCategoryMini:
+		return "MINI"
+	}
+	return "UNKNOWN"
+}
+
+type ChainType int
+
+const (
+	ChainTypeCall ChainType = iota
+	ChainTypePut
+	ChainTypeCallPut
+)
+
+func (f ChainType) String() string {
+	switch f {
+	case ChainTypeCall:
+		return "CALL"
+	case ChainTypePut:
+		return "PUT"
+	case ChainTypeCallPut:
+		return "CALLPUT"
+	}
+	return "UNKNOWN"
+}
+
+type PriceType int
+
+const (
+	PriceTypeAtnm PriceType = iota
+	PriceTypeAll
+)
+
+func (f PriceType) String() string {
+	switch f {
+	case PriceTypeAtnm:
+		return "ATNM"
+	case PriceTypeAll:
+		return "ALL"
+	}
+	return "UNKNOWN"
+}
