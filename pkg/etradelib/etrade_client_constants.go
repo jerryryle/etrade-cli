@@ -1,5 +1,8 @@
 package etradelib
 
+// GetQuotesMaxSymbols is the maximum number of symbols that can be included in a GetQuotes request
+const GetQuotesMaxSymbols = 50
+
 type QuoteDetailFlag int
 
 const (

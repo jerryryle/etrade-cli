@@ -174,7 +174,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 		name      string
 		args      args
 		expectErr bool
-		expect    responses.QuoteResponse
+		expect    *responses.QuoteResponse
 	}{
 		{
 			name: "Valid QuoteDetailAll XML",
@@ -184,7 +184,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				httpClientFakeXml: quoteDetailAllTestXml,
 			},
 			expectErr: false,
-			expect:    quoteDetailAllTestResponse,
+			expect:    &quoteDetailAllTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailFundamental XML",
@@ -194,7 +194,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				httpClientFakeXml: quoteDetailFundamentalTestXml,
 			},
 			expectErr: false,
-			expect:    quoteDetailFundamentalTestResponse,
+			expect:    &quoteDetailFundamentalTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailIntraday XML",
@@ -204,7 +204,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				httpClientFakeXml: quoteDetailIntradayTestXml,
 			},
 			expectErr: false,
-			expect:    quoteDetailIntradayTestResponse,
+			expect:    &quoteDetailIntradayTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailOptions XML",
@@ -214,7 +214,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				httpClientFakeXml: quoteDetailOptionsTestXml,
 			},
 			expectErr: false,
-			expect:    quoteDetailOptionsTestResponse,
+			expect:    &quoteDetailOptionsTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailWeek52 XML",
@@ -224,7 +224,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				httpClientFakeXml: quoteDetailWeek52TestXml,
 			},
 			expectErr: false,
-			expect:    quoteDetailWeek52TestResponse,
+			expect:    &quoteDetailWeek52TestResponse,
 		},
 		{
 			name: "Valid QuoteDetailMutualFund XML",
@@ -234,7 +234,17 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				httpClientFakeXml: quoteDetailMutualFundTestXml,
 			},
 			expectErr: false,
-			expect:    quoteDetailMutualFundTestResponse,
+			expect:    &quoteDetailMutualFundTestResponse,
+		},
+		{
+			name: "Too Many Symbols",
+			args: args{
+				symbols:           []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51"},
+				detailFlag:        QuoteDetailAll,
+				httpClientFakeXml: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><QuoteResponse></QuoteResponse>`,
+			},
+			expectErr: true,
+			expect:    nil,
 		},
 	}
 
@@ -248,9 +258,13 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 			})
 
 			client := CreateETradeClient(GetEndpointUrls(true), httpClient, CreateNullLogger())
-			response, err := client.GetQuotes([]string{"GOOG"}, QuoteDetailAll)
-			assert.Nil(t, err)
-			assert.Equal(t, &tt.expect, response)
+			response, err := client.GetQuotes(tt.args.symbols, QuoteDetailAll)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
 		})
 	}
 

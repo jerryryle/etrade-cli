@@ -51,6 +51,9 @@ func (c *eTradeClient) ListAlerts() (*responses.AlertsResponse, error) {
 }
 
 func (c *eTradeClient) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error) {
+	if len(symbols) > GetQuotesMaxSymbols {
+		return nil, errors.New(fmt.Sprintf("%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols), GetQuotesMaxSymbols))
+	}
 	symbolsList := strings.Join(symbols, ",")
 	queryValues := url.Values{}
 	queryValues.Add("requireEarningsDate", "true")

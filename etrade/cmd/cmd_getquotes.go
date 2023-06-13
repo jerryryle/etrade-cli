@@ -23,7 +23,7 @@ func (c *GetQuotesCommand) Command() *cobra.Command {
 }
 
 func (c *GetQuotesCommand) GetQuotes() error {
-	quotes, err := c.AppContext.Client.GetQuotes([]string{"GOOG", "FLOOP"}, etradelib.QuoteDetailAll)
+	quotes, err := c.AppContext.Client.GetQuotes([]string{"AAPL"}, etradelib.QuoteDetailAll)
 	if err != nil {
 		return err
 	}
