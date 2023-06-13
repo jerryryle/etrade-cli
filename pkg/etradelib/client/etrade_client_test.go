@@ -259,7 +259,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 			})
 
 			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.GetQuotes(tt.args.symbols, QuoteDetailAll)
+			response, err := client.GetQuotes(tt.args.symbols, tt.args.detailFlag)
 			if tt.expectErr {
 				assert.Error(t, err)
 			} else {
@@ -282,13 +282,22 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 		expect    *responses.LookupResponse
 	}{
 		{
-			name: "Valid Search",
+			name: "Valid Search With Results",
 			args: args{
 				search:            "A",
-				httpClientFakeXml: lookupProductTestXml,
+				httpClientFakeXml: lookupProductResultsTestXml,
 			},
 			expectErr: false,
-			expect:    &lookupProductTestResponse,
+			expect:    &lookupProductResultsTestResponse,
+		},
+		{
+			name: "Valid Search With No Results",
+			args: args{
+				search:            "A",
+				httpClientFakeXml: lookupProductNoResultsTestXml,
+			},
+			expectErr: false,
+			expect:    &lookupProductNoResultsTestResponse,
 		},
 	}
 

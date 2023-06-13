@@ -829,7 +829,7 @@ var quoteDetailMutualFundTestResponse = responses.QuoteResponse{
 	},
 }
 
-const lookupProductTestXml = `
+const lookupProductResultsTestXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <LookupResponse>
    <Data>
@@ -840,7 +840,7 @@ const lookupProductTestXml = `
 </LookupResponse>
 `
 
-var lookupProductTestResponse = responses.LookupResponse{
+var lookupProductResultsTestResponse = responses.LookupResponse{
 	Data: []responses.LookupData{
 		{
 			Symbol:      "1",
@@ -848,4 +848,13 @@ var lookupProductTestResponse = responses.LookupResponse{
 			Type:        "3",
 		},
 	},
+}
+
+const lookupProductNoResultsTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<LookupResponse/>
+`
+
+var lookupProductNoResultsTestResponse = responses.LookupResponse{
+	Data: nil,
 }
