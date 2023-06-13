@@ -1,4 +1,4 @@
-package etradelib
+package client
 
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/etradelibtest"

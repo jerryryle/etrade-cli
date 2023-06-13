@@ -1,6 +1,7 @@
 package etradelib
 
 import (
+	client2 "github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"time"
 )
@@ -30,7 +31,7 @@ type ETradeAccountInfo struct {
 }
 
 type eTradeAccount struct {
-	client      ETradeClient
+	client      client2.ETradeClient
 	accountInfo ETradeAccountInfo
 }
 
@@ -51,7 +52,7 @@ func CreateETradeAccountInfoFromResponse(response responses.AccountListAccount) 
 	}
 }
 
-func CreateETradeAccount(client ETradeClient, accountInfo *ETradeAccountInfo) ETradeAccount {
+func CreateETradeAccount(client client2.ETradeClient, accountInfo *ETradeAccountInfo) ETradeAccount {
 	return &eTradeAccount{
 		client:      client,
 		accountInfo: *accountInfo,

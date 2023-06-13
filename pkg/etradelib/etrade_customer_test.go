@@ -2,6 +2,7 @@ package etradelib
 
 import (
 	"errors"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"github.com/stretchr/testify/suite"
 	"testing"
@@ -9,14 +10,14 @@ import (
 
 type ETradeCustomerTestSuite struct {
 	suite.Suite
-	clientFake   eTradeClientFake
+	clientFake   client.ETradeClientFake
 	testCustomer ETradeCustomer
 }
 
 func (s *ETradeCustomerTestSuite) SetupTest() {
 	// Create an empty client fake. Tests will need to set required members before
 	// making client calls
-	s.clientFake = eTradeClientFake{}
+	s.clientFake = client.ETradeClientFake{}
 
 	// Create a test customer using the fake client
 	s.testCustomer = CreateETradeCustomer(&s.clientFake, "TestCustomerName")

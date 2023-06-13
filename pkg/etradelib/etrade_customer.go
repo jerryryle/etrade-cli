@@ -3,6 +3,7 @@ package etradelib
 import (
 	"errors"
 	"fmt"
+	client2 "github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 )
 
 type ETradeCustomer interface {
@@ -23,11 +24,11 @@ type ETradeCustomer interface {
 }
 
 type eTradeCustomer struct {
-	client       ETradeClient
+	client       client2.ETradeClient
 	customerName string
 }
 
-func CreateETradeCustomer(client ETradeClient, customerName string) ETradeCustomer {
+func CreateETradeCustomer(client client2.ETradeClient, customerName string) ETradeCustomer {
 	return &eTradeCustomer{
 		client:       client,
 		customerName: customerName,

@@ -4,11 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"golang.org/x/exp/slog"
 	"time"
 )
 
-func getClientWithCredentialCache(production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger) (etradelib.ETradeClient, error) {
+func getClientWithCredentialCache(production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger) (client.ETradeClient, error) {
 	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath, logger)
 	if err != nil {
 		// Create a new, empty credential cache. It will yield empty strings for the cached token, which
@@ -16,7 +17,7 @@ func getClientWithCredentialCache(production bool, consumerKey string, consumerS
 		cachedCredentials = &CachedCredentials{}
 	}
 
-	var client etradelib.ETradeClient
+	var client client.ETradeClient
 	session, err := etradelib.CreateSession(production, consumerKey, consumerSecret, logger)
 	if err != nil {
 		return nil, err

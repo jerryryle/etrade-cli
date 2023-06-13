@@ -3,6 +3,7 @@ package etradelib
 import (
 	"errors"
 	"github.com/dghubble/oauth1"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"golang.org/x/exp/slog"
 	"io"
 	"net/http"
@@ -10,14 +11,14 @@ import (
 )
 
 type ETradeSession interface {
-	Renew(accessToken string, accessSecret string) (ETradeClient, error)
+	Renew(accessToken string, accessSecret string) (client.ETradeClient, error)
 	Begin() (string, error)
-	Verify(verifyKey string) (client ETradeClient, accessToken string, accessSecret string, err error)
+	Verify(verifyKey string) (etClient client.ETradeClient, accessToken string, accessSecret string, err error)
 }
 
 type eTradeSession struct {
 	config         OAuthConfig
-	urls           EndpointUrls
+	urls           client.EndpointUrls
 	consumerKey    string
 	consumerSecret string
 	requestToken   string
@@ -31,7 +32,7 @@ func CreateSession(production bool, consumerKey string, consumerSecret string, l
 	if consumerKey == "" || consumerSecret == "" {
 		return nil, errors.New("invalid consumer credentials provided")
 	}
-	urls := GetEndpointUrls(production)
+	urls := client.GetEndpointUrls(production)
 
 	authorizeEndpoint := oauth1.Endpoint{
 		RequestTokenURL: urls.GetRequestTokenUrl(),
@@ -59,7 +60,7 @@ func CreateSession(production bool, consumerKey string, consumerSecret string, l
 	}, nil
 }
 
-func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeClient, error) {
+func (s *eTradeSession) Renew(accessToken string, accessSecret string) (client.ETradeClient, error) {
 	s.accessToken = accessToken
 	s.accessSecret = accessSecret
 
@@ -83,7 +84,7 @@ func (s *eTradeSession) Renew(accessToken string, accessSecret string) (ETradeCl
 	if response.StatusCode != http.StatusOK {
 		return nil, errors.New("invalid access token")
 	}
-	return CreateETradeClient(s.urls, httpClient, s.logger), nil
+	return client.CreateETradeClient(s.urls, httpClient, s.logger), nil
 }
 
 func (s *eTradeSession) Begin() (string, error) {
@@ -101,12 +102,12 @@ func (s *eTradeSession) Begin() (string, error) {
 	return authorizeUrl.String(), nil
 }
 
-func (s *eTradeSession) Verify(verifyKey string) (client ETradeClient, accessToken string, accessSecret string, err error) {
+func (s *eTradeSession) Verify(verifyKey string) (etClient client.ETradeClient, accessToken string, accessSecret string, err error) {
 	s.accessToken, s.accessSecret, err = s.config.AccessToken(s.requestToken, oauth1.PercentEncode(s.requestSecret), verifyKey)
 	if err != nil {
 		return nil, "", "", err
 	}
 	token := oauth1.NewToken(s.accessToken, oauth1.PercentEncode(s.accessSecret))
 	httpClient := s.config.Client(oauth1.NoContext, token)
-	return CreateETradeClient(s.urls, httpClient, s.logger), s.accessToken, s.accessSecret, nil
+	return client.CreateETradeClient(s.urls, httpClient, s.logger), s.accessToken, s.accessSecret, nil
 }

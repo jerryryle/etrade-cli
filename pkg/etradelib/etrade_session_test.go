@@ -3,6 +3,7 @@ package etradelib
 import (
 	"errors"
 	"github.com/dghubble/oauth1"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/etradelibtest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
@@ -41,7 +42,7 @@ func (s *ETradeSessionTestSuite) SetupTest() {
 
 	// Create a test session manually, so we can use the mock OAuth config
 	s.session = &eTradeSession{
-		urls:           GetEndpointUrls(false),
+		urls:           client.GetEndpointUrls(false),
 		consumerKey:    "TestConsumerKey",
 		consumerSecret: "TestConsumerSecret",
 		config:         s.configMock,
@@ -69,7 +70,7 @@ func (s *ETradeSessionTestSuite) TestNoAccessTokenOrSecretReturnsError() {
 
 func (s *ETradeSessionTestSuite) TestBadAccessTokenReturnsError() {
 	// Create a fake HTTP client that will return 400 (Bad request) for the renewal request
-	httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+	httpClient := client.NewHttpClientFake(func(req *http.Request) *http.Response {
 		return &http.Response{
 			StatusCode: http.StatusBadRequest,
 			Body:       io.NopCloser(strings.NewReader(`Bad Request`)),
@@ -88,7 +89,7 @@ func (s *ETradeSessionTestSuite) TestBadAccessTokenReturnsError() {
 
 func (s *ETradeSessionTestSuite) TestGoodRenewalSessionReturnsCustomer() {
 	// Create a fake HTTP client that will return 200 (Ok) for the renewal request
-	httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+	httpClient := client.NewHttpClientFake(func(req *http.Request) *http.Response {
 		return &http.Response{
 			StatusCode: http.StatusOK,
 			Body:       io.NopCloser(strings.NewReader(`Access Token has been renewed`)),

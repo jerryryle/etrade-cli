@@ -1,4 +1,4 @@
-package etradelib
+package client
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package etradelib
+package client
 
 // GetQuotesMaxSymbols is the maximum number of symbols that can be included in a GetQuotes request
 const GetQuotesMaxSymbols = 50
