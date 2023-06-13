@@ -16,6 +16,7 @@ type ETradeClient interface {
 	ListAccounts() (*responses.AccountListResponse, error)
 	ListAlerts() (*responses.AlertsResponse, error)
 	GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error)
+	LookupProduct(search string) (*responses.LookupResponse, error)
 }
 
 type eTradeClient struct {
@@ -63,6 +64,15 @@ func (c *eTradeClient) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (
 
 	response := responses.QuoteResponse{}
 	err := c.doRequest("GET", c.urls.GetQuotesUrl(symbolsList), queryValues, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) LookupProduct(search string) (*responses.LookupResponse, error) {
+	response := responses.LookupResponse{}
+	err := c.doRequest("GET", c.urls.LookUpProductUrl(search), nil, &response)
 	if err != nil {
 		return nil, err
 	}

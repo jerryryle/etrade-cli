@@ -828,3 +828,24 @@ var quoteDetailMutualFundTestResponse = responses.QuoteResponse{
 		},
 	},
 }
+
+const lookupProductTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<LookupResponse>
+   <Data>
+      <symbol>1</symbol>
+      <description>2</description>
+      <type>3</type>
+   </Data>
+</LookupResponse>
+`
+
+var lookupProductTestResponse = responses.LookupResponse{
+	Data: []responses.LookupData{
+		{
+			Symbol:      "1",
+			Description: "2",
+			Type:        "3",
+		},
+	},
+}

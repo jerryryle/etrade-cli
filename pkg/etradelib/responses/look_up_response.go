@@ -1,7 +1,7 @@
 package responses
 
 type LookupResponse struct {
-	Data []LookupData `xml:"data"`
+	Data []LookupData `xml:"Data"`
 }
 
 type LookupData struct {

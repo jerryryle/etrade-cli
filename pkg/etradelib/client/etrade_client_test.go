@@ -268,5 +268,47 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 			assert.Equal(t, tt.expect, response)
 		})
 	}
+}
 
+func TestETradeClient_LookupProduct(t *testing.T) {
+	type args struct {
+		search            string
+		httpClientFakeXml string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		expectErr bool
+		expect    *responses.LookupResponse
+	}{
+		{
+			name: "Valid Search",
+			args: args{
+				search:            "A",
+				httpClientFakeXml: lookupProductTestXml,
+			},
+			expectErr: false,
+			expect:    &lookupProductTestResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+				}
+			})
+
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+			response, err := client.LookupProduct(tt.args.search)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
+		})
+	}
 }
