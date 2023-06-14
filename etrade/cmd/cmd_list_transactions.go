@@ -52,7 +52,7 @@ func (c *ListTransactionsCommand) ListTransactions(
 ) error {
 	response, err := c.AppContext.Client.ListTransactions(
 		accountKeyId,
-		startDate, endDate, client.TransactionSortOrderAsc, "", 0,
+		startDate, endDate, client.SortOrderAsc, "", 0,
 	)
 	if err != nil {
 		return err

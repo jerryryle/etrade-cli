@@ -12,12 +12,17 @@ type GetAccountBalancesFn func(accountIdKey string, realTimeNAV bool) (*response
 type ListTransactionsFn func(
 	accountIdKey string,
 	startDate *time.Time, endDate *time.Time,
-	sortOrder TransactionSortOrder, marker string, count int,
+	sortOrder SortOrder, marker string, count int,
 ) (*responses.TransactionListResponse, error)
 
 type ListTransactionDetailsFn func(
 	accountIdKey string, transactionId string,
 ) (*responses.TransactionDetailsResponse, error)
+
+type ViewPortfolioFn func(
+	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
+	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+) (*responses.PortfolioResponse, error)
 
 type ListAlertsFn func() (*responses.AlertsResponse, error)
 
@@ -42,6 +47,7 @@ type ETradeClientFake struct {
 	GetAccountBalancesFn     GetAccountBalancesFn
 	ListTransactionsFn       ListTransactionsFn
 	ListTransactionDetailsFn ListTransactionDetailsFn
+	ViewPortfolioFn          ViewPortfolioFn
 	ListAlertsFn             ListAlertsFn
 	GetQuotesFn              GetQuotesFn
 	LookupProductFn          LookupProductFn
@@ -62,7 +68,7 @@ func (c *ETradeClientFake) GetAccountBalances(accountIdKey string, realTimeNAV b
 func (c *ETradeClientFake) ListTransactions(
 	accountIdKey string,
 	startDate *time.Time, endDate *time.Time,
-	sortOrder TransactionSortOrder, marker string, count int,
+	sortOrder SortOrder, marker string, count int,
 ) (*responses.TransactionListResponse, error) {
 	return c.ListTransactionsFn(accountIdKey, startDate, endDate, sortOrder, marker, count)
 }
@@ -71,6 +77,15 @@ func (c *ETradeClientFake) ListTransactionDetails(
 	accountIdKey string, transactionId string,
 ) (*responses.TransactionDetailsResponse, error) {
 	return c.ListTransactionDetailsFn(accountIdKey, transactionId)
+}
+
+func (c *ETradeClientFake) ViewPortfolio(
+	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
+	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+) (*responses.PortfolioResponse, error) {
+	return c.ViewPortfolioFn(
+		accountIdKey, count, sortBy, sortOrder, pageNumber, marketSession, totalsRequired, lotsRequired, view,
+	)
 }
 
 func (c *ETradeClientFake) ListAlerts() (*responses.AlertsResponse, error) {

@@ -1,7 +1,7 @@
 package responses
 
 type PortfolioResponse struct {
-	Totals           PortfolioTotals             `xml:"totals"`
+	Totals           PortfolioTotals             `xml:"Totals"`
 	AccountPortfolio []PortfolioAccountPortfolio `xml:"AccountPortfolio"`
 }
 

@@ -422,6 +422,296 @@ var listTransactionDetailsTestResponse = responses.TransactionDetailsResponse{
 	},
 }
 
+const viewPortfolioTestXml = `
+<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
+<PortfolioResponse>
+    <Totals>
+        <todaysGainLoss>1</todaysGainLoss>
+        <todaysGainLossPct>2</todaysGainLossPct>
+        <totalMarketValue>3</totalMarketValue>
+        <totalGainLoss>4</totalGainLoss>
+        <totalGainLossPct>5</totalGainLossPct>
+        <totalPricePaid>6</totalPricePaid>
+        <cashBalance>7</cashBalance>
+    </Totals>
+    <AccountPortfolio>
+        <accountId>8</accountId>
+        <next>9</next>
+        <totalPages>10</totalPages>
+        <nextPageNo>11</nextPageNo>
+        <Position>
+            <positionId>12</positionId>
+            <accountId>13</accountId>
+            <Product>
+                <symbol>14</symbol>
+                <securityType>15</securityType>
+                <securitySubType>16</securitySubType>
+                <callPut>17</callPut>
+                <expiryYear>18</expiryYear>
+                <expiryMonth>19</expiryMonth>
+                <expiryDay>20</expiryDay>
+                <strikePrice>21</strikePrice>
+                <expiryType>22</expiryType>
+                <productId>
+                    <symbol>23</symbol>
+                    <typeCode>24</typeCode>
+                </productId>
+            </Product>
+            <osiKey>25</osiKey>
+            <symbolDescription>26</symbolDescription>
+            <dateAcquired>27</dateAcquired>
+            <pricePaid>28</pricePaid>
+            <price>29</price>
+            <commissions>30</commissions>
+            <otherFees>31</otherFees>
+            <quantity>32</quantity>
+            <positionIndicator>33</positionIndicator>
+            <positionType>34</positionType>
+            <change>35</change>
+            <changePct>36</changePct>
+            <daysGain>37</daysGain>
+            <daysGainPct>38</daysGainPct>
+            <marketValue>39</marketValue>
+            <totalCost>40</totalCost>
+            <totalGain>41</totalGain>
+            <totalGainPct>42</totalGainPct>
+            <pctOfPortfolio>43</pctOfPortfolio>
+            <costPerShare>44</costPerShare>
+            <todayCommissions>45</todayCommissions>
+            <todayFees>46</todayFees>
+            <todayPricePaid>47</todayPricePaid>
+            <todayQuantity>48</todayQuantity>
+            <quotestatus>49</quotestatus>
+            <dateTimeUTC>50</dateTimeUTC>
+            <adjPrevClose>51</adjPrevClose>
+            <Complete>
+                <priceAdjustedFlag>true</priceAdjustedFlag>
+                <price>52</price>
+                <adjPrice>53</adjPrice>
+                <change>54</change>
+                <changePct>55</changePct>
+                <prevClose>56</prevClose>
+                <adjPrevClose>57</adjPrevClose>
+                <volume>58</volume>
+                <lastTrade>59</lastTrade>
+                <lastTradeTime>60</lastTradeTime>
+                <adjLastTrade>61</adjLastTrade>
+                <symbolDescription>62</symbolDescription>
+                <perform1Month>63</perform1Month>
+                <perform3Month>64</perform3Month>
+                <perform6Month>65</perform6Month>
+                <perform12Month>66</perform12Month>
+                <prevDayVolume>67</prevDayVolume>
+                <tenDayVolume>68</tenDayVolume>
+                <beta>69</beta>
+                <sv10DaysAvg>70</sv10DaysAvg>
+                <sv20DaysAvg>71</sv20DaysAvg>
+                <sv1MonAvg>72</sv1MonAvg>
+                <sv2MonAvg>73</sv2MonAvg>
+                <sv3MonAvg>74</sv3MonAvg>
+                <sv4MonAvg>75</sv4MonAvg>
+                <sv6MonAvg>76</sv6MonAvg>
+                <week52High>77</week52High>
+                <week52Low>78</week52Low>
+                <week52Range>79</week52Range>
+                <marketCap>80</marketCap>
+                <daysRange>81</daysRange>
+                <delta52WkHigh>82</delta52WkHigh>
+                <delta52WkLow>83</delta52WkLow>
+                <currency>84</currency>
+                <exchange>85</exchange>
+                <marginable>true</marginable>
+                <bid>86</bid>
+                <ask>87</ask>
+                <bidAskSpread>88</bidAskSpread>
+                <bidSize>89</bidSize>
+                <askSize>90</askSize>
+                <open>91</open>
+                <delta>92</delta>
+                <gamma>93</gamma>
+                <ivPct>94</ivPct>
+                <rho>95</rho>
+                <theta>96</theta>
+                <vega>97</vega>
+                <premium>98</premium>
+                <daysToExpiration>99</daysToExpiration>
+                <intrinsicValue>100</intrinsicValue>
+                <openInterest>101</openInterest>
+                <optionsAdjustedFlag>true</optionsAdjustedFlag>
+                <deliverablesStr>102</deliverablesStr>
+                <optionMultiplier>103</optionMultiplier>
+                <baseSymbolAndPrice>104</baseSymbolAndPrice>
+                <estEarnings>105</estEarnings>
+                <eps>106</eps>
+                <peRatio>107</peRatio>
+                <annualDividend>108</annualDividend>
+                <dividend>109</dividend>
+                <divYield>110</divYield>
+                <divPayDate>111</divPayDate>
+                <exDividendDate>112</exDividendDate>
+                <cusip>113</cusip>
+                <quoteStatus>114</quoteStatus>
+            </Complete>
+            <lotsDetails>115</lotsDetails>
+            <quoteDetails>116</quoteDetails>
+        </Position>
+    </AccountPortfolio>
+</PortfolioResponse>
+`
+
+var viewPortfolioTestResponse = responses.PortfolioResponse{
+	Totals: responses.PortfolioTotals{
+		TodaysGainLoss:    1,
+		TodaysGainLossPct: 2,
+		TotalMarketValue:  3,
+		TotalGainLoss:     4,
+		TotalGainLossPct:  5,
+		TotalPricePaid:    6,
+		CashBalance:       7,
+	},
+	AccountPortfolio: []responses.PortfolioAccountPortfolio{
+		{
+			AccountId:  "8",
+			Next:       "9",
+			TotalPages: 10,
+			NextPageNo: "11",
+			Positions: []responses.PortfolioPosition{
+				{
+					PositionId: 12,
+					AccountId:  "13",
+					Product: responses.Product{
+						Symbol:          "14",
+						SecurityType:    "15",
+						SecuritySubType: "16",
+						CallPut:         "17",
+						ExpiryYear:      18,
+						ExpiryMonth:     19,
+						ExpiryDay:       20,
+						StrikePrice:     21,
+						ExpiryType:      "22",
+						ProductId: responses.ProductId{
+							Symbol:   "23",
+							TypeCode: "24",
+						},
+					},
+					OsiKey:            "25",
+					SymbolDescription: "26",
+					DateAcquired: responses.ETradeTime{
+						Time: *etradelibtest.CreateUnixTime(27, 0),
+					},
+					PricePaid:         28,
+					Price:             29,
+					Commissions:       30,
+					OtherFees:         31,
+					Quantity:          32,
+					PositionIndicator: "33",
+					PositionType:      "34",
+					Change:            35,
+					ChangePct:         36,
+					DaysGain:          37,
+					DaysGainPct:       38,
+					MarketValue:       39,
+					TotalCost:         40,
+					TotalGain:         41,
+					TotalGainPct:      42,
+					PctOfPortfolio:    43,
+					CostPerShare:      44,
+					TodayCommissions:  45,
+					TodayFees:         46,
+					TodayPricePaid:    47,
+					TodayQuantity:     48,
+					Quotestatus:       "49",
+					DateTimeUTC: responses.ETradeTime{
+						Time: *etradelibtest.CreateUnixTime(50, 0),
+					},
+					AdjPrevClose: 51,
+					Performance:  responses.PortfolioPerformanceView{},
+					Fundamental:  responses.PortfolioFundamentalView{},
+					OptionsWatch: responses.PortfolioOptionsWatchView{},
+					Quick:        responses.PortfolioQuickView{},
+					Complete: responses.PortfolioCompleteView{
+						PriceAdjustedFlag: true,
+						Price:             52,
+						AdjPrice:          53,
+						Change:            54,
+						ChangePct:         55,
+						PrevClose:         56,
+						AdjPrevClose:      57,
+						Volume:            58,
+						LastTrade:         59,
+						LastTradeTime: responses.ETradeTime{
+							Time: *etradelibtest.CreateUnixTime(60, 0),
+						},
+						AdjLastTrade:        61,
+						SymbolDescription:   "62",
+						Perform1Month:       63,
+						Perform3Month:       64,
+						Perform6Month:       65,
+						Perform12Month:      66,
+						PrevDayVolume:       67,
+						TenDayVolume:        68,
+						Beta:                69,
+						Sv10DaysAvg:         70,
+						Sv20DaysAvg:         71,
+						Sv1MonAvg:           72,
+						Sv2MonAvg:           73,
+						Sv3MonAvg:           74,
+						Sv4MonAvg:           75,
+						Sv6MonAvg:           76,
+						Week52High:          77,
+						Week52Low:           78,
+						Week52Range:         "79",
+						MarketCap:           80,
+						DaysRange:           "81",
+						Delta52WkHigh:       82,
+						Delta52WkLow:        83,
+						Currency:            "84",
+						Exchange:            "85",
+						Marginable:          true,
+						Bid:                 86,
+						Ask:                 87,
+						BidAskSpread:        88,
+						BidSize:             89,
+						AskSize:             90,
+						Open:                91,
+						Delta:               92,
+						Gamma:               93,
+						IvPct:               94,
+						Rho:                 95,
+						Theta:               96,
+						Vega:                97,
+						Premium:             98,
+						DaysToExpiration:    99,
+						IntrinsicValue:      100,
+						OpenInterest:        101,
+						OptionsAdjustedFlag: true,
+						DeliverablesStr:     "102",
+						OptionMultiplier:    103,
+						BaseSymbolAndPrice:  "104",
+						EstEarnings:         105,
+						Eps:                 106,
+						PeRatio:             107,
+						AnnualDividend:      108,
+						Dividend:            109,
+						DivYield:            110,
+						DivPayDate: responses.ETradeTime{
+							Time: *etradelibtest.CreateUnixTime(111, 0),
+						},
+						ExDividendDate: responses.ETradeTime{
+							Time: *etradelibtest.CreateUnixTime(112, 0),
+						},
+						Cusip:       "113",
+						QuoteStatus: "114",
+					},
+					LotsDetails:  "115",
+					QuoteDetails: "116",
+					PositionLot:  nil,
+				},
+			},
+		},
+	},
+}
+
 const listAlertsTestXml = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <AlertsResponse>

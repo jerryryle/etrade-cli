@@ -116,7 +116,7 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 		accountIdKey      string
 		startDate         *time.Time
 		endDate           *time.Time
-		sortOrder         TransactionSortOrder
+		sortOrder         SortOrder
 		marker            string
 		count             int
 		httpClientFakeXml string
@@ -134,7 +134,7 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 				accountIdKey:      "1234",
 				startDate:         etradelibtest.CreateTime(2023, time.January, 1, 0, 0, 0, 0, time.UTC),
 				endDate:           etradelibtest.CreateTime(2023, time.January, 2, 0, 0, 0, 0, time.UTC),
-				sortOrder:         TransactionSortOrderAsc,
+				sortOrder:         SortOrderAsc,
 				marker:            "FOO",
 				count:             6,
 				httpClientFakeXml: listTransactionsTestXml,
@@ -215,6 +215,75 @@ func TestETradeClient_ListTransactionDetails(t *testing.T) {
 
 				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 				response, err := client.ListTransactionDetails(tt.args.accountIdKey, tt.args.transactionId)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
+	}
+}
+
+func TestETradeClient_ViewPortfolio(t *testing.T) {
+	type args struct {
+		accountIdKey      string
+		count             int
+		sortBy            PortfolioSortBy
+		sortOrder         SortOrder
+		pageNumber        int
+		marketSession     PortfolioMarketSession
+		totalsRequired    bool
+		lotsRequired      bool
+		view              PortfolioView
+		httpClientFakeXml string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		expectUrl string
+		expectErr bool
+		expect    *responses.PortfolioResponse
+	}{
+		{
+			name: "View Portfolio With Results",
+			args: args{
+				accountIdKey:      "1234",
+				count:             5,
+				sortBy:            PortfolioSortBySymbol,
+				sortOrder:         SortOrderAsc,
+				pageNumber:        6,
+				marketSession:     PortfolioMarketSessionRegular,
+				totalsRequired:    true,
+				lotsRequired:      true,
+				view:              PortfolioViewComplete,
+				httpClientFakeXml: viewPortfolioTestXml,
+			},
+			expectUrl: "https://api.etrade.com/v1/accounts/1234/portfolio?count=5&lotsRequired=true&marketSession=REGULAR&pageNumber=6&sortBy=SYMBOL&sortOrder=ASC&totalsRequired=true&view=COMPLETE",
+			expectErr: false,
+			expect:    &viewPortfolioTestResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
+
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.ViewPortfolio(
+					tt.args.accountIdKey, tt.args.count, tt.args.sortBy, tt.args.sortOrder, tt.args.pageNumber,
+					tt.args.marketSession, tt.args.totalsRequired, tt.args.lotsRequired, tt.args.view,
+				)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {

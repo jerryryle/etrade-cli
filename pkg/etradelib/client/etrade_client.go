@@ -21,10 +21,15 @@ type ETradeClient interface {
 	ListTransactions(
 		accountIdKey string,
 		startDate *time.Time, endDate *time.Time,
-		sortOrder TransactionSortOrder, marker string, count int,
+		sortOrder SortOrder, marker string, count int,
 	) (*responses.TransactionListResponse, error)
 
 	ListTransactionDetails(accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error)
+
+	ViewPortfolio(
+		accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
+		marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+	) (*responses.PortfolioResponse, error)
 
 	ListAlerts() (*responses.AlertsResponse, error)
 
@@ -84,7 +89,7 @@ func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool)
 func (c *eTradeClient) ListTransactions(
 	accountIdKey string,
 	startDate *time.Time, endDate *time.Time,
-	sortOrder TransactionSortOrder, marker string, count int,
+	sortOrder SortOrder, marker string, count int,
 ) (*responses.TransactionListResponse, error) {
 	dateLayout := "01022006"
 	queryValues := url.Values{}
@@ -115,6 +120,32 @@ func (c *eTradeClient) ListTransactionDetails(
 ) (*responses.TransactionDetailsResponse, error) {
 	response := responses.TransactionDetailsResponse{}
 	err := c.doRequest("GET", c.urls.ListTransactionDetailsUrl(accountIdKey, transactionId), nil, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) ViewPortfolio(
+	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
+	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+) (*responses.PortfolioResponse, error) {
+	queryValues := url.Values{}
+	if count > 0 {
+		queryValues.Add("count", fmt.Sprintf("%d", count))
+	}
+	if pageNumber > 0 {
+		queryValues.Add("pageNumber", fmt.Sprintf("%d", pageNumber))
+	}
+	queryValues.Add("totalsRequired", fmt.Sprintf("%t", totalsRequired))
+	queryValues.Add("lotsRequired", fmt.Sprintf("%t", lotsRequired))
+	queryValues.Add("sortBy", sortBy.String())
+	queryValues.Add("sortOrder", sortOrder.String())
+	queryValues.Add("marketSession", marketSession.String())
+	queryValues.Add("view", view.String())
+
+	response := responses.PortfolioResponse{}
+	err := c.doRequest("GET", c.urls.ViewPortfolioUrl(accountIdKey), queryValues, &response)
 	if err != nil {
 		return nil, err
 	}
