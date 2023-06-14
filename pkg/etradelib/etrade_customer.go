@@ -3,7 +3,7 @@ package etradelib
 import (
 	"errors"
 	"fmt"
-	client2 "github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 )
 
 type ETradeCustomer interface {
@@ -24,13 +24,13 @@ type ETradeCustomer interface {
 }
 
 type eTradeCustomer struct {
-	client       client2.ETradeClient
+	etradeClient client.ETradeClient
 	customerName string
 }
 
-func CreateETradeCustomer(client client2.ETradeClient, customerName string) ETradeCustomer {
+func CreateETradeCustomer(client client.ETradeClient, customerName string) ETradeCustomer {
 	return &eTradeCustomer{
-		client:       client,
+		etradeClient: client,
 		customerName: customerName,
 	}
 }
@@ -40,7 +40,7 @@ func (c *eTradeCustomer) GetCustomerName() string {
 }
 
 func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
-	response, err := c.client.ListAccounts()
+	response, err := c.etradeClient.ListAccounts()
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
 	for _, account := range response.Accounts {
 		accounts = append(
 			accounts,
-			CreateETradeAccount(c.client, CreateETradeAccountInfoFromResponse(account)))
+			CreateETradeAccount(c.etradeClient, CreateETradeAccountInfoFromResponse(account)))
 	}
 	return accounts, err
 }
@@ -67,7 +67,7 @@ func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error)
 }
 
 func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {
-	response, err := c.client.ListAlerts()
+	response, err := c.etradeClient.ListAlerts()
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {
 	for _, alert := range response.Alerts {
 		alerts = append(
 			alerts,
-			CreateETradeAlert(c.client, CreateETradeAlertInfoFromResponse(alert)))
+			CreateETradeAlert(c.etradeClient, CreateETradeAlertInfoFromResponse(alert)))
 	}
 	return alerts, err
 }

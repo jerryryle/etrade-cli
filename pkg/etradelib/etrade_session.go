@@ -13,7 +13,7 @@ import (
 type ETradeSession interface {
 	Renew(accessToken string, accessSecret string) (client.ETradeClient, error)
 	Begin() (string, error)
-	Verify(verifyKey string) (etClient client.ETradeClient, accessToken string, accessSecret string, err error)
+	Verify(verifyKey string) (eTradeClient client.ETradeClient, accessToken string, accessSecret string, err error)
 }
 
 type eTradeSession struct {
@@ -102,7 +102,7 @@ func (s *eTradeSession) Begin() (string, error) {
 	return authorizeUrl.String(), nil
 }
 
-func (s *eTradeSession) Verify(verifyKey string) (etClient client.ETradeClient, accessToken string, accessSecret string, err error) {
+func (s *eTradeSession) Verify(verifyKey string) (eTradeClient client.ETradeClient, accessToken string, accessSecret string, err error) {
 	s.accessToken, s.accessSecret, err = s.config.AccessToken(s.requestToken, oauth1.PercentEncode(s.requestSecret), verifyKey)
 	if err != nil {
 		return nil, "", "", err

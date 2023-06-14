@@ -51,19 +51,19 @@ func (s *ETradeSessionTestSuite) SetupTest() {
 
 func (s *ETradeSessionTestSuite) TestNoAccessTokenOrSecretReturnsError() {
 	// No Token
-	client, err := s.session.Renew("", "TestAccessSecret")
+	eTradeClient, err := s.session.Renew("", "TestAccessSecret")
 	s.Assert().EqualError(err, "invalid access credentials provided")
-	s.Assert().Nil(client)
+	s.Assert().Nil(eTradeClient)
 
 	// No secret
-	client, err = s.session.Renew("TestAccessToken", "")
+	eTradeClient, err = s.session.Renew("TestAccessToken", "")
 	s.Assert().EqualError(err, "invalid access credentials provided")
-	s.Assert().Nil(client)
+	s.Assert().Nil(eTradeClient)
 
 	// Neither
-	client, err = s.session.Renew("", "")
+	eTradeClient, err = s.session.Renew("", "")
 	s.Assert().EqualError(err, "invalid access credentials provided")
-	s.Assert().Nil(client)
+	s.Assert().Nil(eTradeClient)
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -80,8 +80,8 @@ func (s *ETradeSessionTestSuite) TestBadAccessTokenReturnsError() {
 	// Set up mock Client() call to return the fake HTTP client.
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(httpClient)
 
-	client, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
-	s.Assert().Nil(client)
+	eTradeClient, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
+	s.Assert().Nil(eTradeClient)
 	s.Assert().Error(err)
 
 	s.configMock.AssertExpectations(s.T())
@@ -99,9 +99,9 @@ func (s *ETradeSessionTestSuite) TestGoodRenewalSessionReturnsCustomer() {
 	// Set up mock Client() call to return the fake HTTP client.
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("TestAccessToken", "TestAccessSecret")).Return(httpClient)
 
-	client, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
+	eTradeClient, err := s.session.Renew("TestAccessToken", "TestAccessSecret")
 	s.Assert().Nil(err)
-	s.Assert().NotNil(client)
+	s.Assert().NotNil(eTradeClient)
 
 	s.configMock.AssertExpectations(s.T())
 }
@@ -128,8 +128,8 @@ func (s *ETradeSessionTestSuite) TestBeginNewSessionFailsIfAccessTokenReturnsErr
 	// Set up mock AccessToken() call to return a fake token
 	s.configMock.On("AccessToken", "MockRequestToken", "MockRequestSecret", "FakeVerifyKey").Return("", "", errors.New("mock error"))
 
-	client, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
-	s.Assert().Nil(client)
+	eTradeClient, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
+	s.Assert().Nil(eTradeClient)
 	s.Assert().Equal(accessToken, "")
 	s.Assert().Equal(accessSecret, "")
 	s.Assert().EqualError(err, "mock error")
@@ -148,9 +148,9 @@ func (s *ETradeSessionTestSuite) TestNewSessionSucceeds() {
 	s.configMock.On("AccessToken", "MockRequestToken", "MockRequestSecret", "FakeVerifyKey").Return("MockAccessToken", "MockAccessSecret", nil)
 	s.configMock.On("Client", oauth1.NoContext, oauth1.NewToken("MockAccessToken", "MockAccessSecret")).Return(new(http.Client))
 
-	client, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
+	eTradeClient, accessToken, accessSecret, err := s.session.Verify("FakeVerifyKey")
 	s.Assert().Nil(err)
-	s.Assert().NotNil(client)
+	s.Assert().NotNil(eTradeClient)
 	s.Assert().Equal(accessToken, "MockAccessToken")
 	s.Assert().Equal(accessSecret, "MockAccessSecret")
 
