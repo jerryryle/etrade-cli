@@ -6,7 +6,8 @@ import (
 
 type ListAccountsFn func() (*responses.AccountListResponse, error)
 type ListAlertsFn func() (*responses.AlertsResponse, error)
-type GetQuotesFn func(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error)
+type GetQuotesFn func(symbols []string,
+	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error)
 type LookupProductFn func(search string) (*responses.LookupResponse, error)
 type GetOptionChainsFn func(symbol string,
 	expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
@@ -31,8 +32,9 @@ func (c *ETradeClientFake) ListAlerts() (*responses.AlertsResponse, error) {
 	return c.ListAlertsFn()
 }
 
-func (c *ETradeClientFake) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error) {
-	return c.GetQuotesFn(symbols, detailFlag)
+func (c *ETradeClientFake) GetQuotes(symbols []string,
+	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error) {
+	return c.GetQuotesFn(symbols, detailFlag, requireEarningsDate, skipMiniOptionsCheck)
 }
 
 func (c *ETradeClientFake) LookupProduct(search string) (*responses.LookupResponse, error) {

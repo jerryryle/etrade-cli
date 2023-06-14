@@ -100,9 +100,11 @@ func TestETradeClient_ListAlerts(t *testing.T) {
 
 func TestETradeClient_GetQuotes(t *testing.T) {
 	type args struct {
-		symbols           []string
-		detailFlag        QuoteDetailFlag
-		httpClientFakeXml string
+		symbols              []string
+		detailFlag           QuoteDetailFlag
+		requireEarningsDate  bool
+		skipMiniOptionsCheck bool
+		httpClientFakeXml    string
 	}
 	tests := []struct {
 		name      string
@@ -114,75 +116,102 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 		{
 			name: "Valid QuoteDetailAll XML",
 			args: args{
-				symbols:           []string{"GOOG"},
-				detailFlag:        QuoteDetailAll,
-				httpClientFakeXml: quoteDetailAllTestXml,
+				symbols:              []string{"GOOG"},
+				detailFlag:           QuoteDetailAll,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailAllTestXml,
 			},
-			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=ALL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=ALL&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailAllTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailFundamental XML",
 			args: args{
-				symbols:           []string{"GOOG"},
-				detailFlag:        QuoteDetailFundamental,
-				httpClientFakeXml: quoteDetailFundamentalTestXml,
+				symbols:              []string{"GOOG"},
+				detailFlag:           QuoteDetailFundamental,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailFundamentalTestXml,
 			},
-			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=FUNDAMENTAL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=FUNDAMENTAL&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailFundamentalTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailIntraday XML",
 			args: args{
-				symbols:           []string{"GOOG"},
-				detailFlag:        QuoteDetailIntraday,
-				httpClientFakeXml: quoteDetailIntradayTestXml,
+				symbols:              []string{"GOOG"},
+				detailFlag:           QuoteDetailIntraday,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailIntradayTestXml,
 			},
-			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=INTRADAY&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=INTRADAY&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailIntradayTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailOptions XML",
 			args: args{
-				symbols:           []string{"GOOG"},
-				detailFlag:        QuoteDetailOptions,
-				httpClientFakeXml: quoteDetailOptionsTestXml,
+				symbols:              []string{"GOOG"},
+				detailFlag:           QuoteDetailOptions,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailOptionsTestXml,
 			},
-			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=OPTIONS&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=OPTIONS&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailOptionsTestResponse,
 		},
 		{
 			name: "Valid QuoteDetailWeek52 XML",
 			args: args{
-				symbols:           []string{"GOOG"},
-				detailFlag:        QuoteDetailWeek52,
-				httpClientFakeXml: quoteDetailWeek52TestXml,
+				symbols:              []string{"GOOG"},
+				detailFlag:           QuoteDetailWeek52,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailWeek52TestXml,
 			},
-			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=WEEK_52&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=WEEK_52&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailWeek52TestResponse,
 		},
 		{
 			name: "Valid QuoteDetailMutualFund XML",
 			args: args{
-				symbols:           []string{"VFIAX"},
-				detailFlag:        QuoteDetailMutualFund,
-				httpClientFakeXml: quoteDetailMutualFundTestXml,
+				symbols:              []string{"VFIAX"},
+				detailFlag:           QuoteDetailMutualFund,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailMutualFundTestXml,
 			},
-			expectUrl: "https://api.etrade.com/v1/market/quote/VFIAX?detailFlag=MF_DETAIL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectUrl: "https://api.etrade.com/v1/market/quote/VFIAX?detailFlag=MF_DETAIL&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailMutualFundTestResponse,
 		},
 		{
+			name: "Override Symbols When More Than 25",
+			args: args{
+				symbols:              []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"},
+				detailFlag:           QuoteDetailAll,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    quoteDetailAllTestXml,
+			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26?detailFlag=ALL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectErr: false,
+			expect:    &quoteDetailAllTestResponse,
+		},
+		{
 			name: "Too Many Symbols",
 			args: args{
-				symbols:           []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51"},
-				detailFlag:        QuoteDetailAll,
-				httpClientFakeXml: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><QuoteResponse></QuoteResponse>`,
+				symbols:              []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51"},
+				detailFlag:           QuoteDetailAll,
+				requireEarningsDate:  true,
+				skipMiniOptionsCheck: false,
+				httpClientFakeXml:    `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><QuoteResponse></QuoteResponse>`,
 			},
 			expectUrl: "",
 			expectErr: true,
@@ -201,7 +230,8 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 			})
 
 			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.GetQuotes(tt.args.symbols, tt.args.detailFlag)
+			response, err := client.GetQuotes(tt.args.symbols,
+				tt.args.detailFlag, tt.args.requireEarningsDate, tt.args.skipMiniOptionsCheck)
 			if tt.expectErr {
 				assert.Error(t, err)
 			} else {

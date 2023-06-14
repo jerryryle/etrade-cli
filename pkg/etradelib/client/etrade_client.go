@@ -15,7 +15,8 @@ import (
 type ETradeClient interface {
 	ListAccounts() (*responses.AccountListResponse, error)
 	ListAlerts() (*responses.AlertsResponse, error)
-	GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error)
+	GetQuotes(symbols []string,
+		detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error)
 	LookupProduct(search string) (*responses.LookupResponse, error)
 	GetOptionChains(symbol string,
 		expiryYear int, expiryMonth int, expiryDay int,
@@ -56,15 +57,18 @@ func (c *eTradeClient) ListAlerts() (*responses.AlertsResponse, error) {
 	return &response, nil
 }
 
-func (c *eTradeClient) GetQuotes(symbols []string, detailFlag QuoteDetailFlag) (*responses.QuoteResponse, error) {
+func (c *eTradeClient) GetQuotes(symbols []string,
+	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error) {
 	if len(symbols) > GetQuotesMaxSymbols {
 		return nil, errors.New(fmt.Sprintf("%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols), GetQuotesMaxSymbols))
 	}
 	symbolsList := strings.Join(symbols, ",")
 	queryValues := url.Values{}
-	queryValues.Add("requireEarningsDate", "true")
-	queryValues.Add("overrideSymbolCount", "true")
-	queryValues.Add("skipMiniOptionsCheck", "false")
+	if len(symbols) > GetQuotesMaxSymbolsBeforeOverride {
+		queryValues.Add("overrideSymbolCount", "true")
+	}
+	queryValues.Add("requireEarningsDate", fmt.Sprintf("%t", requireEarningsDate))
+	queryValues.Add("skipMiniOptionsCheck", fmt.Sprintf("%t", skipMiniOptionsCheck))
 	queryValues.Add("detailFlag", detailFlag.String())
 
 	response := responses.QuoteResponse{}

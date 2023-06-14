@@ -1,6 +1,11 @@
 package client
 
-// GetQuotesMaxSymbols is the maximum number of symbols that can be included in a GetQuotes request
+// GetQuotesMaxSymbolsBeforeOverride is the maximum number of symbols that can be included in a GetQuotes request without
+// specifying the `overrideSymbolCount` flag.
+const GetQuotesMaxSymbolsBeforeOverride = 25
+
+// GetQuotesMaxSymbols is the maximum number of symbols that can be included in a GetQuotes request with the
+// `overrideSymbolCount` flag set.
 const GetQuotesMaxSymbols = 50
 
 type QuoteDetailFlag int
