@@ -300,3 +300,46 @@ func TestETradeClient_GetOptionChains(t *testing.T) {
 		})
 	}
 }
+
+func TestETradeClient_GetOptionExpireDates(t *testing.T) {
+	type args struct {
+		symbol            string
+		expiryType        ExpiryType
+		httpClientFakeXml string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		expectErr bool
+		expect    *responses.OptionExpireDateResponse
+	}{
+		{
+			name: "Get Option Expire Date With Results",
+			args: args{
+				httpClientFakeXml: getOptionExpireDateTestXml,
+			},
+			expectErr: false,
+			expect:    &getOptionExpireDateTestResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+				}
+			})
+
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+			response, err := client.GetOptionExpireDates(tt.args.symbol, tt.args.expiryType)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
+		})
+	}
+}

@@ -12,13 +12,15 @@ type GetOptionChainsFn func(symbol string,
 	expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
 	includeWeekly, skipAdjusted bool,
 	optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error)
+type GetOptionExpireDatesFn func(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error)
 
 type ETradeClientFake struct {
-	ListAccountsFn    ListAccountsFn
-	ListAlertsFn      ListAlertsFn
-	GetQuotesFn       GetQuotesFn
-	LookupProductFn   LookupProductFn
-	GetOptionChainsFn GetOptionChainsFn
+	ListAccountsFn         ListAccountsFn
+	ListAlertsFn           ListAlertsFn
+	GetQuotesFn            GetQuotesFn
+	LookupProductFn        LookupProductFn
+	GetOptionChainsFn      GetOptionChainsFn
+	GetOptionExpireDatesFn GetOptionExpireDatesFn
 }
 
 func (c *ETradeClientFake) ListAccounts() (*responses.AccountListResponse, error) {
@@ -46,4 +48,8 @@ func (c *ETradeClientFake) GetOptionChains(symbol string,
 		expiryYear, expiryMonth, expiryDay,
 		strikePriceNear, noOfStrikes, includeWeekly, skipAdjusted,
 		optionCategory, chainType, priceType)
+}
+
+func (c *ETradeClientFake) GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error) {
+	return c.GetOptionExpireDatesFn(symbol, expiryType)
 }

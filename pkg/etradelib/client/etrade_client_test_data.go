@@ -1081,3 +1081,26 @@ var getOptionChainsTestResponse = responses.OptionChainResponse{
 		Day:   55,
 	},
 }
+
+const getOptionExpireDateTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<OptionExpireDateResponse>
+   <ExpirationDate>
+      <year>1</year>
+      <month>2</month>
+      <day>3</day>
+      <expiryType>4</expiryType>
+   </ExpirationDate>
+</OptionExpireDateResponse>
+`
+
+var getOptionExpireDateTestResponse = responses.OptionExpireDateResponse{
+	ExpirationDates: []responses.OptionExpireDateExpirationDate{
+		{
+			Year:       1,
+			Month:      2,
+			Day:        3,
+			ExpiryType: "4",
+		},
+	},
+}

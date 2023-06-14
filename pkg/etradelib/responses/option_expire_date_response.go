@@ -1,7 +1,7 @@
 package responses
 
 type OptionExpireDateResponse struct {
-	ExpirationDates []OptionExpireDateExpirationDate `xml:"expirationDates"`
+	ExpirationDates []OptionExpireDateExpirationDate `xml:"ExpirationDate"`
 }
 
 type OptionExpireDateExpirationDate struct {

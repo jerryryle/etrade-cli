@@ -14,8 +14,8 @@ const (
 	QuoteDetailMutualFund
 )
 
-func (f QuoteDetailFlag) String() string {
-	switch f {
+func (e QuoteDetailFlag) String() string {
+	switch e {
 	case QuoteDetailAll:
 		return "ALL"
 	case QuoteDetailFundamental:
@@ -40,8 +40,8 @@ const (
 	OptionCategoryMini
 )
 
-func (f OptionCategory) String() string {
-	switch f {
+func (e OptionCategory) String() string {
+	switch e {
 	case OptionCategoryStandard:
 		return "STANDARD"
 	case OptionCategoryAll:
@@ -60,8 +60,8 @@ const (
 	ChainTypeCallPut
 )
 
-func (f ChainType) String() string {
-	switch f {
+func (e ChainType) String() string {
+	switch e {
 	case ChainTypeCall:
 		return "CALL"
 	case ChainTypePut:
@@ -79,12 +79,47 @@ const (
 	PriceTypeAll
 )
 
-func (f PriceType) String() string {
-	switch f {
+func (e PriceType) String() string {
+	switch e {
 	case PriceTypeAtnm:
 		return "ATNM"
 	case PriceTypeAll:
 		return "ALL"
+	}
+	return "UNKNOWN"
+}
+
+type ExpiryType int
+
+const (
+	ExpiryTypeUnspecified ExpiryType = iota
+	ExpiryTypeDaily
+	ExpiryTypeWeekly
+	ExpiryTypeMonthly
+	ExpiryTypeQuarterly
+	ExpiryTypeVix
+	ExpiryTypeAll
+	ExpiryTypeMonthEnd
+)
+
+func (e ExpiryType) String() string {
+	switch e {
+	case ExpiryTypeUnspecified:
+		return "UNSPECIFIED"
+	case ExpiryTypeDaily:
+		return "DAILY"
+	case ExpiryTypeWeekly:
+		return "WEEKLY"
+	case ExpiryTypeMonthly:
+		return "MONTHLY"
+	case ExpiryTypeQuarterly:
+		return "QUARTERLY"
+	case ExpiryTypeVix:
+		return "VIX"
+	case ExpiryTypeAll:
+		return "ALL"
+	case ExpiryTypeMonthEnd:
+		return "MONTHEND"
 	}
 	return "UNKNOWN"
 }

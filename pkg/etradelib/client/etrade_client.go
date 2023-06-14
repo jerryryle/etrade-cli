@@ -21,6 +21,7 @@ type ETradeClient interface {
 		expiryYear int, expiryMonth int, expiryDay int,
 		strikePriceNear int, noOfStrikes int, includeWeekly bool, skipAdjusted bool,
 		optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error)
+	GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error)
 }
 
 type eTradeClient struct {
@@ -112,6 +113,19 @@ func (c *eTradeClient) GetOptionChains(symbol string,
 
 	response := responses.OptionChainResponse{}
 	err := c.doRequest("GET", c.urls.GetOptionChainsUrl(), queryValues, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error) {
+	queryValues := url.Values{}
+	queryValues.Add("symbol", symbol)
+	queryValues.Add("expiryType", expiryType.String())
+
+	response := responses.OptionExpireDateResponse{}
+	err := c.doRequest("GET", c.urls.GetOptionExpireDatesUrl(), queryValues, &response)
 	if err != nil {
 		return nil, err
 	}
