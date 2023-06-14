@@ -17,6 +17,7 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
+		expectUrl string
 		expectErr bool
 		expect    *responses.AccountListResponse
 	}{
@@ -25,6 +26,7 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 			args: args{
 				httpClientFakeXml: listAccountsTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/accounts/list",
 			expectErr: false,
 			expect:    &listAccountsTestResponse,
 		},
@@ -33,6 +35,7 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
 				return &http.Response{
 					StatusCode: http.StatusOK,
 					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
@@ -58,14 +61,16 @@ func TestETradeClient_ListAlerts(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
+		expectUrl string
 		expectErr bool
 		expect    *responses.AlertsResponse
 	}{
 		{
-			name: "List Accounts With Results",
+			name: "List Alerts With Results",
 			args: args{
 				httpClientFakeXml: listAlertsTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/user/alerts",
 			expectErr: false,
 			expect:    &listAlertsTestResponse,
 		},
@@ -74,6 +79,7 @@ func TestETradeClient_ListAlerts(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
 				return &http.Response{
 					StatusCode: http.StatusOK,
 					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
@@ -101,6 +107,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
+		expectUrl string
 		expectErr bool
 		expect    *responses.QuoteResponse
 	}{
@@ -111,6 +118,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailAll,
 				httpClientFakeXml: quoteDetailAllTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=ALL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailAllTestResponse,
 		},
@@ -121,6 +129,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailFundamental,
 				httpClientFakeXml: quoteDetailFundamentalTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=FUNDAMENTAL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailFundamentalTestResponse,
 		},
@@ -131,6 +140,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailIntraday,
 				httpClientFakeXml: quoteDetailIntradayTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=INTRADAY&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailIntradayTestResponse,
 		},
@@ -141,6 +151,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailOptions,
 				httpClientFakeXml: quoteDetailOptionsTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=OPTIONS&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailOptionsTestResponse,
 		},
@@ -151,6 +162,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailWeek52,
 				httpClientFakeXml: quoteDetailWeek52TestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=WEEK_52&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailWeek52TestResponse,
 		},
@@ -161,6 +173,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailMutualFund,
 				httpClientFakeXml: quoteDetailMutualFundTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/VFIAX?detailFlag=MF_DETAIL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
 			expect:    &quoteDetailMutualFundTestResponse,
 		},
@@ -171,6 +184,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 				detailFlag:        QuoteDetailAll,
 				httpClientFakeXml: `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><QuoteResponse></QuoteResponse>`,
 			},
+			expectUrl: "",
 			expectErr: true,
 			expect:    nil,
 		},
@@ -179,6 +193,7 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
 				return &http.Response{
 					StatusCode: http.StatusOK,
 					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
@@ -205,6 +220,7 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
+		expectUrl string
 		expectErr bool
 		expect    *responses.LookupResponse
 	}{
@@ -214,6 +230,7 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 				search:            "A",
 				httpClientFakeXml: lookupProductResultsTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/lookup/A",
 			expectErr: false,
 			expect:    &lookupProductResultsTestResponse,
 		},
@@ -223,6 +240,7 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 				search:            "A",
 				httpClientFakeXml: lookupProductNoResultsTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/lookup/A",
 			expectErr: false,
 			expect:    &lookupProductNoResultsTestResponse,
 		},
@@ -231,6 +249,7 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
 				return &http.Response{
 					StatusCode: http.StatusOK,
 					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
@@ -263,14 +282,47 @@ func TestETradeClient_GetOptionChains(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
+		expectUrl string
 		expectErr bool
 		expect    *responses.OptionChainResponse
 	}{
 		{
 			name: "Get Option Chains With Results",
 			args: args{
+				symbol:            "GOOG",
+				expiryYear:        1,
+				expiryMonth:       2,
+				expiryDay:         3,
+				strikePriceNear:   4,
+				noOfStrikes:       5,
+				includeWeekly:     true,
+				skipAdjusted:      true,
+				optionCategory:    OptionCategoryAll,
+				chainType:         ChainTypeCall,
+				priceType:         PriceTypeAll,
 				httpClientFakeXml: getOptionChainsTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/optionchains?chainType=CALL&expiryDay=3&expiryMonth=2&expiryYear=1&includeWeekly=true&noOfStrikes=5&optionCategory=ALL&priceType=ALL&skipAdjusted=true&strikePriceNear=4&symbol=GOOG",
+			expectErr: false,
+			expect:    &getOptionChainsTestResponse,
+		},
+		{
+			name: "Get Option Chains And Omit Some Parameters",
+			args: args{
+				symbol:            "GOOG",
+				expiryYear:        -1,
+				expiryMonth:       -1,
+				expiryDay:         -1,
+				strikePriceNear:   -1,
+				noOfStrikes:       -1,
+				includeWeekly:     true,
+				skipAdjusted:      true,
+				optionCategory:    OptionCategoryAll,
+				chainType:         ChainTypeCall,
+				priceType:         PriceTypeAll,
+				httpClientFakeXml: getOptionChainsTestXml,
+			},
+			expectUrl: "https://api.etrade.com/v1/market/optionchains?chainType=CALL&includeWeekly=true&optionCategory=ALL&priceType=ALL&skipAdjusted=true&symbol=GOOG",
 			expectErr: false,
 			expect:    &getOptionChainsTestResponse,
 		},
@@ -279,6 +331,7 @@ func TestETradeClient_GetOptionChains(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
 				return &http.Response{
 					StatusCode: http.StatusOK,
 					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
@@ -310,14 +363,18 @@ func TestETradeClient_GetOptionExpireDates(t *testing.T) {
 	tests := []struct {
 		name      string
 		args      args
+		expectUrl string
 		expectErr bool
 		expect    *responses.OptionExpireDateResponse
 	}{
 		{
 			name: "Get Option Expire Date With Results",
 			args: args{
+				symbol:            "GOOG",
+				expiryType:        ExpiryTypeAll,
 				httpClientFakeXml: getOptionExpireDateTestXml,
 			},
+			expectUrl: "https://api.etrade.com/v1/market/optionexpiredate?expiryType=ALL&symbol=GOOG",
 			expectErr: false,
 			expect:    &getOptionExpireDateTestResponse,
 		},
@@ -326,6 +383,7 @@ func TestETradeClient_GetOptionExpireDates(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
 				return &http.Response{
 					StatusCode: http.StatusOK,
 					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
