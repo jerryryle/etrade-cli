@@ -6,13 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type GetQuotesCommandFlags struct {
+type getQuotesCommandFlags struct {
 	requireEarningsDate, skipMiniOptionsCheck bool
 }
 
 type GetQuotesCommand struct {
 	AppContext *ApplicationContext
-	flags      GetQuotesCommandFlags
+	flags      getQuotesCommandFlags
 }
 
 func (c *GetQuotesCommand) Command() *cobra.Command {

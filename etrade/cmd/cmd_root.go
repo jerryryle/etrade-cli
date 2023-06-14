@@ -10,14 +10,14 @@ import (
 	"path/filepath"
 )
 
-type RootCommandFlags struct {
+type rootCommandFlags struct {
 	customerId string
 	debug      bool
 }
 
 type RootCommand struct {
 	AppContext *ApplicationContext
-	flags      RootCommandFlags
+	flags      rootCommandFlags
 }
 
 func (c *RootCommand) Command() *cobra.Command {

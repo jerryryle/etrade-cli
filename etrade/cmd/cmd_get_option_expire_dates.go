@@ -7,13 +7,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type GetOptionExpireDatesFlags struct {
+type getOptionExpireDatesFlags struct {
 	expiryType expiryType
 }
 
 type GetOptionExpireDatesCommand struct {
 	AppContext *ApplicationContext
-	flags      GetOptionExpireDatesFlags
+	flags      getOptionExpireDatesFlags
 }
 
 func (c *GetOptionExpireDatesCommand) Command() *cobra.Command {

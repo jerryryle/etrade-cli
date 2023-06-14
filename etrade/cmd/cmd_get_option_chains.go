@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type GetOptionChainsCommandFlags struct {
+type getOptionChainsCommandFlags struct {
 	expiryYear, expiryMonth, expiryDay int
 	strikePriceNear, noOfStrikes       int
 	includeWeekly, skipAdjusted        bool
@@ -18,7 +18,7 @@ type GetOptionChainsCommandFlags struct {
 
 type GetOptionChainsCommand struct {
 	AppContext *ApplicationContext
-	flags      GetOptionChainsCommandFlags
+	flags      getOptionChainsCommandFlags
 }
 
 func (c *GetOptionChainsCommand) Command() *cobra.Command {
