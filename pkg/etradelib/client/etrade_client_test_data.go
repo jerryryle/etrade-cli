@@ -307,7 +307,7 @@ var getTransactionsTestResponse = responses.TransactionListResponse{
 					ExpiryDay:       17,
 					StrikePrice:     18,
 					ExpiryType:      "19",
-					ProductId: &responses.ProductId{
+					ProductId: responses.ProductId{
 						Symbol:   "20",
 						TypeCode: "21",
 					},
