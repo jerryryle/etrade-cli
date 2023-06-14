@@ -2,7 +2,6 @@ package etradelib
 
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"time"
 )
 
@@ -29,15 +28,6 @@ type ETradeAlertInfo struct {
 type eTradeAlert struct {
 	eTradeClient client.ETradeClient
 	alertInfo    ETradeAlertInfo
-}
-
-func CreateETradeAlertInfoFromResponse(response responses.AlertsAlert) *ETradeAlertInfo {
-	return &ETradeAlertInfo{
-		Id:         response.Id,
-		CreateTime: response.CreateTime.GetTime(),
-		Subject:    response.Subject,
-		Status:     response.Status,
-	}
 }
 
 func CreateETradeAlert(client client.ETradeClient, alertInfo *ETradeAlertInfo) ETradeAlert {
