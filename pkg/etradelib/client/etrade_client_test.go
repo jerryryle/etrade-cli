@@ -113,8 +113,6 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 		count             int
 		httpClientFakeXml string
 	}
-	testStartDate := time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)
-	testEndDate := time.Date(2023, time.January, 2, 0, 0, 0, 0, time.UTC)
 	tests := []struct {
 		name      string
 		args      args
@@ -126,8 +124,8 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 			name: "Get Transactions With Results",
 			args: args{
 				accountIdKey:      "1234",
-				startDate:         &testStartDate,
-				endDate:           &testEndDate,
+				startDate:         etradelibtest.CreateTime(2023, time.January, 1, 0, 0, 0, 0, time.UTC),
+				endDate:           etradelibtest.CreateTime(2023, time.January, 2, 0, 0, 0, 0, time.UTC),
 				sortOrder:         TransactionSortOrderAsc,
 				marker:            "FOO",
 				count:             6,
