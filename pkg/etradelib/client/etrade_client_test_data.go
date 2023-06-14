@@ -1,6 +1,7 @@
 package client
 
 import (
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/etradelibtest"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"time"
 )
@@ -229,7 +230,7 @@ var getAccountBalancesTestResponse = responses.BalanceResponse{
 	},
 }
 
-const getTransactionsTestXml = `
+const listTransactionsTestXml = `
 <?xml version="1.0" encoding="UTF-8"?>
 <TransactionListResponse>
     <Transaction>
@@ -278,7 +279,7 @@ const getTransactionsTestXml = `
 </TransactionListResponse>
 `
 
-var getTransactionsTestResponse = responses.TransactionListResponse{
+var listTransactionsTestResponse = responses.TransactionListResponse{
 	Transactions: []responses.TransactionListTransaction{
 		{
 			TransactionId: "1",
@@ -330,6 +331,95 @@ var getTransactionsTestResponse = responses.TransactionListResponse{
 	MoreTransactions: true,
 	TransactionCount: 32,
 	TotalCount:       33,
+}
+
+const listTransactionDetailsTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<TransactionDetailsResponse>
+    <transactionId>1</transactionId>
+    <accountId>2</accountId>
+    <transactionDate>3</transactionDate>
+    <postDate>4</postDate>
+    <amount>5</amount>
+    <description>6</description>
+    <Category>
+        <categoryId>7</categoryId>
+        <parentId>8</parentId>
+        <categoryName>9</categoryName>
+        <parentName>10</parentName>
+    </Category>
+    <Brokerage>
+        <transactionType>11</transactionType>
+        <Product>
+            <symbol>12</symbol>
+            <securityType>13</securityType>
+            <securitySubType>14</securitySubType>
+            <callPut>15</callPut>
+            <expiryYear>16</expiryYear>
+            <expiryMonth>17</expiryMonth>
+            <expiryDay>18</expiryDay>
+            <strikePrice>19</strikePrice>
+            <expiryType>20</expiryType>
+            <productId>
+                <symbol>21</symbol>
+                <typeCode>22</typeCode>
+            </productId>
+        </Product>
+        <quantity>23</quantity>
+        <price>24</price>
+        <settlementCurrency>25</settlementCurrency>
+        <paymentCurrency>26</paymentCurrency>
+        <fee>27</fee>
+        <memo>28</memo>
+        <checkNo>29</checkNo>
+        <orderNo>30</orderNo>
+    </Brokerage>
+</TransactionDetailsResponse>
+`
+
+var listTransactionDetailsTestResponse = responses.TransactionDetailsResponse{
+	TransactionId: 1,
+	AccountId:     "2",
+	TransactionDate: responses.ETradeTime{
+		Time: *etradelibtest.CreateUnixTime(3, 0),
+	},
+	PostDate: responses.ETradeTime{
+		Time: *etradelibtest.CreateUnixTime(4, 0),
+	},
+	Amount:      5,
+	Description: "6",
+	Category: responses.TransactionDetailsCategory{
+		CategoryId:   "7",
+		ParentId:     "8",
+		CategoryName: "9",
+		ParentName:   "10",
+	},
+	Brokerage: responses.TransactionDetailsBrokerage{
+		TransactionType: "11",
+		Product: responses.Product{
+			Symbol:          "12",
+			SecurityType:    "13",
+			SecuritySubType: "14",
+			CallPut:         "15",
+			ExpiryYear:      16,
+			ExpiryMonth:     17,
+			ExpiryDay:       18,
+			StrikePrice:     19,
+			ExpiryType:      "20",
+			ProductId: responses.ProductId{
+				Symbol:   "21",
+				TypeCode: "22",
+			},
+		},
+		Quantity:           23,
+		Price:              24,
+		SettlementCurrency: "25",
+		PaymentCurrency:    "26",
+		Fee:                27,
+		Memo:               "28",
+		CheckNo:            "29",
+		OrderNo:            "30",
+	},
 }
 
 const listAlertsTestXml = `

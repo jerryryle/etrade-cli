@@ -22,6 +22,8 @@ type ETradeClient interface {
 		startDate *time.Time, endDate *time.Time,
 		sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error)
 
+	ListTransactionDetails(accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error)
+
 	ListAlerts() (*responses.AlertsResponse, error)
 
 	GetQuotes(symbols []string,
@@ -94,6 +96,16 @@ func (c *eTradeClient) ListTransactions(accountIdKey string,
 
 	response := responses.TransactionListResponse{}
 	err := c.doRequest("GET", c.urls.ListTransactionsUrl(accountIdKey), queryValues, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) ListTransactionDetails(
+	accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error) {
+	response := responses.TransactionDetailsResponse{}
+	err := c.doRequest("GET", c.urls.ListTransactionDetailsUrl(accountIdKey, transactionId), nil, &response)
 	if err != nil {
 		return nil, err
 	}

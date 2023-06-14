@@ -129,11 +129,11 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 				sortOrder:         TransactionSortOrderAsc,
 				marker:            "FOO",
 				count:             6,
-				httpClientFakeXml: getTransactionsTestXml,
+				httpClientFakeXml: listTransactionsTestXml,
 			},
 			expectUrl: "https://api.etrade.com/v1/accounts/1234/transactions?count=6&endDate=01022023&marker=FOO&sortOrder=ASC&startDate=01012023",
 			expectErr: false,
-			expect:    &getTransactionsTestResponse,
+			expect:    &listTransactionsTestResponse,
 		},
 	}
 
@@ -150,6 +150,54 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 			response, err := client.ListTransactions(tt.args.accountIdKey,
 				tt.args.startDate, tt.args.endDate, tt.args.sortOrder, tt.args.marker, tt.args.count)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
+		})
+	}
+}
+
+func TestETradeClient_ListTransactionDetails(t *testing.T) {
+	type args struct {
+		accountIdKey      string
+		transactionId     string
+		httpClientFakeXml string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		expectUrl string
+		expectErr bool
+		expect    *responses.TransactionDetailsResponse
+	}{
+		{
+			name: "Get Transaction Details With Results",
+			args: args{
+				accountIdKey:      "1234",
+				transactionId:     "5678",
+				httpClientFakeXml: listTransactionDetailsTestXml,
+			},
+			expectUrl: "https://api.etrade.com/v1/accounts/1234/transactions/5678",
+			expectErr: false,
+			expect:    &listTransactionDetailsTestResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+				}
+			})
+
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+			response, err := client.ListTransactionDetails(tt.args.accountIdKey, tt.args.transactionId)
 			if tt.expectErr {
 				assert.Error(t, err)
 			} else {

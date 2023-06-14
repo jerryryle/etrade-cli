@@ -13,6 +13,9 @@ type ListTransactionsFn func(accountIdKey string,
 	startDate *time.Time, endDate *time.Time,
 	sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error)
 
+type ListTransactionDetailsFn func(
+	accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error)
+
 type ListAlertsFn func() (*responses.AlertsResponse, error)
 
 type GetQuotesFn func(symbols []string,
@@ -28,14 +31,15 @@ type GetOptionChainsFn func(symbol string,
 type GetOptionExpireDatesFn func(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error)
 
 type ETradeClientFake struct {
-	ListAccountsFn         ListAccountsFn
-	GetAccountBalancesFn   GetAccountBalancesFn
-	ListTransactionsFn     ListTransactionsFn
-	ListAlertsFn           ListAlertsFn
-	GetQuotesFn            GetQuotesFn
-	LookupProductFn        LookupProductFn
-	GetOptionChainsFn      GetOptionChainsFn
-	GetOptionExpireDatesFn GetOptionExpireDatesFn
+	ListAccountsFn           ListAccountsFn
+	GetAccountBalancesFn     GetAccountBalancesFn
+	ListTransactionsFn       ListTransactionsFn
+	ListTransactionDetailsFn ListTransactionDetailsFn
+	ListAlertsFn             ListAlertsFn
+	GetQuotesFn              GetQuotesFn
+	LookupProductFn          LookupProductFn
+	GetOptionChainsFn        GetOptionChainsFn
+	GetOptionExpireDatesFn   GetOptionExpireDatesFn
 }
 
 func (c *ETradeClientFake) ListAccounts() (*responses.AccountListResponse, error) {
@@ -50,6 +54,10 @@ func (c *ETradeClientFake) ListTransactions(accountIdKey string,
 	startDate *time.Time, endDate *time.Time,
 	sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error) {
 	return c.ListTransactionsFn(accountIdKey, startDate, endDate, sortOrder, marker, count)
+}
+
+func (c *ETradeClientFake) ListTransactionDetails(accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error) {
+	return c.ListTransactionDetailsFn(accountIdKey, transactionId)
 }
 
 func (c *ETradeClientFake) ListAlerts() (*responses.AlertsResponse, error) {

@@ -7,13 +7,13 @@ type TransactionDetailsResponse struct {
 	PostDate        ETradeTime                  `xml:"postDate"`
 	Amount          float64                     `xml:"amount"`
 	Description     string                      `xml:"description"`
-	Category        TransactionDetailsCategory  `xml:"category"`
-	Brokerage       TransactionDetailsBrokerage `xml:"brokerage"`
+	Category        TransactionDetailsCategory  `xml:"Category"`
+	Brokerage       TransactionDetailsBrokerage `xml:"Brokerage"`
 }
 
 type TransactionDetailsBrokerage struct {
 	TransactionType    string  `xml:"transactionType"`
-	Product            Product `xml:"product"`
+	Product            Product `xml:"Product"`
 	Quantity           float64 `xml:"quantity"`
 	Price              float64 `xml:"price"`
 	SettlementCurrency string  `xml:"settlementCurrency"`
