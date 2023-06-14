@@ -25,17 +25,24 @@ func (c *GetQuotesCommand) Command() *cobra.Command {
 			return c.GetQuotes(args)
 		},
 	}
-	cmd.Flags().BoolVarP(&c.flags.requireEarningsDate, "requireEarningsDate", "r", true, "include next earning date in output")
-	cmd.Flags().BoolVarP(&c.flags.skipMiniOptionsCheck, "skipMiniOptionsCheck", "s", false, "skip checking whether the symbol has mini options")
+	cmd.Flags().BoolVarP(
+		&c.flags.requireEarningsDate, "requireEarningsDate", "r", true, "include next earning date in output",
+	)
+	cmd.Flags().BoolVarP(
+		&c.flags.skipMiniOptionsCheck, "skipMiniOptionsCheck", "s", false,
+		"skip checking whether the symbol has mini options",
+	)
 
 	return cmd
 }
 
 func (c *GetQuotesCommand) GetQuotes(symbols []string) error {
-	quotes, err := c.AppContext.Client.GetQuotes(symbols, client.QuoteDetailAll, c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck)
+	response, err := c.AppContext.Client.GetQuotes(
+		symbols, client.QuoteDetailAll, c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck,
+	)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%#v\n", quotes)
+	fmt.Println(string(response))
 	return nil
 }

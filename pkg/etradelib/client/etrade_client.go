@@ -1,10 +1,8 @@
 package client
 
 import (
-	"encoding/xml"
 	"errors"
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"golang.org/x/exp/slog"
 	"io"
 	"net/http"
@@ -14,40 +12,35 @@ import (
 )
 
 type ETradeClient interface {
-	ListAccounts() (*responses.AccountListResponse, error)
+	ListAccounts() ([]byte, error)
 
-	GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error)
+	GetAccountBalances(accountIdKey string, realTimeNAV bool) ([]byte, error)
 
 	ListTransactions(
-		accountIdKey string,
-		startDate *time.Time, endDate *time.Time,
-		sortOrder SortOrder, marker string, count int,
-	) (*responses.TransactionListResponse, error)
+		accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
+	) ([]byte, error)
 
-	ListTransactionDetails(accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error)
+	ListTransactionDetails(accountIdKey string, transactionId string) ([]byte, error)
 
 	ViewPortfolio(
 		accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
 		marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
-	) (*responses.PortfolioResponse, error)
+	) ([]byte, error)
 
-	ListAlerts() (*responses.AlertsResponse, error)
+	ListAlerts() ([]byte, error)
 
 	GetQuotes(
-		symbols []string,
-		detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
-	) (*responses.QuoteResponse, error)
+		symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+	) ([]byte, error)
 
-	LookupProduct(search string) (*responses.LookupResponse, error)
+	LookupProduct(search string) ([]byte, error)
 
 	GetOptionChains(
-		symbol string,
-		expiryYear int, expiryMonth int, expiryDay int,
-		strikePriceNear int, noOfStrikes int, includeWeekly bool, skipAdjusted bool,
-		optionCategory OptionCategory, chainType ChainType, priceType PriceType,
-	) (*responses.OptionChainResponse, error)
+		symbol string, expiryYear int, expiryMonth int, expiryDay int, strikePriceNear int, noOfStrikes int,
+		includeWeekly bool, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+	) ([]byte, error)
 
-	GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error)
+	GetOptionExpireDates(symbol string, expiryType ExpiryType) ([]byte, error)
 }
 
 type eTradeClient struct {
@@ -64,33 +57,29 @@ func CreateETradeClient(urls EndpointUrls, httpClient *http.Client, logger *slog
 	}
 }
 
-func (c *eTradeClient) ListAccounts() (*responses.AccountListResponse, error) {
-	response := responses.AccountListResponse{}
-	err := c.doRequest("GET", c.urls.ListAccountsUrl(), nil, &response)
+func (c *eTradeClient) ListAccounts() ([]byte, error) {
+	response, err := c.doRequest("GET", c.urls.ListAccountsUrl(), nil)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
-func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error) {
+func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool) ([]byte, error) {
 	queryValues := url.Values{}
 	queryValues.Add("instType", "BROKERAGE")
 	queryValues.Add("realTimeNAV", fmt.Sprintf("%t", realTimeNAV))
 
-	response := responses.BalanceResponse{}
-	err := c.doRequest("GET", c.urls.GetAccountBalancesUrl(accountIdKey), queryValues, &response)
+	response, err := c.doRequest("GET", c.urls.GetAccountBalancesUrl(accountIdKey), queryValues)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
 func (c *eTradeClient) ListTransactions(
-	accountIdKey string,
-	startDate *time.Time, endDate *time.Time,
-	sortOrder SortOrder, marker string, count int,
-) (*responses.TransactionListResponse, error) {
+	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
+) ([]byte, error) {
 	dateLayout := "01022006"
 	queryValues := url.Values{}
 	if startDate != nil {
@@ -107,29 +96,25 @@ func (c *eTradeClient) ListTransactions(
 		queryValues.Add("count", fmt.Sprintf("%d", count))
 	}
 
-	response := responses.TransactionListResponse{}
-	err := c.doRequest("GET", c.urls.ListTransactionsUrl(accountIdKey), queryValues, &response)
+	response, err := c.doRequest("GET", c.urls.ListTransactionsUrl(accountIdKey), queryValues)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
-func (c *eTradeClient) ListTransactionDetails(
-	accountIdKey string, transactionId string,
-) (*responses.TransactionDetailsResponse, error) {
-	response := responses.TransactionDetailsResponse{}
-	err := c.doRequest("GET", c.urls.ListTransactionDetailsUrl(accountIdKey, transactionId), nil, &response)
+func (c *eTradeClient) ListTransactionDetails(accountIdKey string, transactionId string) ([]byte, error) {
+	response, err := c.doRequest("GET", c.urls.ListTransactionDetailsUrl(accountIdKey, transactionId), nil)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
 func (c *eTradeClient) ViewPortfolio(
 	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
 	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
-) (*responses.PortfolioResponse, error) {
+) ([]byte, error) {
 	queryValues := url.Values{}
 	if count > 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))
@@ -144,27 +129,24 @@ func (c *eTradeClient) ViewPortfolio(
 	queryValues.Add("marketSession", marketSession.String())
 	queryValues.Add("view", view.String())
 
-	response := responses.PortfolioResponse{}
-	err := c.doRequest("GET", c.urls.ViewPortfolioUrl(accountIdKey), queryValues, &response)
+	response, err := c.doRequest("GET", c.urls.ViewPortfolioUrl(accountIdKey), queryValues)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
-func (c *eTradeClient) ListAlerts() (*responses.AlertsResponse, error) {
-	response := responses.AlertsResponse{}
-	err := c.doRequest("GET", c.urls.ListAlertsUrl(), nil, &response)
+func (c *eTradeClient) ListAlerts() ([]byte, error) {
+	response, err := c.doRequest("GET", c.urls.ListAlertsUrl(), nil)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
 func (c *eTradeClient) GetQuotes(
-	symbols []string,
-	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
-) (*responses.QuoteResponse, error) {
+	symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+) ([]byte, error) {
 	if len(symbols) > GetQuotesMaxSymbols {
 		return nil, errors.New(
 			fmt.Sprintf(
@@ -182,29 +164,25 @@ func (c *eTradeClient) GetQuotes(
 	queryValues.Add("skipMiniOptionsCheck", fmt.Sprintf("%t", skipMiniOptionsCheck))
 	queryValues.Add("detailFlag", detailFlag.String())
 
-	response := responses.QuoteResponse{}
-	err := c.doRequest("GET", c.urls.GetQuotesUrl(symbolsList), queryValues, &response)
+	response, err := c.doRequest("GET", c.urls.GetQuotesUrl(symbolsList), queryValues)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
-func (c *eTradeClient) LookupProduct(search string) (*responses.LookupResponse, error) {
-	response := responses.LookupResponse{}
-	err := c.doRequest("GET", c.urls.LookUpProductUrl(search), nil, &response)
+func (c *eTradeClient) LookupProduct(search string) ([]byte, error) {
+	response, err := c.doRequest("GET", c.urls.LookUpProductUrl(search), nil)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
 func (c *eTradeClient) GetOptionChains(
-	symbol string,
-	expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
-	includeWeekly, skipAdjusted bool,
-	optionCategory OptionCategory, chainType ChainType, priceType PriceType,
-) (*responses.OptionChainResponse, error) {
+	symbol string, expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
+	includeWeekly, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+) ([]byte, error) {
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
 	if expiryYear > 0 {
@@ -228,49 +206,33 @@ func (c *eTradeClient) GetOptionChains(
 	queryValues.Add("chainType", chainType.String())
 	queryValues.Add("priceType", priceType.String())
 
-	response := responses.OptionChainResponse{}
-	err := c.doRequest("GET", c.urls.GetOptionChainsUrl(), queryValues, &response)
+	response, err := c.doRequest("GET", c.urls.GetOptionChainsUrl(), queryValues)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
-func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType ExpiryType) (
-	*responses.OptionExpireDateResponse, error,
-) {
+func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType ExpiryType) ([]byte, error) {
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
 	queryValues.Add("expiryType", expiryType.String())
 
-	response := responses.OptionExpireDateResponse{}
-	err := c.doRequest("GET", c.urls.GetOptionExpireDatesUrl(), queryValues, &response)
+	response, err := c.doRequest("GET", c.urls.GetOptionExpireDatesUrl(), queryValues)
 	if err != nil {
 		return nil, err
 	}
-	return &response, nil
+	return response, nil
 }
 
-func (c *eTradeClient) doRequest(method string, baseUrl string, queryValues url.Values, response interface{}) error {
-	// Perform the request
-	responseBytes, err := c.doRequestRaw(method, baseUrl, queryValues)
-	if err != nil {
-		return err
-	}
-
-	// Unmarshal the response into the provided structure
-	err = xml.Unmarshal(responseBytes, &response)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (c *eTradeClient) doRequestRaw(method string, baseUrl string, queryValues url.Values) ([]byte, error) {
+func (c *eTradeClient) doRequest(method string, baseUrl string, queryValues url.Values) ([]byte, error) {
 	req, err := http.NewRequest(method, baseUrl, nil)
 	if err != nil {
 		return nil, err
 	}
+
+	// Request that the server respond with JSON
+	req.Header.Add("Accept", `application/json`)
 
 	// Parse any query parameters from the base URL and merge them with the provided query parameters and encode
 	urlQueryValues, err := url.ParseQuery(req.URL.RawQuery)

@@ -26,16 +26,21 @@ func (c *GetOptionExpireDatesCommand) Command() *cobra.Command {
 			return c.GetOptionExpireDates(args[0])
 		},
 	}
-	cmd.Flags().VarP(&c.flags.expiryType, "expiryType", "e", fmt.Sprintf("expiry type (%s, %s, %s, %s, %s, %s, %s, %s)", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly, expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd))
+	cmd.Flags().VarP(
+		&c.flags.expiryType, "expiryType", "e", fmt.Sprintf(
+			"expiry type (%s, %s, %s, %s, %s, %s, %s, %s)", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
+			expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
+		),
+	)
 	return cmd
 }
 
 func (c *GetOptionExpireDatesCommand) GetOptionExpireDates(symbol string) error {
-	result, err := c.AppContext.Client.GetOptionExpireDates(symbol, c.flags.expiryType.ExpiryType())
+	response, err := c.AppContext.Client.GetOptionExpireDates(symbol, c.flags.expiryType.ExpiryType())
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%#v\n", result)
+	fmt.Println(string(response))
 	return nil
 }
 
@@ -62,7 +67,12 @@ func (e *expiryType) Set(v string) error {
 		*e = expiryType(v)
 		return nil
 	default:
-		return errors.New(fmt.Sprintf("must be %s, %s, %s, %s, %s, %s, %s, or %s", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly, expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd))
+		return errors.New(
+			fmt.Sprintf(
+				"must be %s, %s, %s, %s, %s, %s, %s, or %s", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
+				expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
+			),
+		)
 	}
 }
 

@@ -33,6 +33,6 @@ func (c *GetAccountBalancesCommand) GetAccountBalances(accountKeyId string) erro
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%#v\n", response)
+	fmt.Println(string(response))
 	return nil
 }

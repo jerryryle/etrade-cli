@@ -22,12 +22,10 @@ func (c *ListAlertsCommand) Command() *cobra.Command {
 }
 
 func (c *ListAlertsCommand) ListAlerts() error {
-	alerts, err := c.AppContext.Customer.GetAllAlerts()
+	response, err := c.AppContext.Client.ListAlerts()
 	if err != nil {
 		return err
 	}
-	for _, alert := range alerts {
-		fmt.Printf("%#v\n", alert)
-	}
+	fmt.Println(string(response))
 	return nil
 }

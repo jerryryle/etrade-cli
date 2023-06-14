@@ -23,10 +23,10 @@ func (c *LookupCommand) Command() *cobra.Command {
 }
 
 func (c *LookupCommand) Lookup(search string) error {
-	result, err := c.AppContext.Client.LookupProduct(search)
+	response, err := c.AppContext.Client.LookupProduct(search)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%#v\n", result)
+	fmt.Println(string(response))
 	return nil
 }

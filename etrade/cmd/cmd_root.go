@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/slog"
 	"os"
@@ -89,7 +88,7 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 	}
 
 	// Create an ETrade customer object
-	c.AppContext.Customer = etradelib.CreateETradeCustomer(c.AppContext.Client, customerConfig.CustomerName)
+	//c.AppContext.Customer = etradelib.CreateETradeCustomer(c.AppContext.Client, customerConfig.CustomerName)
 
 	return nil
 }
