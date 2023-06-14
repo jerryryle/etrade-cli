@@ -46,6 +46,189 @@ var listAccountsTestResponse = responses.AccountListResponse{
 	},
 }
 
+const getAccountBalancesTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<BalanceResponse>
+    <accountId>1</accountId>
+    <institutionType>2</institutionType>
+    <asOfDate>3</asOfDate>
+    <accountType>4</accountType>
+    <optionLevel>5</optionLevel>
+    <accountDescription>6</accountDescription>
+    <quoteMode>7</quoteMode>
+    <dayTraderStatus>8</dayTraderStatus>
+    <accountMode>9</accountMode>
+    <accountDesc>10</accountDesc>
+    <OpenCalls>
+        <minEquityCall>11</minEquityCall>
+        <fedCall>12</fedCall>
+        <cashCall>13</cashCall>
+        <houseCall>14</houseCall>
+    </OpenCalls>
+    <Cash>
+        <fundsForOpenOrdersCash>15</fundsForOpenOrdersCash>
+        <moneyMktBalance>16</moneyMktBalance>
+    </Cash>
+    <Margin>
+        <dtCashOpenOrderReserve>17</dtCashOpenOrderReserve>
+        <dtMarginOpenOrderReserve>18</dtMarginOpenOrderReserve>
+    </Margin>
+    <Lending>
+        <currentBalance>19</currentBalance>
+        <creditLine>20</creditLine>
+        <outstandingBalance>21</outstandingBalance>
+        <minPaymentDue>22</minPaymentDue>
+        <amountPastDue>23</amountPastDue>
+        <availableCredit>24</availableCredit>
+        <ytdInterestPaid>25</ytdInterestPaid>
+        <lastYtdInterestPaid>26</lastYtdInterestPaid>
+        <paymentDueDate>27</paymentDueDate>
+        <lastPaymentReceivedDate>28</lastPaymentReceivedDate>
+        <paymentReceivedMtd>29</paymentReceivedMtd>
+    </Lending>
+    <Computed>
+        <cashAvailableForInvestment>30</cashAvailableForInvestment>
+        <cashAvailableForWithdrawal>31</cashAvailableForWithdrawal>
+        <totalAvailableForWithdrawal>32</totalAvailableForWithdrawal>
+        <netCash>33</netCash>
+        <cashBalance>34</cashBalance>
+        <settledCashForInvestment>35</settledCashForInvestment>
+        <unSettledCashForInvestment>36</unSettledCashForInvestment>
+        <fundsWithheldFromPurchasePower>37</fundsWithheldFromPurchasePower>
+        <fundsWithheldFromWithdrawal>38</fundsWithheldFromWithdrawal>
+        <marginBuyingPower>39</marginBuyingPower>
+        <cashBuyingPower>40</cashBuyingPower>
+        <dtMarginBuyingPower>41</dtMarginBuyingPower>
+        <dtCashBuyingPower>42</dtCashBuyingPower>
+        <marginBalance>43</marginBalance>
+        <shortAdjustBalance>44</shortAdjustBalance>
+        <regtEquity>45</regtEquity>
+        <regtEquityPercent>46</regtEquityPercent>
+        <accountBalance>47</accountBalance>
+        <OpenCalls>
+            <minEquityCall>48</minEquityCall>
+            <fedCall>49</fedCall>
+            <cashCall>50</cashCall>
+            <houseCall>51</houseCall>
+        </OpenCalls>
+        <RealTimeValues>
+            <totalAccountValue>52</totalAccountValue>
+            <netMv>53</netMv>
+            <netMvLong>54</netMvLong>
+            <netMvShort>55</netMvShort>
+            <totalLongValue>56</totalLongValue>
+        </RealTimeValues>
+        <PortfolioMargin>
+            <dtCashOpenOrderReserve>57</dtCashOpenOrderReserve>
+            <dtMarginOpenOrderReserve>58</dtMarginOpenOrderReserve>
+            <liquidatingEquity>59</liquidatingEquity>
+            <houseExcessEquity>60</houseExcessEquity>
+            <totalHouseRequirement>61</totalHouseRequirement>
+            <excessEquityMinusRequirement>62</excessEquityMinusRequirement>
+            <totalMarginRqmts>63</totalMarginRqmts>
+            <availExcessEquity>64</availExcessEquity>
+            <excessEquity>65</excessEquity>
+            <openOrderReserve>66</openOrderReserve>
+            <fundsOnHold>67</fundsOnHold>
+        </PortfolioMargin>
+    </Computed>
+</BalanceResponse>
+`
+
+var getAccountBalancesResponse = responses.BalanceResponse{
+	AccountId:       "1",
+	InstitutionType: "2",
+	AsOfDate: responses.ETradeTime{
+		Time: time.Unix(3, 0).UTC(),
+	},
+	AccountType:        "4",
+	OptionLevel:        "5",
+	AccountDescription: "6",
+	QuoteMode:          7,
+	DayTraderStatus:    "8",
+	AccountMode:        "9",
+	AccountDesc:        "10",
+	OpenCalls: []responses.BalanceOpenCall{
+		{
+			MinEquityCall: 11,
+			FedCall:       12,
+			CashCall:      13,
+			HouseCall:     14,
+		},
+	},
+	Cash: responses.BalanceCash{
+		FundsForOpenOrdersCash: 15,
+		MoneyMktBalance:        16,
+	},
+	Margin: responses.BalanceMargin{
+		DtCashOpenOrderReserve:   17,
+		DtMarginOpenOrderReserve: 18,
+	},
+	Lending: responses.BalanceLending{
+		CurrentBalance:      19,
+		CreditLine:          20,
+		OutstandingBalance:  21,
+		MinPaymentDue:       22,
+		AmountPastDue:       23,
+		AvailableCredit:     24,
+		YtdInterestPaid:     25,
+		LastYtdInterestPaid: 26,
+		PaymentDueDate: responses.ETradeTime{
+			Time: time.Unix(27, 0).UTC(),
+		},
+		LastPaymentReceivedDate: responses.ETradeTime{
+			Time: time.Unix(28, 0).UTC(),
+		},
+		PaymentReceivedMtd: 29,
+	},
+	ComputedBalance: responses.BalanceComputedBalance{
+		CashAvailableForInvestment:     30,
+		CashAvailableForWithdrawal:     31,
+		TotalAvailableForWithdrawal:    32,
+		NetCash:                        33,
+		CashBalance:                    34,
+		SettledCashForInvestment:       35,
+		UnSettledCashForInvestment:     36,
+		FundsWithheldFromPurchasePower: 37,
+		FundsWithheldFromWithdrawal:    38,
+		MarginBuyingPower:              39,
+		CashBuyingPower:                40,
+		DtMarginBuyingPower:            41,
+		DtCashBuyingPower:              42,
+		MarginBalance:                  43,
+		ShortAdjustBalance:             44,
+		RegtEquity:                     45,
+		RegtEquityPercent:              46,
+		AccountBalance:                 47,
+		OpenCalls: responses.BalanceOpenCall{
+			MinEquityCall: 48,
+			FedCall:       49,
+			CashCall:      50,
+			HouseCall:     51,
+		},
+		RealTimeValues: responses.BalanceRealTimeValues{
+			TotalAccountValue: 52,
+			NetMv:             53,
+			NetMvLong:         54,
+			NetMvShort:        55,
+			TotalLongValue:    56,
+		},
+		PortfolioMargin: responses.BalancePortfolioMargin{
+			DtCashOpenOrderReserve:       57,
+			DtMarginOpenOrderReserve:     58,
+			LiquidatingEquity:            59,
+			HouseExcessEquity:            60,
+			TotalHouseRequirement:        61,
+			ExcessEquityMinusRequirement: 62,
+			TotalMarginRqmts:             63,
+			AvailExcessEquity:            64,
+			ExcessEquity:                 65,
+			OpenOrderReserve:             66,
+			FundsOnHold:                  67,
+		},
+	},
+}
+
 const listAlertsTestXml = `
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <AlertsResponse>

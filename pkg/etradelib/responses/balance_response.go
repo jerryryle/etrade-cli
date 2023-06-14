@@ -11,11 +11,11 @@ type BalanceResponse struct {
 	DayTraderStatus    string                 `xml:"dayTraderStatus"`
 	AccountMode        string                 `xml:"accountMode"`
 	AccountDesc        string                 `xml:"accountDesc"`
-	OpenCalls          []BalanceOpenCalls     `xml:"openCalls"`
-	Cash               BalanceCash            `xml:"cash"`
-	Margin             BalanceMargin          `xml:"margin"`
-	Lending            BalanceLending         `xml:"lending"`
-	ComputedBalance    BalanceComputedBalance `xml:"computedBalance"`
+	OpenCalls          []BalanceOpenCall      `xml:"OpenCalls"`
+	Cash               BalanceCash            `xml:"Cash"`
+	Margin             BalanceMargin          `xml:"Margin"`
+	Lending            BalanceLending         `xml:"Lending"`
+	ComputedBalance    BalanceComputedBalance `xml:"Computed"`
 }
 
 type BalanceCash struct {
@@ -42,9 +42,9 @@ type BalanceComputedBalance struct {
 	RegtEquity                     float64                `xml:"regtEquity"`
 	RegtEquityPercent              float64                `xml:"regtEquityPercent"`
 	AccountBalance                 float64                `xml:"accountBalance"`
-	OpenCalls                      BalanceOpenCalls       `xml:"openCalls"`
-	RealTimeValues                 BalanceRealTimeValues  `xml:"realTimeValues"`
-	PortfolioMargin                BalancePortfolioMargin `xml:"portfolioMargin"`
+	OpenCalls                      BalanceOpenCall        `xml:"OpenCalls"`
+	RealTimeValues                 BalanceRealTimeValues  `xml:"RealTimeValues"`
+	PortfolioMargin                BalancePortfolioMargin `xml:"PortfolioMargin"`
 }
 
 type BalanceLending struct {
@@ -66,7 +66,7 @@ type BalanceMargin struct {
 	DtMarginOpenOrderReserve float64 `xml:"dtMarginOpenOrderReserve"`
 }
 
-type BalanceOpenCalls struct {
+type BalanceOpenCall struct {
 	MinEquityCall float64 `xml:"minEquityCall"`
 	FedCall       float64 `xml:"fedCall"`
 	CashCall      float64 `xml:"cashCall"`

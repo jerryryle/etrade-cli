@@ -14,6 +14,7 @@ import (
 
 type ETradeClient interface {
 	ListAccounts() (*responses.AccountListResponse, error)
+	GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error)
 	ListAlerts() (*responses.AlertsResponse, error)
 	GetQuotes(symbols []string,
 		detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error)
@@ -42,6 +43,19 @@ func CreateETradeClient(urls EndpointUrls, httpClient *http.Client, logger *slog
 func (c *eTradeClient) ListAccounts() (*responses.AccountListResponse, error) {
 	response := responses.AccountListResponse{}
 	err := c.doRequest("GET", c.urls.ListAccountsUrl(), nil, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error) {
+	queryValues := url.Values{}
+	queryValues.Add("instType", "BROKERAGE")
+	queryValues.Add("realTimeNAV", fmt.Sprintf("%t", realTimeNAV))
+
+	response := responses.BalanceResponse{}
+	err := c.doRequest("GET", c.urls.GetAccountBalancesUrl(accountIdKey), queryValues, &response)
 	if err != nil {
 		return nil, err
 	}

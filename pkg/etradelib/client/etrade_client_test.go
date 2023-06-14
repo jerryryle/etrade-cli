@@ -54,6 +54,54 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 	}
 }
 
+func TestETradeClient_GetAccountBalances(t *testing.T) {
+	type args struct {
+		accountIdKey      string
+		realTimeNAV       bool
+		httpClientFakeXml string
+	}
+	tests := []struct {
+		name      string
+		args      args
+		expectUrl string
+		expectErr bool
+		expect    *responses.BalanceResponse
+	}{
+		{
+			name: "Get Account Balances With Results",
+			args: args{
+				accountIdKey:      "1234",
+				realTimeNAV:       true,
+				httpClientFakeXml: getAccountBalancesTestXml,
+			},
+			expectUrl: "https://api.etrade.com/v1/accounts/1234/balance?instType=BROKERAGE&realTimeNAV=true",
+			expectErr: false,
+			expect:    &getAccountBalancesResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+				}
+			})
+
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+			response, err := client.GetAccountBalances(tt.args.accountIdKey, tt.args.realTimeNAV)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
+		})
+	}
+}
+
 func TestETradeClient_ListAlerts(t *testing.T) {
 	type args struct {
 		httpClientFakeXml string

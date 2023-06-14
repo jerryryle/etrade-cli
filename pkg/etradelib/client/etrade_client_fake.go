@@ -5,6 +5,7 @@ import (
 )
 
 type ListAccountsFn func() (*responses.AccountListResponse, error)
+type GetAccountBalancesFn func(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error)
 type ListAlertsFn func() (*responses.AlertsResponse, error)
 type GetQuotesFn func(symbols []string,
 	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error)
@@ -17,6 +18,7 @@ type GetOptionExpireDatesFn func(symbol string, expiryType ExpiryType) (*respons
 
 type ETradeClientFake struct {
 	ListAccountsFn         ListAccountsFn
+	GetAccountBalancesFn   GetAccountBalancesFn
 	ListAlertsFn           ListAlertsFn
 	GetQuotesFn            GetQuotesFn
 	LookupProductFn        LookupProductFn
@@ -26,6 +28,10 @@ type ETradeClientFake struct {
 
 func (c *ETradeClientFake) ListAccounts() (*responses.AccountListResponse, error) {
 	return c.ListAccountsFn()
+}
+
+func (c *ETradeClientFake) GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error) {
+	return c.GetAccountBalancesFn(accountIdKey, realTimeNAV)
 }
 
 func (c *ETradeClientFake) ListAlerts() (*responses.AlertsResponse, error) {
