@@ -22,5 +22,5 @@ type OrdersEvent struct {
 	Name        string       `xml:"name"`
 	DateTime    ETradeTime   `xml:"dateTime"`
 	OrderNumber int          `xml:"orderNumber"`
-	Instrument  []Instrument `xml:"instrument"` // Include when Instrument struct is defined
+	Instrument  []Instrument `xml:"instrument"`
 }

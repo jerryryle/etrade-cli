@@ -20,6 +20,7 @@ func main() {
 	rootCmd.AddCommand((&cmd.GetOptionChainsCommand{AppContext: &appContext}).Command())
 	rootCmd.AddCommand((&cmd.GetOptionExpireDatesCommand{AppContext: &appContext}).Command())
 	rootCmd.AddCommand((&cmd.GetAccountBalancesCommand{AppContext: &appContext}).Command())
+	rootCmd.AddCommand((&cmd.ListTransactionsCommand{AppContext: &appContext}).Command())
 
 	if err := rootCmd.Execute(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

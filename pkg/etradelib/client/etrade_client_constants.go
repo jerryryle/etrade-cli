@@ -128,3 +128,20 @@ func (e ExpiryType) String() string {
 	}
 	return "UNKNOWN"
 }
+
+type TransactionSortOrder int
+
+const (
+	TransactionSortOrderAsc TransactionSortOrder = iota
+	TransactionSortOrderDesc
+)
+
+func (e TransactionSortOrder) String() string {
+	switch e {
+	case TransactionSortOrderAsc:
+		return "ASC"
+	case TransactionSortOrderDesc:
+		return "DESC"
+	}
+	return "UNKNOWN"
+}

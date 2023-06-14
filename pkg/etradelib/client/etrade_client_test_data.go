@@ -135,7 +135,7 @@ const getAccountBalancesTestXml = `
 </BalanceResponse>
 `
 
-var getAccountBalancesResponse = responses.BalanceResponse{
+var getAccountBalancesTestResponse = responses.BalanceResponse{
 	AccountId:       "1",
 	InstitutionType: "2",
 	AsOfDate: responses.ETradeTime{
@@ -227,6 +227,109 @@ var getAccountBalancesResponse = responses.BalanceResponse{
 			FundsOnHold:                  67,
 		},
 	},
+}
+
+const getTransactionsTestXml = `
+<?xml version="1.0" encoding="UTF-8"?>
+<TransactionListResponse>
+    <Transaction>
+        <transactionId>1</transactionId>
+        <accountId>2</accountId>
+        <transactionDate>3</transactionDate>
+        <postDate>4</postDate>
+        <amount>5</amount>
+        <description>6</description>
+        <description2>7</description2>
+        <transactionType>8</transactionType>
+        <memo>9</memo>
+        <imageFlag>true</imageFlag>
+        <instType>10</instType>
+        <brokerage>
+            <product>
+              <symbol>11</symbol>
+              <securityType>12</securityType>
+              <securitySubType>13</securitySubType>
+              <callPut>14</callPut>
+              <expiryYear>15</expiryYear>
+              <expiryMonth>16</expiryMonth>
+              <expiryDay>17</expiryDay>
+              <strikePrice>18</strikePrice>
+              <expiryType>19</expiryType>
+              <productId>
+                <symbol>20</symbol>
+                <typeCode>21</typeCode>
+              </productId>
+            </product>
+            <quantity>22</quantity>
+            <price>23</price>
+            <settlementCurrency>24</settlementCurrency>
+            <paymentCurrency>25</paymentCurrency>
+            <fee>26</fee>
+            <settlementDate>27</settlementDate>
+        </brokerage>
+        <detailsURI>28</detailsURI>
+    </Transaction>
+    <next>29</next>
+    <marker>30</marker>
+    <pageMarkers>31</pageMarkers>
+    <moreTransactions>true</moreTransactions>
+    <transactionCount>32</transactionCount>
+    <totalCount>33</totalCount>
+</TransactionListResponse>
+`
+
+var getTransactionsTestResponse = responses.TransactionListResponse{
+	Transactions: []responses.TransactionListTransaction{
+		{
+			TransactionId: "1",
+			AccountId:     "2",
+			TransactionDate: responses.ETradeTime{
+				Time: time.Unix(3, 0).UTC(),
+			},
+			PostDate: responses.ETradeTime{
+				Time: time.Unix(4, 0).UTC(),
+			},
+			Amount:          5,
+			Description:     "6",
+			Description2:    "7",
+			TransactionType: "8",
+			Memo:            "9",
+			ImageFlag:       true,
+			InstType:        "10",
+			Brokerage: responses.TransactionListBrokerage{
+				Product: responses.Product{
+					Symbol:          "11",
+					SecurityType:    "12",
+					SecuritySubType: "13",
+					CallPut:         "14",
+					ExpiryYear:      15,
+					ExpiryMonth:     16,
+					ExpiryDay:       17,
+					StrikePrice:     18,
+					ExpiryType:      "19",
+					ProductId: &responses.ProductId{
+						Symbol:   "20",
+						TypeCode: "21",
+					},
+				},
+				Quantity:           22,
+				Price:              23,
+				SettlementCurrency: "24",
+				PaymentCurrency:    "25",
+				Fee:                26,
+				SettlementDate: responses.ETradeTime{
+					Time: time.Unix(27, 0).UTC(),
+				},
+			},
+			DetailsURI: "28",
+		},
+	},
+	Next:             "29",
+	Marker:           "30",
+	PageMarkers:      "31",
+	MoreTransactions: true,
+	TransactionCount: 32,
+	TotalCount:       33,
 }
 
 const listAlertsTestXml = `

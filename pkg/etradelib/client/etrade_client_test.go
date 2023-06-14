@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestETradeClient_ListAccounts(t *testing.T) {
@@ -76,7 +77,7 @@ func TestETradeClient_GetAccountBalances(t *testing.T) {
 			},
 			expectUrl: "https://api.etrade.com/v1/accounts/1234/balance?instType=BROKERAGE&realTimeNAV=true",
 			expectErr: false,
-			expect:    &getAccountBalancesResponse,
+			expect:    &getAccountBalancesTestResponse,
 		},
 	}
 
@@ -92,6 +93,65 @@ func TestETradeClient_GetAccountBalances(t *testing.T) {
 
 			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 			response, err := client.GetAccountBalances(tt.args.accountIdKey, tt.args.realTimeNAV)
+			if tt.expectErr {
+				assert.Error(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
+			assert.Equal(t, tt.expect, response)
+		})
+	}
+}
+
+func TestETradeClient_ListTransactions(t *testing.T) {
+	type args struct {
+		accountIdKey      string
+		startDate         *time.Time
+		endDate           *time.Time
+		sortOrder         TransactionSortOrder
+		marker            string
+		count             int
+		httpClientFakeXml string
+	}
+	testStartDate := time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)
+	testEndDate := time.Date(2023, time.January, 2, 0, 0, 0, 0, time.UTC)
+	tests := []struct {
+		name      string
+		args      args
+		expectUrl string
+		expectErr bool
+		expect    *responses.TransactionListResponse
+	}{
+		{
+			name: "Get Transactions With Results",
+			args: args{
+				accountIdKey:      "1234",
+				startDate:         &testStartDate,
+				endDate:           &testEndDate,
+				sortOrder:         TransactionSortOrderAsc,
+				marker:            "FOO",
+				count:             6,
+				httpClientFakeXml: getTransactionsTestXml,
+			},
+			expectUrl: "https://api.etrade.com/v1/accounts/1234/transactions?count=6&endDate=01022023&marker=FOO&sortOrder=ASC&startDate=01012023",
+			expectErr: false,
+			expect:    &getTransactionsTestResponse,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
+				assert.Equal(t, tt.expectUrl, req.URL.String())
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+				}
+			})
+
+			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+			response, err := client.ListTransactions(tt.args.accountIdKey,
+				tt.args.startDate, tt.args.endDate, tt.args.sortOrder, tt.args.marker, tt.args.count)
 			if tt.expectErr {
 				assert.Error(t, err)
 			} else {

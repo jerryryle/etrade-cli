@@ -1,5 +1,9 @@
 package responses
 
+//TODO: Convert sub-fields to pointers if they may optionally appear.
+// e.g. If a struct contains "Product Product" that may not appear in the XML, change it to "Product *Product" so that
+// it will be nil if not in the XML. Otherwise, you get a struct full of zeroed data.
+
 type Disclosure struct {
 	EhDisclosureFlag          bool `xml:"ehDisclosureFlag"`
 	AhDisclosureFlag          bool `xml:"ahDisclosureFlag"`
@@ -10,7 +14,7 @@ type Disclosure struct {
 }
 
 type Instrument struct {
-	Product               Product    `xml:"product"` // Include when Product struct is defined
+	Product               Product    `xml:"product"`
 	SymbolDescription     string     `xml:"symbolDescription"`
 	OrderAction           string     `xml:"orderAction"`
 	QuantityType          string     `xml:"quantityType"`
@@ -120,16 +124,16 @@ type PortfolioMargin struct {
 }
 
 type Product struct {
-	Symbol          string    `xml:"symbol"`
-	SecurityType    string    `xml:"securityType"`
-	SecuritySubType string    `xml:"securitySubType"`
-	CallPut         string    `xml:"callPut"`
-	ExpiryYear      int32     `xml:"expiryYear"`
-	ExpiryMonth     int32     `xml:"expiryMonth"`
-	ExpiryDay       int32     `xml:"expiryDay"`
-	StrikePrice     float64   `xml:"strikePrice"`
-	ExpiryType      string    `xml:"expiryType"`
-	ProductId       ProductId `xml:"productId"`
+	Symbol          string     `xml:"symbol"`
+	SecurityType    string     `xml:"securityType"`
+	SecuritySubType string     `xml:"securitySubType"`
+	CallPut         string     `xml:"callPut"`
+	ExpiryYear      int32      `xml:"expiryYear"`
+	ExpiryMonth     int32      `xml:"expiryMonth"`
+	ExpiryDay       int32      `xml:"expiryDay"`
+	StrikePrice     float64    `xml:"strikePrice"`
+	ExpiryType      string     `xml:"expiryType"`
+	ProductId       *ProductId `xml:"productId"`
 }
 
 type ProductId struct {

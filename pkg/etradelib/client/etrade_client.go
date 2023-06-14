@@ -10,19 +10,30 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type ETradeClient interface {
 	ListAccounts() (*responses.AccountListResponse, error)
+
 	GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error)
+
+	ListTransactions(accountIdKey string,
+		startDate *time.Time, endDate *time.Time,
+		sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error)
+
 	ListAlerts() (*responses.AlertsResponse, error)
+
 	GetQuotes(symbols []string,
 		detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error)
+
 	LookupProduct(search string) (*responses.LookupResponse, error)
+
 	GetOptionChains(symbol string,
 		expiryYear int, expiryMonth int, expiryDay int,
 		strikePriceNear int, noOfStrikes int, includeWeekly bool, skipAdjusted bool,
 		optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error)
+
 	GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error)
 }
 
@@ -56,6 +67,33 @@ func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool)
 
 	response := responses.BalanceResponse{}
 	err := c.doRequest("GET", c.urls.GetAccountBalancesUrl(accountIdKey), queryValues, &response)
+	if err != nil {
+		return nil, err
+	}
+	return &response, nil
+}
+
+func (c *eTradeClient) ListTransactions(accountIdKey string,
+	startDate *time.Time, endDate *time.Time,
+	sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error) {
+	dateLayout := "01022006"
+	queryValues := url.Values{}
+	if startDate != nil {
+		queryValues.Add("startDate", startDate.Format(dateLayout))
+	}
+	if endDate != nil {
+		queryValues.Add("endDate", endDate.Format(dateLayout))
+	}
+	queryValues.Add("sortOrder", sortOrder.String())
+	if marker != "" {
+		queryValues.Add("marker", marker)
+	}
+	if count > 0 {
+		queryValues.Add("count", fmt.Sprintf("%d", count))
+	}
+
+	response := responses.TransactionListResponse{}
+	err := c.doRequest("GET", c.urls.ListTransactionsUrl(accountIdKey), queryValues, &response)
 	if err != nil {
 		return nil, err
 	}
