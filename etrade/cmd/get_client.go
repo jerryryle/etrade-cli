@@ -9,7 +9,9 @@ import (
 	"time"
 )
 
-func getClientWithCredentialCache(production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger) (client.ETradeClient, error) {
+func getClientWithCredentialCache(
+	production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger,
+) (client.ETradeClient, error) {
 	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath, logger)
 	if err != nil {
 		// Create a new, empty credential cache. It will yield empty strings for the cached token, which
@@ -17,14 +19,14 @@ func getClientWithCredentialCache(production bool, consumerKey string, consumerS
 		cachedCredentials = &CachedCredentials{}
 	}
 
-	var client client.ETradeClient
+	var eTradeClient client.ETradeClient
 	session, err := etradelib.CreateSession(production, consumerKey, consumerSecret, logger)
 	if err != nil {
 		return nil, err
 	}
 	var accessToken = cachedCredentials.AccessToken
 	var accessSecret = cachedCredentials.AccessSecret
-	client, err = session.Renew(accessToken, accessSecret)
+	eTradeClient, err = session.Renew(accessToken, accessSecret)
 	if err != nil {
 		authUrl, err := session.Begin()
 		if err != nil {
@@ -42,7 +44,7 @@ func getClientWithCredentialCache(production bool, consumerKey string, consumerS
 			return nil, errors.New("no validation code provided")
 		}
 
-		client, accessToken, accessSecret, err = session.Verify(validationCode)
+		eTradeClient, accessToken, accessSecret, err = session.Verify(validationCode)
 		if err != nil {
 			return nil, err
 		}
@@ -50,9 +52,10 @@ func getClientWithCredentialCache(production bool, consumerKey string, consumerS
 	err = SaveCachedCredentialsToFile(
 		cacheFilePath,
 		&CachedCredentials{accessToken, accessSecret, time.Now()},
-		logger)
+		logger,
+	)
 	if err != nil {
 		return nil, err
 	}
-	return client, nil
+	return eTradeClient, nil
 }

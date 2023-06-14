@@ -28,7 +28,9 @@ type eTradeSession struct {
 	logger         *slog.Logger
 }
 
-func CreateSession(production bool, consumerKey string, consumerSecret string, logger *slog.Logger) (ETradeSession, error) {
+func CreateSession(production bool, consumerKey string, consumerSecret string, logger *slog.Logger) (
+	ETradeSession, error,
+) {
 	if consumerKey == "" || consumerSecret == "" {
 		return nil, errors.New("invalid consumer credentials provided")
 	}
@@ -102,8 +104,12 @@ func (s *eTradeSession) Begin() (string, error) {
 	return authorizeUrl.String(), nil
 }
 
-func (s *eTradeSession) Verify(verifyKey string) (eTradeClient client.ETradeClient, accessToken string, accessSecret string, err error) {
-	s.accessToken, s.accessSecret, err = s.config.AccessToken(s.requestToken, oauth1.PercentEncode(s.requestSecret), verifyKey)
+func (s *eTradeSession) Verify(verifyKey string) (
+	eTradeClient client.ETradeClient, accessToken string, accessSecret string, err error,
+) {
+	s.accessToken, s.accessSecret, err = s.config.AccessToken(
+		s.requestToken, oauth1.PercentEncode(s.requestSecret), verifyKey,
+	)
 	if err != nil {
 		return nil, "", "", err
 	}

@@ -34,24 +34,28 @@ func TestETradeClient_ListAccounts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.ListAccounts()
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.ListAccounts()
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -82,24 +86,28 @@ func TestETradeClient_GetAccountBalances(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.GetAccountBalances(tt.args.accountIdKey, tt.args.realTimeNAV)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.GetAccountBalances(tt.args.accountIdKey, tt.args.realTimeNAV)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -138,25 +146,31 @@ func TestETradeClient_ListTransactions(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.ListTransactions(tt.args.accountIdKey,
-				tt.args.startDate, tt.args.endDate, tt.args.sortOrder, tt.args.marker, tt.args.count)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.ListTransactions(
+					tt.args.accountIdKey,
+					tt.args.startDate, tt.args.endDate, tt.args.sortOrder, tt.args.marker, tt.args.count,
+				)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -187,24 +201,28 @@ func TestETradeClient_ListTransactionDetails(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.ListTransactionDetails(tt.args.accountIdKey, tt.args.transactionId)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.ListTransactionDetails(tt.args.accountIdKey, tt.args.transactionId)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -231,24 +249,28 @@ func TestETradeClient_ListAlerts(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.ListAlerts()
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.ListAlerts()
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -348,7 +370,10 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 		{
 			name: "Override Symbols When More Than 25",
 			args: args{
-				symbols:              []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"},
+				symbols: []string{
+					"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18",
+					"19", "20", "21", "22", "23", "24", "25", "26",
+				},
 				detailFlag:           QuoteDetailAll,
 				requireEarningsDate:  true,
 				skipMiniOptionsCheck: false,
@@ -361,7 +386,12 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 		{
 			name: "Too Many Symbols",
 			args: args{
-				symbols:              []string{"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51"},
+				symbols: []string{
+					"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18",
+					"19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34",
+					"35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50",
+					"51",
+				},
 				detailFlag:           QuoteDetailAll,
 				requireEarningsDate:  true,
 				skipMiniOptionsCheck: false,
@@ -374,25 +404,31 @@ func TestETradeClient_GetQuotes(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.GetQuotes(tt.args.symbols,
-				tt.args.detailFlag, tt.args.requireEarningsDate, tt.args.skipMiniOptionsCheck)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.GetQuotes(
+					tt.args.symbols,
+					tt.args.detailFlag, tt.args.requireEarningsDate, tt.args.skipMiniOptionsCheck,
+				)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -431,24 +467,28 @@ func TestETradeClient_LookupProduct(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.LookupProduct(tt.args.search)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.LookupProduct(tt.args.search)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -513,28 +553,34 @@ func TestETradeClient_GetOptionChains(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.GetOptionChains(tt.args.symbol,
-				tt.args.expiryYear, tt.args.expiryMonth, tt.args.expiryDay,
-				tt.args.strikePriceNear, tt.args.noOfStrikes,
-				tt.args.includeWeekly, tt.args.skipAdjusted,
-				tt.args.optionCategory, tt.args.chainType, tt.args.priceType)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.GetOptionChains(
+					tt.args.symbol,
+					tt.args.expiryYear, tt.args.expiryMonth, tt.args.expiryDay,
+					tt.args.strikePriceNear, tt.args.noOfStrikes,
+					tt.args.includeWeekly, tt.args.skipAdjusted,
+					tt.args.optionCategory, tt.args.chainType, tt.args.priceType,
+				)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }
 
@@ -565,23 +611,27 @@ func TestETradeClient_GetOptionExpireDates(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			httpClient := NewHttpClientFake(func(req *http.Request) *http.Response {
-				assert.Equal(t, tt.expectUrl, req.URL.String())
-				return &http.Response{
-					StatusCode: http.StatusOK,
-					Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
-				}
-			})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				httpClient := NewHttpClientFake(
+					func(req *http.Request) *http.Response {
+						assert.Equal(t, tt.expectUrl, req.URL.String())
+						return &http.Response{
+							StatusCode: http.StatusOK,
+							Body:       io.NopCloser(strings.NewReader(tt.args.httpClientFakeXml)),
+						}
+					},
+				)
 
-			client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
-			response, err := client.GetOptionExpireDates(tt.args.symbol, tt.args.expiryType)
-			if tt.expectErr {
-				assert.Error(t, err)
-			} else {
-				assert.Nil(t, err)
-			}
-			assert.Equal(t, tt.expect, response)
-		})
+				client := CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
+				response, err := client.GetOptionExpireDates(tt.args.symbol, tt.args.expiryType)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expect, response)
+			},
+		)
 	}
 }

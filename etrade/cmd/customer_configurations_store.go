@@ -35,7 +35,9 @@ func LoadCustomerConfigurationsStore(reader io.Reader) (*CustomerConfigurationsS
 	return &cc, nil
 }
 
-func LoadCustomerConfigurationsStoreFromFile(filename string, logger *slog.Logger) (*CustomerConfigurationsStore, error) {
+func LoadCustomerConfigurationsStoreFromFile(filename string, logger *slog.Logger) (
+	*CustomerConfigurationsStore, error,
+) {
 	file, err := os.Open(filename)
 	if file != nil {
 		defer func(file *os.File) {
@@ -60,7 +62,9 @@ func SaveCustomerConfigurationsStore(writer io.Writer, cc *CustomerConfiguration
 	return nil
 }
 
-func SaveCustomerConfigurationsStoreToFile(filename string, cc *CustomerConfigurationsStore, logger *slog.Logger) error {
+func SaveCustomerConfigurationsStoreToFile(
+	filename string, cc *CustomerConfigurationsStore, logger *slog.Logger,
+) error {
 	file, err := os.Create(filename)
 	if file != nil {
 		defer func(file *os.File) {
@@ -84,6 +88,8 @@ func (c *CustomerConfigurationsStore) GetCustomerConfigurationById(configId stri
 	return &configItem, nil
 }
 
-func (c *CustomerConfigurationsStore) SetCustomerConfigurationForId(configId string, configuration *CustomerConfiguration) {
+func (c *CustomerConfigurationsStore) SetCustomerConfigurationForId(
+	configId string, configuration *CustomerConfiguration,
+) {
 	c.customerConfigMap[configId] = *configuration
 }

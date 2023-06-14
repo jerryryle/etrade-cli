@@ -1247,14 +1247,18 @@ var quoteDetailMutualFundTestResponse = responses.QuoteResponse{
 				QtrlyTrailingReturn1M:    74,
 				QtrlyTrailingReturn3M:    75,
 				QtrlyTrailingReturn6M:    76,
-				DeferredSalesCharges: []responses.QuoteSaleChargeValues{{
-					LowHigh: "77",
-					Percent: "78",
-				}},
-				FrontEndSalesCharges: []responses.QuoteSaleChargeValues{{
-					LowHigh: "79",
-					Percent: "80",
-				}},
+				DeferredSalesCharges: []responses.QuoteSaleChargeValues{
+					{
+						LowHigh: "77",
+						Percent: "78",
+					},
+				},
+				FrontEndSalesCharges: []responses.QuoteSaleChargeValues{
+					{
+						LowHigh: "79",
+						Percent: "80",
+					},
+				},
 				ExchangeCode: "81",
 			},
 			TimeZone:       "82",

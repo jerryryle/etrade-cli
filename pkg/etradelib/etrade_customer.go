@@ -48,7 +48,8 @@ func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
 	for _, account := range response.Accounts {
 		accounts = append(
 			accounts,
-			CreateETradeAccount(c.etradeClient, CreateETradeAccountInfoFromResponse(account)))
+			CreateETradeAccount(c.etradeClient, CreateETradeAccountInfoFromResponse(account)),
+		)
 	}
 	return accounts, err
 }
@@ -75,7 +76,8 @@ func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {
 	for _, alert := range response.Alerts {
 		alerts = append(
 			alerts,
-			CreateETradeAlert(c.etradeClient, CreateETradeAlertInfoFromResponse(alert)))
+			CreateETradeAlert(c.etradeClient, CreateETradeAlertInfoFromResponse(alert)),
+		)
 	}
 	return alerts, err
 }

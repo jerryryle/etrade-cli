@@ -66,7 +66,11 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 
 	customerConfig, err := customerConfigStore.GetCustomerConfigurationById(c.flags.customerId)
 	if err != nil {
-		return errors.New(fmt.Sprintf("customer id '%s' not found in config file at %s", c.flags.customerId, cfgFilePath))
+		return errors.New(
+			fmt.Sprintf(
+				"customer id '%s' not found in config file at %s", c.flags.customerId, cfgFilePath,
+			),
+		)
 	}
 
 	cacheFileName := "." + customerConfig.CustomerConsumerKey
@@ -78,7 +82,8 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 		customerConfig.CustomerConsumerKey,
 		customerConfig.CustomerConsumerSecret,
 		cacheFilePath,
-		c.AppContext.Logger)
+		c.AppContext.Logger,
+	)
 	if err != nil {
 		return err
 	}

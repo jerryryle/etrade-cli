@@ -18,23 +18,29 @@ type ETradeClient interface {
 
 	GetAccountBalances(accountIdKey string, realTimeNAV bool) (*responses.BalanceResponse, error)
 
-	ListTransactions(accountIdKey string,
+	ListTransactions(
+		accountIdKey string,
 		startDate *time.Time, endDate *time.Time,
-		sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error)
+		sortOrder TransactionSortOrder, marker string, count int,
+	) (*responses.TransactionListResponse, error)
 
 	ListTransactionDetails(accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error)
 
 	ListAlerts() (*responses.AlertsResponse, error)
 
-	GetQuotes(symbols []string,
-		detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error)
+	GetQuotes(
+		symbols []string,
+		detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+	) (*responses.QuoteResponse, error)
 
 	LookupProduct(search string) (*responses.LookupResponse, error)
 
-	GetOptionChains(symbol string,
+	GetOptionChains(
+		symbol string,
 		expiryYear int, expiryMonth int, expiryDay int,
 		strikePriceNear int, noOfStrikes int, includeWeekly bool, skipAdjusted bool,
-		optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error)
+		optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+	) (*responses.OptionChainResponse, error)
 
 	GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error)
 }
@@ -75,9 +81,11 @@ func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool)
 	return &response, nil
 }
 
-func (c *eTradeClient) ListTransactions(accountIdKey string,
+func (c *eTradeClient) ListTransactions(
+	accountIdKey string,
 	startDate *time.Time, endDate *time.Time,
-	sortOrder TransactionSortOrder, marker string, count int) (*responses.TransactionListResponse, error) {
+	sortOrder TransactionSortOrder, marker string, count int,
+) (*responses.TransactionListResponse, error) {
 	dateLayout := "01022006"
 	queryValues := url.Values{}
 	if startDate != nil {
@@ -103,7 +111,8 @@ func (c *eTradeClient) ListTransactions(accountIdKey string,
 }
 
 func (c *eTradeClient) ListTransactionDetails(
-	accountIdKey string, transactionId string) (*responses.TransactionDetailsResponse, error) {
+	accountIdKey string, transactionId string,
+) (*responses.TransactionDetailsResponse, error) {
 	response := responses.TransactionDetailsResponse{}
 	err := c.doRequest("GET", c.urls.ListTransactionDetailsUrl(accountIdKey, transactionId), nil, &response)
 	if err != nil {
@@ -121,10 +130,17 @@ func (c *eTradeClient) ListAlerts() (*responses.AlertsResponse, error) {
 	return &response, nil
 }
 
-func (c *eTradeClient) GetQuotes(symbols []string,
-	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool) (*responses.QuoteResponse, error) {
+func (c *eTradeClient) GetQuotes(
+	symbols []string,
+	detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+) (*responses.QuoteResponse, error) {
 	if len(symbols) > GetQuotesMaxSymbols {
-		return nil, errors.New(fmt.Sprintf("%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols), GetQuotesMaxSymbols))
+		return nil, errors.New(
+			fmt.Sprintf(
+				"%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols),
+				GetQuotesMaxSymbols,
+			),
+		)
 	}
 	symbolsList := strings.Join(symbols, ",")
 	queryValues := url.Values{}
@@ -152,10 +168,12 @@ func (c *eTradeClient) LookupProduct(search string) (*responses.LookupResponse, 
 	return &response, nil
 }
 
-func (c *eTradeClient) GetOptionChains(symbol string,
+func (c *eTradeClient) GetOptionChains(
+	symbol string,
 	expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
 	includeWeekly, skipAdjusted bool,
-	optionCategory OptionCategory, chainType ChainType, priceType PriceType) (*responses.OptionChainResponse, error) {
+	optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+) (*responses.OptionChainResponse, error) {
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
 	if expiryYear > 0 {
@@ -187,7 +205,9 @@ func (c *eTradeClient) GetOptionChains(symbol string,
 	return &response, nil
 }
 
-func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType ExpiryType) (*responses.OptionExpireDateResponse, error) {
+func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType ExpiryType) (
+	*responses.OptionExpireDateResponse, error,
+) {
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
 	queryValues.Add("expiryType", expiryType.String())

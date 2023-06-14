@@ -47,9 +47,13 @@ func (c *ListTransactionsCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *ListTransactionsCommand) ListTransactions(accountKeyId string, startDate *time.Time, endDate *time.Time) error {
-	response, err := c.AppContext.Client.ListTransactions(accountKeyId,
-		startDate, endDate, client.TransactionSortOrderAsc, "", 0)
+func (c *ListTransactionsCommand) ListTransactions(
+	accountKeyId string, startDate *time.Time, endDate *time.Time,
+) error {
+	response, err := c.AppContext.Client.ListTransactions(
+		accountKeyId,
+		startDate, endDate, client.TransactionSortOrderAsc, "", 0,
+	)
 	if err != nil {
 		return err
 	}

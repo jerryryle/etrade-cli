@@ -473,15 +473,17 @@ func CreateETradeQuoteMutualFundInfoFromResponse(response responses.QuoteData) *
 func CreateETradeQuoteOptionDeliverableListFromResponse(response []responses.QuoteOptionDeliverable) []ETradeQuoteOptionDeliverable {
 	optionDeliverableList := make([]ETradeQuoteOptionDeliverable, 0)
 	for _, respOptionDeliverable := range response {
-		optionDeliverableList = append(optionDeliverableList, ETradeQuoteOptionDeliverable{
-			RootSymbol:               respOptionDeliverable.RootSymbol,
-			DeliverableSymbol:        respOptionDeliverable.DeliverableSymbol,
-			DeliverableTypeCode:      respOptionDeliverable.DeliverableTypeCode,
-			DeliverableExchangeCode:  respOptionDeliverable.DeliverableExchangeCode,
-			DeliverableStrikePercent: respOptionDeliverable.DeliverableStrikePercent,
-			DeliverableCILShares:     respOptionDeliverable.DeliverableCILShares,
-			DeliverableWholeShares:   respOptionDeliverable.DeliverableWholeShares,
-		})
+		optionDeliverableList = append(
+			optionDeliverableList, ETradeQuoteOptionDeliverable{
+				RootSymbol:               respOptionDeliverable.RootSymbol,
+				DeliverableSymbol:        respOptionDeliverable.DeliverableSymbol,
+				DeliverableTypeCode:      respOptionDeliverable.DeliverableTypeCode,
+				DeliverableExchangeCode:  respOptionDeliverable.DeliverableExchangeCode,
+				DeliverableStrikePercent: respOptionDeliverable.DeliverableStrikePercent,
+				DeliverableCILShares:     respOptionDeliverable.DeliverableCILShares,
+				DeliverableWholeShares:   respOptionDeliverable.DeliverableWholeShares,
+			},
+		)
 	}
 	return optionDeliverableList
 }
@@ -489,11 +491,13 @@ func CreateETradeQuoteOptionDeliverableListFromResponse(response []responses.Quo
 func CreateETradeQuoteValuesListFromResponse(response []responses.QuoteValues) []ETradeQuoteValues {
 	quoteValuesList := make([]ETradeQuoteValues, 0)
 	for _, respQuoteValues := range response {
-		quoteValuesList = append(quoteValuesList, ETradeQuoteValues{
-			Low:     respQuoteValues.Low,
-			High:    respQuoteValues.High,
-			Percent: respQuoteValues.Percent,
-		})
+		quoteValuesList = append(
+			quoteValuesList, ETradeQuoteValues{
+				Low:     respQuoteValues.Low,
+				High:    respQuoteValues.High,
+				Percent: respQuoteValues.Percent,
+			},
+		)
 	}
 	return quoteValuesList
 }
@@ -501,10 +505,12 @@ func CreateETradeQuoteValuesListFromResponse(response []responses.QuoteValues) [
 func CreateETradeQuoteSaleChargeValuesListFromResponse(response []responses.QuoteSaleChargeValues) []ETradeQuoteSaleChargeValues {
 	quoteValuesList := make([]ETradeQuoteSaleChargeValues, 0)
 	for _, respQuoteSaleChargeValues := range response {
-		quoteValuesList = append(quoteValuesList, ETradeQuoteSaleChargeValues{
-			LowHigh: respQuoteSaleChargeValues.LowHigh,
-			Percent: respQuoteSaleChargeValues.Percent,
-		})
+		quoteValuesList = append(
+			quoteValuesList, ETradeQuoteSaleChargeValues{
+				LowHigh: respQuoteSaleChargeValues.LowHigh,
+				Percent: respQuoteSaleChargeValues.Percent,
+			},
+		)
 	}
 	return quoteValuesList
 }
