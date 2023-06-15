@@ -12,6 +12,8 @@ type JsonMap map[string]interface{}
 func NewFromIoReader(jsonReader io.Reader) (JsonMap, error) {
 	var m map[string]interface{}
 	decoder := json.NewDecoder(jsonReader)
+	// Decode numbers using the json.Number type instead of float64
+	decoder.UseNumber()
 	err := decoder.Decode(&m)
 	if err != nil {
 		return nil, err

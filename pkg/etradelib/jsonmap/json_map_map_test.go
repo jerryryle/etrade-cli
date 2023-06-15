@@ -1,6 +1,7 @@
 package jsonmap
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -52,8 +53,8 @@ func TestJsonMap_Map(t *testing.T) {
 						"TESTSLICE": []interface{}{
 							map[string]interface{}{
 								"TESTSTRING": "TestStringValue",
-								"TESTFLOAT":  123.456,
-								"TESTINT":    float64(123),
+								"TESTFLOAT":  json.Number("123.456"),
+								"TESTINT":    json.Number("123"),
 								"TESTBOOL":   true,
 							},
 						},
