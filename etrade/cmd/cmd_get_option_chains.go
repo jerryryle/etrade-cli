@@ -38,17 +38,27 @@ func (c *GetOptionChainsCommand) Command() *cobra.Command {
 	cmd.Flags().IntVarP(&c.flags.noOfStrikes, "noOfStrikes", "n", -1, "number of strikes")
 	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "includeWeekly", "w", false, "include weekly options")
 	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "skipAdjusted", "a", true, "skip adjusted")
-	cmd.Flags().VarP(&c.flags.optionCategory, "optionCategory", "c", fmt.Sprintf("option category (%s, %s, %s)", optionCategoryStandard, optionCategoryAll, optionCategoryMini))
-	cmd.Flags().VarP(&c.flags.chainType, "chainType", "t", fmt.Sprintf("chain type (%s, %s, %s)", chainTypeCall, chainTypePut, chainTypeCallPut))
-	cmd.Flags().VarP(&c.flags.priceType, "priceType", "p", fmt.Sprintf("price type (%s, %s)", priceTypeAtnm, priceTypeAll))
+	cmd.Flags().VarP(
+		&c.flags.optionCategory, "optionCategory", "c",
+		fmt.Sprintf("option category (%s, %s, %s)", optionCategoryStandard, optionCategoryAll, optionCategoryMini),
+	)
+	cmd.Flags().VarP(
+		&c.flags.chainType, "chainType", "t",
+		fmt.Sprintf("chain type (%s, %s, %s)", chainTypeCall, chainTypePut, chainTypeCallPut),
+	)
+	cmd.Flags().VarP(
+		&c.flags.priceType, "priceType", "p", fmt.Sprintf("price type (%s, %s)", priceTypeAtnm, priceTypeAll),
+	)
 	return cmd
 }
 
 func (c *GetOptionChainsCommand) GetOptionChains(symbol string) error {
-	result, err := c.AppContext.Client.GetOptionChains(symbol,
+	result, err := c.AppContext.Client.GetOptionChains(
+		symbol,
 		c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,
 		c.flags.strikePriceNear, c.flags.noOfStrikes, c.flags.includeWeekly, c.flags.skipAdjusted,
-		c.flags.optionCategory.OptionCategory(), c.flags.chainType.ChainType(), c.flags.priceType.PriceType())
+		c.flags.optionCategory.OptionCategory(), c.flags.chainType.ChainType(), c.flags.priceType.PriceType(),
+	)
 	if err != nil {
 		return err
 	}
@@ -74,7 +84,11 @@ func (e *optionCategory) Set(v string) error {
 		*e = optionCategory(v)
 		return nil
 	default:
-		return errors.New(fmt.Sprintf("must be %s, %s, or %s", optionCategoryStandard, optionCategoryAll, optionCategoryMini))
+		return errors.New(
+			fmt.Sprintf(
+				"must be %s, %s, or %s", optionCategoryStandard, optionCategoryAll, optionCategoryMini,
+			),
+		)
 	}
 }
 

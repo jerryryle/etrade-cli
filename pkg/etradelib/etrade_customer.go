@@ -1,8 +1,6 @@
 package etradelib
 
 import (
-	"errors"
-	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 )
 
@@ -24,13 +22,13 @@ type ETradeCustomer interface {
 }
 
 type eTradeCustomer struct {
-	etradeClient client.ETradeClient
+	eTradeClient client.ETradeClient
 	customerName string
 }
 
-func CreateETradeCustomer(client client.ETradeClient, customerName string) ETradeCustomer {
+func CreateETradeCustomer(eTradeClient client.ETradeClient, customerName string) ETradeCustomer {
 	return &eTradeCustomer{
-		etradeClient: client,
+		eTradeClient: eTradeClient,
 		customerName: customerName,
 	}
 }
@@ -40,59 +38,19 @@ func (c *eTradeCustomer) GetCustomerName() string {
 }
 
 func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
-	response, err := c.etradeClient.ListAccounts()
-	if err != nil {
-		return nil, err
-	}
-	var accounts = make([]ETradeAccount, 0)
-	for _, account := range response.Accounts {
-		accounts = append(
-			accounts,
-			CreateETradeAccount(c.etradeClient, CreateETradeAccountInfoFromResponse(account)),
-		)
-	}
-	return accounts, err
+	return nil, nil
 }
 
 func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error) {
-	accounts, err := c.GetAllAccounts()
-	if err != nil {
-		return nil, err
-	}
-	for _, account := range accounts {
-		if account.GetAccountInfo().AccountId == accountID {
-			return account, nil
-		}
-	}
-	return nil, errors.New(fmt.Sprintf("no account found with the id '%s'", accountID))
+	return nil, nil
 }
 
 func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {
-	response, err := c.etradeClient.ListAlerts()
-	if err != nil {
-		return nil, err
-	}
-	var alerts = make([]ETradeAlert, 0)
-	for _, alert := range response.Alerts {
-		alerts = append(
-			alerts,
-			CreateETradeAlert(c.etradeClient, CreateETradeAlertInfoFromResponse(alert)),
-		)
-	}
-	return alerts, err
+	return nil, nil
 }
 
 func (c *eTradeCustomer) GetAlertById(alertID int64) (ETradeAlert, error) {
-	alerts, err := c.GetAllAlerts()
-	if err != nil {
-		return nil, err
-	}
-	for _, alert := range alerts {
-		if alert.GetAlertInfo().Id == alertID {
-			return alert, nil
-		}
-	}
-	return nil, errors.New(fmt.Sprintf("no alert found with the id '%d'", alertID))
+	return nil, nil
 }
 
 func (c *eTradeCustomer) GetQuotesAll(symbols []string) ([]ETradeQuoteAllInfo, error) {

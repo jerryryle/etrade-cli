@@ -2,7 +2,6 @@ package etradelib
 
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/responses"
 	"time"
 )
 
@@ -33,23 +32,6 @@ type ETradeAccountInfo struct {
 type eTradeAccount struct {
 	eTradeClient client.ETradeClient
 	accountInfo  ETradeAccountInfo
-}
-
-func CreateETradeAccountInfoFromResponse(response responses.AccountListAccount) *ETradeAccountInfo {
-	return &ETradeAccountInfo{
-		AccountId:                  response.AccountId,
-		AccountIdKey:               response.AccountIdKey,
-		AccountMode:                response.AccountMode,
-		AccountDesc:                response.AccountDesc,
-		AccountName:                response.AccountName,
-		AccountType:                response.AccountType,
-		InstitutionType:            response.InstitutionType,
-		AccountStatus:              response.AccountStatus,
-		ClosedDate:                 response.ClosedDate.GetTime(),
-		ShareWorksAccount:          response.ShareWorksAccount,
-		ShareWorksSource:           response.ShareWorksSource,
-		FcManagedMssbClosedAccount: response.FcManagedMssbClosedAccount,
-	}
 }
 
 func CreateETradeAccount(client client.ETradeClient, accountInfo *ETradeAccountInfo) ETradeAccount {
