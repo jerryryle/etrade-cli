@@ -46,7 +46,7 @@ func TestJsonMap_Map(t *testing.T) {
 		{
 			name: "Map Recursively Applies to Maps and Slices",
 			testFn: func() (JsonMap, error) {
-				upperCaseKeys := func(parentSliceIndex *int, key string, value interface{}) (string, interface{}) {
+				upperCaseKeys := func(parentSliceIndex int, key string, value interface{}) (string, interface{}) {
 					return strings.ToUpper(key), value
 				}
 				jmap, err := NewFromJsonString(testJsonString)
@@ -84,16 +84,16 @@ func TestJsonMap_Map(t *testing.T) {
 		{
 			name: "Map Can Replace Map Values",
 			testFn: func() (JsonMap, error) {
-				replaceMapStringValuesInSlice := func(parentSliceIndex *int, key string, value interface{}) (
+				replaceMapStringValuesInSlice := func(parentSliceIndex int, key string, value interface{}) (
 					string, interface{},
 				) {
-					if parentSliceIndex == nil {
+					if parentSliceIndex < 0 {
 						// Only replace strings in objects within a slice.
 						return key, value
 					}
 					switch value.(type) {
 					case string:
-						return key, fmt.Sprintf("New String %d", *parentSliceIndex)
+						return key, fmt.Sprintf("New String %d", parentSliceIndex)
 					default:
 						return key, value
 					}
@@ -134,14 +134,14 @@ func TestJsonMap_Map(t *testing.T) {
 			name: "Map Can Replace Slice Values",
 			testFn: func() (JsonMap, error) {
 				replaceChildSliceValuesWithInt := func(
-					parentSliceIndex *int, index int, value interface{},
+					parentSliceIndex int, index int, value interface{},
 				) interface{} {
-					if parentSliceIndex == nil {
-						// Only replace strings in slices within a slice.
-						return value
+					if parentSliceIndex >= 0 {
+						// Replace the old value with an integer based on the current index
+						return index
 					}
-					// Replace the old value with an integer based on the current index
-					return index
+					// Return the original value since we're not currently in a slice.
+					return value
 				}
 				jmap, err := NewFromJsonString(testJsonString)
 				jmap = jmap.Map(nil, replaceChildSliceValuesWithInt)
