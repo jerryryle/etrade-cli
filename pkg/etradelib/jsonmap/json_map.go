@@ -3,11 +3,23 @@ package jsonmap
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 )
 
 type JsonMap map[string]interface{}
+
+func FromInterface(i interface{}) (JsonMap, error) {
+	switch i := i.(type) {
+	case map[string]interface{}:
+		return i, nil
+	case JsonMap:
+		return i, nil
+	default:
+		return nil, fmt.Errorf("cannot treat type %T as JsonMap", i)
+	}
+}
 
 func NewFromIoReader(jsonReader io.Reader) (JsonMap, error) {
 	var m map[string]interface{}

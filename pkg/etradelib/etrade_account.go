@@ -2,11 +2,11 @@ package etradelib
 
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-	"time"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 )
 
 type ETradeAccount interface {
-	GetAccountInfo() ETradeAccountInfo
+	GetAccountInfo() jsonmap.JsonMap
 	GetAccountBalances() (string, error)
 	ListTransactions() (string, error)
 	ViewPortfolio() (string, error)
@@ -14,34 +14,32 @@ type ETradeAccount interface {
 	CreateOrder() (string, error)
 }
 
-type ETradeAccountInfo struct {
-	AccountId                  string
-	AccountIdKey               string
-	AccountMode                string
-	AccountDesc                string
-	AccountName                string
-	AccountType                string
-	InstitutionType            string
-	AccountStatus              string
-	ClosedDate                 time.Time
-	ShareWorksAccount          bool
-	ShareWorksSource           string
-	FcManagedMssbClosedAccount bool
-}
-
 type eTradeAccount struct {
 	eTradeClient client.ETradeClient
-	accountInfo  ETradeAccountInfo
+	accountInfo  jsonmap.JsonMap
+	accountId    string
+	accountIdKey string
 }
 
-func CreateETradeAccount(client client.ETradeClient, accountInfo *ETradeAccountInfo) ETradeAccount {
+func CreateETradeAccount(client client.ETradeClient, accountInfo jsonmap.JsonMap) (ETradeAccount, error) {
+	accountId, err := accountInfo.GetString("accountId")
+	if err != nil {
+		return nil, err
+	}
+	accountIdKey, err := accountInfo.GetString("accountIdKey")
+	if err != nil {
+		return nil, err
+	}
+
 	return &eTradeAccount{
 		eTradeClient: client,
-		accountInfo:  *accountInfo,
-	}
+		accountInfo:  accountInfo,
+		accountId:    accountId,
+		accountIdKey: accountIdKey,
+	}, nil
 }
 
-func (a *eTradeAccount) GetAccountInfo() ETradeAccountInfo {
+func (a *eTradeAccount) GetAccountInfo() jsonmap.JsonMap {
 	return a.accountInfo
 }
 

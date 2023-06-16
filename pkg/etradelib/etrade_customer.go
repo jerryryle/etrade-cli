@@ -2,6 +2,7 @@ package etradelib
 
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 )
 
 type ETradeCustomer interface {
@@ -38,7 +39,27 @@ func (c *eTradeCustomer) GetCustomerName() string {
 }
 
 func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
-	return nil, nil
+	jsonMap, err := ExecuteClientCallAndWrapResponse(func() ([]byte, error) { return c.eTradeClient.ListAccounts() })
+	if err != nil {
+		return nil, err
+	}
+	accountsSlice, err := jsonMap.GetSliceAtPath("accountListResponse.accounts.account")
+	if err != nil {
+		return nil, err
+	}
+	allAccounts := make([]ETradeAccount, 0, len(accountsSlice))
+	for _, accountInfo := range accountsSlice {
+		accountInfoMap, err := jsonmap.FromInterface(accountInfo)
+		if err != nil {
+			return nil, err
+		}
+		account, err := CreateETradeAccount(c.eTradeClient, accountInfoMap)
+		if err != nil {
+			return nil, err
+		}
+		allAccounts = append(allAccounts, account)
+	}
+	return allAccounts, nil
 }
 
 func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error) {
