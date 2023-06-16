@@ -6,7 +6,7 @@ import (
 	"unicode/utf8"
 )
 
-// NewNormalizedJsonMapFromJsonBytes returns a JsonMap representation of a JSON
+// NewNormalizedJsonMap returns a JsonMap representation of a JSON
 // response from the ETrade API. It normalizes all keys in the returned map
 // so that their first letter is lower-case. ETrade's keys are camel-cased;
 // however, some keys are UpperCamelCase and some are lowerCamelCase. Because
@@ -18,17 +18,17 @@ import (
 // normalization should result in mostly-consistent lowerCamelCase keys, where
 // the remaining inconsistencies stem from ETrade's choice of word boundaries
 // (e.g. lowerCamelCase vs lowerCamelcase).
-func NewNormalizedJsonMapFromJsonBytes(responseBytes []byte) (jsonmap.JsonMap, error) {
+func NewNormalizedJsonMap(responseBytes []byte) (jsonmap.JsonMap, error) {
 	jMap, err := jsonmap.NewFromJsonBytes(responseBytes)
 	if err != nil {
 		return nil, err
 	}
-	return jMap.Map(lowerCaseKey), nil
+	return jMap.Map(lowerCaseKey, nil), nil
 }
 
 // lowerCaseKey returns the input key with its first letter lower-cased.
 // It returns the input value untouched.
-func lowerCaseKey(key string, value interface{}) (string, interface{}) {
+func lowerCaseKey(_ *int, key string, value interface{}) (string, interface{}) {
 	return lowerCaseFirstRuneInString(key), value
 }
 

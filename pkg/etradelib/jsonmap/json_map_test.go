@@ -26,11 +26,11 @@ func TestJsonMap_New(t *testing.T) {
 }
 `
 
-	var testValidJsonExpectedMap = map[string]interface{}{
-		"TestMap": map[string]interface{}{
-			"TestMap": map[string]interface{}{
+	var testValidJsonExpectedMap = JsonMap{
+		"TestMap": JsonMap{
+			"TestMap": JsonMap{
 				"TestSlice": []interface{}{
-					map[string]interface{}{
+					JsonMap{
 						"TestString": "TestStringValue",
 						"TestFloat":  json.Number("123.456"),
 						"TestInt":    json.Number("123"),

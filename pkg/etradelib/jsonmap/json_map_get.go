@@ -122,38 +122,38 @@ func (m JsonMap) GetValueAtPath(path string) (interface{}, error) {
 		return nil, err
 	}
 	// Start with the root of the map as the current value
-	var currentValue interface{} = map[string]interface{}(m)
+	var currentValue interface{} = m
 	// We'll build up the current path as we traverse path elements to help produce better error messages.
 	var currentPath = ""
 
 	// Iterate over the path elements.
 	for _, pathElement := range pathElements {
-		switch typedPathElement := pathElement.(type) {
+		switch pathElementTyped := pathElement.(type) {
 		// If the path element is a string, use it to index the current element as an array
 		case int:
 			lastPath := currentPath
-			currentPath = currentPath + fmt.Sprintf("[%d]", typedPathElement)
-			switch typedCurrentValue := currentValue.(type) {
+			currentPath = currentPath + fmt.Sprintf("[%d]", pathElementTyped)
+			switch currentValueTyped := currentValue.(type) {
 			case []interface{}:
-				if typedPathElement >= len(typedCurrentValue) {
+				if pathElementTyped >= len(currentValueTyped) {
 					return nil, fmt.Errorf(
-						"cannot access %s because array index %d is out of bounds", currentPath, typedPathElement,
+						"cannot access %s because array index %d is out of bounds", currentPath, pathElementTyped,
 					)
 				}
-				currentValue = typedCurrentValue[typedPathElement]
+				currentValue = currentValueTyped[pathElementTyped]
 			default:
 				return nil, fmt.Errorf("cannot access %s because %s is not an array", currentPath, lastPath)
 			}
 		// If the path element is a string, use it to index the current element as a map
 		case string:
 			lastPath := currentPath
-			currentPath = currentPath + "." + typedPathElement
-			switch typedCurrentValue := currentValue.(type) {
-			case map[string]interface{}:
-				newValue, found := typedCurrentValue[typedPathElement]
+			currentPath = currentPath + "." + pathElementTyped
+			switch currentValueTyped := currentValue.(type) {
+			case JsonMap:
+				newValue, found := currentValueTyped[pathElementTyped]
 				if !found {
 					return nil, fmt.Errorf(
-						"cannot access %s because key %s is not found in parent map", currentPath, typedPathElement,
+						"cannot access %s because key %s is not found in parent map", currentPath, pathElementTyped,
 					)
 				}
 				currentValue = newValue
@@ -168,82 +168,80 @@ func (m JsonMap) GetValueAtPath(path string) (interface{}, error) {
 }
 
 func valueToString(value interface{}) (string, error) {
-	switch v := value.(type) {
+	switch valueTyped := value.(type) {
 	case string:
-		return v, nil
+		return valueTyped, nil
 	case nil:
 		return "", nil
 	default:
-		return "", fmt.Errorf("type %T is not a string", v)
+		return "", fmt.Errorf("type %T is not a string", valueTyped)
 	}
 }
 
 func valueToInt(value interface{}) (int64, error) {
-	switch v := value.(type) {
+	switch valueTyped := value.(type) {
 	case int64:
-		return v, nil
+		return valueTyped, nil
 	case int32:
-		return int64(v), nil
+		return int64(valueTyped), nil
 	case int:
-		return int64(v), nil
+		return int64(valueTyped), nil
 	case json.Number:
-		intVal, err := v.Int64()
+		intVal, err := valueTyped.Int64()
 		if err != nil {
-			return 0, fmt.Errorf("type %T is not an int: %w", v, err)
+			return 0, fmt.Errorf("type %T is not an int: %w", valueTyped, err)
 		}
 		return intVal, nil
 	default:
-		return 0, fmt.Errorf("type %T is not an int", v)
+		return 0, fmt.Errorf("type %T is not an int", valueTyped)
 	}
 }
 
 func valueToFloat(value interface{}) (float64, error) {
-	switch v := value.(type) {
+	switch valueTyped := value.(type) {
 	case float64:
-		return v, nil
+		return valueTyped, nil
 	case float32:
-		return float64(v), nil
+		return float64(valueTyped), nil
 	case json.Number:
-		floatVal, err := v.Float64()
+		floatVal, err := valueTyped.Float64()
 		if err != nil {
-			return 0, fmt.Errorf("type %T is not a float: %w", v, err)
+			return 0, fmt.Errorf("type %T is not a float: %w", valueTyped, err)
 		}
 		return floatVal, nil
 	default:
-		return 0, fmt.Errorf("type %T is not a float", v)
+		return 0, fmt.Errorf("type %T is not a float", valueTyped)
 	}
 }
 
 func valueToBool(value interface{}) (bool, error) {
-	switch v := value.(type) {
+	switch valueTyped := value.(type) {
 	case bool:
-		return v, nil
+		return valueTyped, nil
 	default:
-		return false, fmt.Errorf("type %T is not a bool", v)
+		return false, fmt.Errorf("type %T is not a bool", valueTyped)
 	}
 }
 
 func valueToMap(value interface{}) (JsonMap, error) {
-	switch v := value.(type) {
+	switch valueTyped := value.(type) {
 	case JsonMap:
-		return v, nil
-	case map[string]interface{}:
-		return v, nil
+		return valueTyped, nil
 	case nil:
 		return nil, nil
 	default:
-		return nil, fmt.Errorf("type %T is not a map", v)
+		return nil, fmt.Errorf("type %T is not a map", valueTyped)
 	}
 }
 
 func valueToSlice(value interface{}) ([]interface{}, error) {
-	switch v := value.(type) {
+	switch valueTyped := value.(type) {
 	case []interface{}:
-		return v, nil
+		return valueTyped, nil
 	case nil:
 		return nil, nil
 	default:
-		return nil, fmt.Errorf("type %T is not a slice", v)
+		return nil, fmt.Errorf("type %T is not a slice", valueTyped)
 	}
 }
 

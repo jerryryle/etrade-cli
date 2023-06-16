@@ -20,21 +20,19 @@ func TestNewNormalizedJsonMapFromJsonBytes(t *testing.T) {
   }
 }
 `
-	expectedJsonMap := jsonmap.JsonMap(
-		map[string]interface{}{
-			"testMap": map[string]interface{}{
-				"testMap": map[string]interface{}{
-					"testSlice": []interface{}{
-						map[string]interface{}{
-							"testValue": "TestStringValue",
-						},
+	expectedJsonMap := jsonmap.JsonMap{
+		"testMap": jsonmap.JsonMap{
+			"testMap": jsonmap.JsonMap{
+				"testSlice": []interface{}{
+					jsonmap.JsonMap{
+						"testValue": "TestStringValue",
 					},
 				},
 			},
 		},
-	)
+	}
 
-	resultJsonMap, err := NewNormalizedJsonMapFromJsonBytes([]byte(testJson))
+	resultJsonMap, err := NewNormalizedJsonMap([]byte(testJson))
 	assert.Nil(t, err)
 	assert.Equal(t, expectedJsonMap, resultJsonMap)
 }

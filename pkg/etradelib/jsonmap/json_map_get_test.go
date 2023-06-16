@@ -472,7 +472,7 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 			testJson:  `{"TestLevel1KeyWithStringValue": "TestStringValue1"}`,
 			testPath:  "",
 			expectErr: false,
-			expectValue: map[string]interface{}{
+			expectValue: JsonMap{
 				"TestLevel1KeyWithStringValue": "TestStringValue1",
 			},
 		},
@@ -480,7 +480,7 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 			name:      "Single Dot Path Returns Root",
 			testJson:  `{"TestLevel1KeyWithStringValue": "TestStringValue1"}`,
 			expectErr: false,
-			expectValue: map[string]interface{}{
+			expectValue: JsonMap{
 				"TestLevel1KeyWithStringValue": "TestStringValue1",
 			},
 		},

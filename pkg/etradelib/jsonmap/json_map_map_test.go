@@ -2,6 +2,7 @@ package jsonmap
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -13,14 +14,23 @@ func TestJsonMap_Map(t *testing.T) {
 	const testJsonString = `
 {
   "TestMap": {
-    "TestMap": {
-      "TestSlice": [
-        {
-          "TestString": "TestStringValue",
-          "TestFloat": 123.456,
-          "TestInt": 123,
-          "TestBool": true
-        }
+    "TestNestedMap": {
+      "TestKey": "TestStringValue",
+      "TestNestedSlice": [
+        [
+          {
+            "TestString": "TestStringValue1",
+            "TestFloat": 123.456,
+            "TestInt": 123,
+            "TestBool": true
+          },
+          {
+            "TestString": "TestStringValue2",
+            "TestFloat": 456.789,
+            "TestInt": 456,
+            "TestBool": false
+          }
+        ]
       ]
     }
   }
@@ -36,26 +46,35 @@ func TestJsonMap_Map(t *testing.T) {
 		{
 			name: "Map Recursively Applies to Maps and Slices",
 			testFn: func() (JsonMap, error) {
-				upperCaseKeys := func(key string, value interface{}) (string, interface{}) {
+				upperCaseKeys := func(parentSliceIndex *int, key string, value interface{}) (string, interface{}) {
 					return strings.ToUpper(key), value
 				}
 				jmap, err := NewFromJsonString(testJsonString)
-				jmap = jmap.Map(upperCaseKeys)
+				jmap = jmap.Map(upperCaseKeys, nil)
 				if err != nil {
 					return nil, err
 				}
 				return jmap, nil
 			},
 			expectErr: false,
-			expectMap: map[string]interface{}{
-				"TESTMAP": map[string]interface{}{
-					"TESTMAP": map[string]interface{}{
-						"TESTSLICE": []interface{}{
-							map[string]interface{}{
-								"TESTSTRING": "TestStringValue",
-								"TESTFLOAT":  json.Number("123.456"),
-								"TESTINT":    json.Number("123"),
-								"TESTBOOL":   true,
+			expectMap: JsonMap{
+				"TESTMAP": JsonMap{
+					"TESTNESTEDMAP": JsonMap{
+						"TESTKEY": "TestStringValue",
+						"TESTNESTEDSLICE": []interface{}{
+							[]interface{}{
+								JsonMap{
+									"TESTSTRING": "TestStringValue1",
+									"TESTFLOAT":  json.Number("123.456"),
+									"TESTINT":    json.Number("123"),
+									"TESTBOOL":   true,
+								},
+								JsonMap{
+									"TESTSTRING": "TestStringValue2",
+									"TESTFLOAT":  json.Number("456.789"),
+									"TESTINT":    json.Number("456"),
+									"TESTBOOL":   false,
+								},
 							},
 						},
 					},
@@ -63,28 +82,82 @@ func TestJsonMap_Map(t *testing.T) {
 			},
 		},
 		{
-			name: "Map Can Replace Values",
+			name: "Map Can Replace Map Values",
 			testFn: func() (JsonMap, error) {
-				replaceSliceWithInt := func(key string, value interface{}) (string, interface{}) {
+				replaceMapStringValuesInSlice := func(parentSliceIndex *int, key string, value interface{}) (
+					string, interface{},
+				) {
+					if parentSliceIndex == nil {
+						// Only replace strings in objects within a slice.
+						return key, value
+					}
 					switch value.(type) {
-					case []interface{}:
-						return key, 1234
+					case string:
+						return key, fmt.Sprintf("New String %d", *parentSliceIndex)
 					default:
 						return key, value
 					}
 				}
 				jmap, err := NewFromJsonString(testJsonString)
-				jmap = jmap.Map(replaceSliceWithInt)
+				jmap = jmap.Map(replaceMapStringValuesInSlice, nil)
 				if err != nil {
 					return nil, err
 				}
 				return jmap, nil
 			},
 			expectErr: false,
-			expectMap: map[string]interface{}{
-				"TestMap": map[string]interface{}{
-					"TestMap": map[string]interface{}{
-						"TestSlice": 1234,
+			expectMap: JsonMap{
+				"TestMap": JsonMap{
+					"TestNestedMap": JsonMap{
+						"TestKey": "TestStringValue",
+						"TestNestedSlice": []interface{}{
+							[]interface{}{
+								JsonMap{
+									"TestString": "New String 0",
+									"TestFloat":  json.Number("123.456"),
+									"TestInt":    json.Number("123"),
+									"TestBool":   true,
+								},
+								JsonMap{
+									"TestString": "New String 1",
+									"TestFloat":  json.Number("456.789"),
+									"TestInt":    json.Number("456"),
+									"TestBool":   false,
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Map Can Replace Slice Values",
+			testFn: func() (JsonMap, error) {
+				replaceChildSliceValuesWithInt := func(
+					parentSliceIndex *int, index int, value interface{},
+				) interface{} {
+					if parentSliceIndex == nil {
+						// Only replace strings in slices within a slice.
+						return value
+					}
+					// Replace the old value with an integer based on the current index
+					return index
+				}
+				jmap, err := NewFromJsonString(testJsonString)
+				jmap = jmap.Map(nil, replaceChildSliceValuesWithInt)
+				if err != nil {
+					return nil, err
+				}
+				return jmap, nil
+			},
+			expectErr: false,
+			expectMap: JsonMap{
+				"TestMap": JsonMap{
+					"TestNestedMap": JsonMap{
+						"TestKey": "TestStringValue",
+						"TestNestedSlice": []interface{}{
+							[]interface{}{0, 1},
+						},
 					},
 				},
 			},
