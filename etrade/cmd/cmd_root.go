@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/slog"
@@ -65,11 +64,7 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 
 	customerConfig, err := customerConfigStore.GetCustomerConfigurationById(c.flags.customerId)
 	if err != nil {
-		return errors.New(
-			fmt.Sprintf(
-				"customer id '%s' not found in config file at %s", c.flags.customerId, cfgFilePath,
-			),
-		)
+		return fmt.Errorf("customer id '%s' not found in config file at %s", c.flags.customerId, cfgFilePath)
 	}
 
 	cacheFileName := "." + customerConfig.CustomerConsumerKey

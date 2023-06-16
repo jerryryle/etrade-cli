@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/spf13/cobra"
@@ -84,11 +83,7 @@ func (e *optionCategory) Set(v string) error {
 		*e = optionCategory(v)
 		return nil
 	default:
-		return errors.New(
-			fmt.Sprintf(
-				"must be %s, %s, or %s", optionCategoryStandard, optionCategoryAll, optionCategoryMini,
-			),
-		)
+		return fmt.Errorf("must be %s, %s, or %s", optionCategoryStandard, optionCategoryAll, optionCategoryMini)
 	}
 }
 
@@ -126,7 +121,7 @@ func (e *chainType) Set(v string) error {
 		*e = chainType(v)
 		return nil
 	default:
-		return errors.New(fmt.Sprintf("must be %s, %s, or %s", chainTypeCall, chainTypePut, chainTypeCallPut))
+		return fmt.Errorf("must be %s, %s, or %s", chainTypeCall, chainTypePut, chainTypeCallPut)
 	}
 }
 
@@ -163,7 +158,7 @@ func (e *priceType) Set(v string) error {
 		*e = priceType(v)
 		return nil
 	default:
-		return errors.New(fmt.Sprintf("must be %s or %s", priceTypeAtnm, priceTypeAll))
+		return fmt.Errorf("must be %s or %s", priceTypeAtnm, priceTypeAll)
 	}
 }
 

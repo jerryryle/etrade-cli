@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/spf13/cobra"
@@ -67,11 +66,9 @@ func (e *expiryType) Set(v string) error {
 		*e = expiryType(v)
 		return nil
 	default:
-		return errors.New(
-			fmt.Sprintf(
-				"must be %s, %s, %s, %s, %s, %s, %s, or %s", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
-				expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
-			),
+		return fmt.Errorf(
+			"must be %s, %s, %s, %s, %s, %s, %s, or %s", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
+			expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
 		)
 	}
 }

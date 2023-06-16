@@ -1,7 +1,6 @@
 package client
 
 import (
-	"errors"
 	"fmt"
 	"golang.org/x/exp/slog"
 	"io"
@@ -148,11 +147,9 @@ func (c *eTradeClient) GetQuotes(
 	symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error) {
 	if len(symbols) > GetQuotesMaxSymbols {
-		return nil, errors.New(
-			fmt.Sprintf(
-				"%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols),
-				GetQuotesMaxSymbols,
-			),
+		return nil, fmt.Errorf(
+			"%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols),
+			GetQuotesMaxSymbols,
 		)
 	}
 	symbolsList := strings.Join(symbols, ",")
@@ -263,7 +260,7 @@ func (c *eTradeClient) doRequest(method string, baseUrl string, queryValues url.
 
 	// Check the response for an error and return response bytes if none
 	if httpResponse.StatusCode != http.StatusOK {
-		return nil, errors.New(fmt.Sprintf("request failed: %s", httpResponse.Status))
+		return nil, fmt.Errorf("request failed: %s", httpResponse.Status)
 	}
 	responseBytes, err := io.ReadAll(httpResponse.Body)
 	if err != nil {
