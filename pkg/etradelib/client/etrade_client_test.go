@@ -23,12 +23,12 @@ func createTestClient(t *testing.T, responseData string, expectUrl string) ETrad
 	return CreateETradeClient(GetEndpointUrls(true), httpClient, etradelibtest.CreateNullLogger())
 }
 
-// testResponseData is bogus JSON that's only used to ensure the client returns the exact response from the server
-const testResponseData = `{"testResponse": true}`
-
-type testFn func(client ETradeClient) ([]byte, error)
-
 func TestETradeClient(t *testing.T) {
+	type testFn func(client ETradeClient) ([]byte, error)
+
+	// testResponseData is bogus JSON that's only used to ensure the client returns the exact response from the server
+	const testResponseData = `{"testResponse": true}`
+
 	tests := []struct {
 		name      string
 		testFn    testFn
