@@ -19,7 +19,7 @@ import (
 // the remaining inconsistencies stem from ETrade's choice of word boundaries
 // (e.g. lowerCamelCase vs lowerCamelcase).
 func NewNormalizedJsonMap(responseBytes []byte) (jsonmap.JsonMap, error) {
-	jMap, err := jsonmap.NewFromJsonBytes(responseBytes)
+	jMap, err := jsonmap.NewMapFromJsonBytes(responseBytes)
 	if err != nil {
 		return nil, err
 	}

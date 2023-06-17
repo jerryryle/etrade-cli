@@ -23,7 +23,7 @@ func TestNewNormalizedJsonMapFromJsonBytes(t *testing.T) {
 	expectedJsonMap := jsonmap.JsonMap{
 		"testMap": jsonmap.JsonMap{
 			"testMap": jsonmap.JsonMap{
-				"testSlice": []interface{}{
+				"testSlice": jsonmap.JsonSlice{
 					jsonmap.JsonMap{
 						"testValue": "TestStringValue",
 					},

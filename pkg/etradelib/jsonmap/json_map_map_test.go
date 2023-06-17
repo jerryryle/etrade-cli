@@ -49,7 +49,7 @@ func TestJsonMap_Map(t *testing.T) {
 				upperCaseKeys := func(parentSliceIndex int, key string, value interface{}) (string, interface{}) {
 					return strings.ToUpper(key), value
 				}
-				jmap, err := NewFromJsonString(testJsonString)
+				jmap, err := NewMapFromJsonString(testJsonString)
 				jmap = jmap.Map(upperCaseKeys, nil)
 				if err != nil {
 					return nil, err
@@ -61,8 +61,8 @@ func TestJsonMap_Map(t *testing.T) {
 				"TESTMAP": JsonMap{
 					"TESTNESTEDMAP": JsonMap{
 						"TESTKEY": "TestStringValue",
-						"TESTNESTEDSLICE": []interface{}{
-							[]interface{}{
+						"TESTNESTEDSLICE": JsonSlice{
+							JsonSlice{
 								JsonMap{
 									"TESTSTRING": "TestStringValue1",
 									"TESTFLOAT":  json.Number("123.456"),
@@ -98,7 +98,7 @@ func TestJsonMap_Map(t *testing.T) {
 						return key, value
 					}
 				}
-				jmap, err := NewFromJsonString(testJsonString)
+				jmap, err := NewMapFromJsonString(testJsonString)
 				jmap = jmap.Map(replaceMapStringValuesInSlice, nil)
 				if err != nil {
 					return nil, err
@@ -110,8 +110,8 @@ func TestJsonMap_Map(t *testing.T) {
 				"TestMap": JsonMap{
 					"TestNestedMap": JsonMap{
 						"TestKey": "TestStringValue",
-						"TestNestedSlice": []interface{}{
-							[]interface{}{
+						"TestNestedSlice": JsonSlice{
+							JsonSlice{
 								JsonMap{
 									"TestString": "New String 0",
 									"TestFloat":  json.Number("123.456"),
@@ -143,7 +143,7 @@ func TestJsonMap_Map(t *testing.T) {
 					// Return the original value since we're not currently in a slice.
 					return value
 				}
-				jmap, err := NewFromJsonString(testJsonString)
+				jmap, err := NewMapFromJsonString(testJsonString)
 				jmap = jmap.Map(nil, replaceChildSliceValuesWithInt)
 				if err != nil {
 					return nil, err
@@ -155,8 +155,8 @@ func TestJsonMap_Map(t *testing.T) {
 				"TestMap": JsonMap{
 					"TestNestedMap": JsonMap{
 						"TestKey": "TestStringValue",
-						"TestNestedSlice": []interface{}{
-							[]interface{}{0, 1},
+						"TestNestedSlice": JsonSlice{
+							JsonSlice{0, 1},
 						},
 					},
 				},

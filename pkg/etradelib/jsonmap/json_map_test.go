@@ -29,7 +29,7 @@ func TestJsonMap_New(t *testing.T) {
 	var testValidJsonExpectedMap = JsonMap{
 		"TestMap": JsonMap{
 			"TestMap": JsonMap{
-				"TestSlice": []interface{}{
+				"TestSlice": JsonSlice{
 					JsonMap{
 						"TestString": "TestStringValue",
 						"TestFloat":  json.Number("123.456"),
@@ -41,12 +41,6 @@ func TestJsonMap_New(t *testing.T) {
 		},
 	}
 
-	const testInvalidJsonString = `
-{
-  "TestMap": {
-}
-`
-
 	tests := []struct {
 		name      string
 		testFn    testFn
@@ -56,7 +50,7 @@ func TestJsonMap_New(t *testing.T) {
 		{
 			name: "New Map From String",
 			testFn: func() (JsonMap, error) {
-				return NewFromJsonString(testValidJsonString)
+				return NewMapFromJsonString(testValidJsonString)
 			},
 			expectErr: false,
 			expectMap: testValidJsonExpectedMap,
@@ -64,7 +58,17 @@ func TestJsonMap_New(t *testing.T) {
 		{
 			name: "New Map From Invalid String Returns Error",
 			testFn: func() (JsonMap, error) {
-				return NewFromJsonString(testInvalidJsonString)
+				return NewMapFromJsonString(`{"TestMap": {}`)
+			},
+			expectErr: true,
+			expectMap: nil,
+		},
+		{
+			name: "New Map From Top-Level Slice String Returns Error",
+			testFn: func() (JsonMap, error) {
+				// This string represents a top-level slice, so it would need
+				// NewSliceFromJsonString() instead of NewMapFromJsonString()
+				return NewMapFromJsonString(`[{"TestKey":"TestValue"}]`)
 			},
 			expectErr: true,
 			expectMap: nil,
@@ -72,7 +76,7 @@ func TestJsonMap_New(t *testing.T) {
 		{
 			name: "New Map From Bytes",
 			testFn: func() (JsonMap, error) {
-				return NewFromJsonBytes([]byte(testValidJsonString))
+				return NewMapFromJsonBytes([]byte(testValidJsonString))
 			},
 			expectErr: false,
 			expectMap: testValidJsonExpectedMap,

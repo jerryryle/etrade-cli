@@ -9,7 +9,11 @@ import (
 
 type JsonMap map[string]interface{}
 
-func NewFromIoReader(jsonReader io.Reader) (JsonMap, error) {
+// NewMapFromIoReader creates a JsonMap from an io.Reader. It returns an error
+// if valid JSON cannot be decoded from the io.Reader.
+// Note: This function expects the top-level JSON object to be a map and will
+// fail if it is a slice (use NewSliceFromIoReader for a top-level slice).
+func NewMapFromIoReader(jsonReader io.Reader) (JsonMap, error) {
 	var m map[string]interface{}
 	decoder := json.NewDecoder(jsonReader)
 	// Decode numbers using the json.Number type instead of float64
@@ -18,16 +22,25 @@ func NewFromIoReader(jsonReader io.Reader) (JsonMap, error) {
 	if err != nil {
 		return nil, err
 	}
-	// This nil map will ensure that all map[string]interface{} values are
-	// recursively replaced with JsonMap
+	// This nil map will recursively ensure that all map[string]interface{}
+	// values are replaced with JsonMap and all []interface{} values are
+	// replaced with JsonSlice
 	jsonMap := JsonMap(m).Map(nil, nil)
 	return jsonMap, nil
 }
 
-func NewFromJsonBytes(jsonBytes []byte) (JsonMap, error) {
-	return NewFromIoReader(bytes.NewReader(jsonBytes))
+// NewMapFromJsonBytes creates a JsonMap from a byte slice. It returns an error
+// if valid JSON cannot be decoded from the bytes.
+// Note: This function expects the top-level JSON object to be a map and will
+// fail if it is a slice (use NewSliceFromJsonBytes for a top-level slice).
+func NewMapFromJsonBytes(jsonBytes []byte) (JsonMap, error) {
+	return NewMapFromIoReader(bytes.NewReader(jsonBytes))
 }
 
-func NewFromJsonString(jsonString string) (JsonMap, error) {
-	return NewFromIoReader(strings.NewReader(jsonString))
+// NewMapFromJsonString creates a JsonMap from a string. It returns an error
+// if valid JSON cannot be decoded from the string.
+// Note: This function expects the top-level JSON object to be a map and will
+// fail if it is a slice (use NewSliceFromJsonString for a top-level slice).
+func NewMapFromJsonString(jsonString string) (JsonMap, error) {
+	return NewMapFromIoReader(strings.NewReader(jsonString))
 }

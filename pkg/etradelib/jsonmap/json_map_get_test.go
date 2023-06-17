@@ -32,7 +32,7 @@ func TestJsonMap_GetValue(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewFromJsonString(tt.testJson)
+				testMap, err := NewMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				testResultValue, err := testMap.GetValue(tt.testKey)
@@ -383,7 +383,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": ["foo", "bar"]}`,
 			expectErr:   false,
-			expectValue: []interface{}{"foo", "bar"},
+			expectValue: JsonSlice{"foo", "bar"},
 		},
 		{
 			name: "GetSlice Gets Null As Nil Slice",
@@ -392,7 +392,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": null}`,
 			expectErr:   false,
-			expectValue: []interface{}(nil),
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetSlice Cannot Get String As Slice",
@@ -444,7 +444,7 @@ func TestJsonMap_GetType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewFromJsonString(tt.testJson)
+				testMap, err := NewMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				testResultValue, err := tt.testFn(testMap)
@@ -538,7 +538,7 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewFromJsonString(tt.testJson)
+				testMap, err := NewMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				testResultValue, err := testMap.GetValueAtPath(tt.testPath)
