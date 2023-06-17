@@ -48,10 +48,10 @@ func splitKeyIndices(s string) ([]interface{}, error) {
 	}
 
 	// Create a new slice for the key and indices
-	// e.g. keyAndIndicesSlice:[ "test", "0]", "1]" ] -> keyAndIndicesSlice[0]:"test"
-	returnKeyAndIndices := []interface{}{}
+	returnKeyAndIndices := make([]interface{}, 0, len(keyAndIndicesSlice))
 
 	// If the key isn't empty, add it to the slice.
+	// e.g. keyAndIndicesSlice:[ "test", "0]", "1]" ] -> keyAndIndicesSlice[0]:"test"
 	if keyAndIndicesSlice[0] != "" {
 		returnKeyAndIndices = append(returnKeyAndIndices, keyAndIndicesSlice[0])
 	}
