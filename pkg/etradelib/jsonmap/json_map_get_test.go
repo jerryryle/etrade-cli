@@ -1,6 +1,7 @@
 package jsonmap
 
 import (
+	"encoding/json"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -314,13 +315,9 @@ func TestJsonMap_GetType(t *testing.T) {
 			testFn: func(m JsonMap) (interface{}, error) {
 				return m.GetMap("TestKey")
 			},
-			testJson:  `{"TestKey": {"foo": "bar"}}`,
-			expectErr: false,
-			expectValue: JsonMap(
-				map[string]interface{}{
-					"foo": "bar",
-				},
-			),
+			testJson:    `{"TestKey": {"foo": "bar"}}`,
+			expectErr:   false,
+			expectValue: JsonMap{"foo": "bar"},
 		},
 		{
 			name: "GetMap Gets Null As Nil JsonMap",
@@ -439,6 +436,168 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectErr:   true,
 			expectValue: nil,
 		},
+		{
+			name: "GetStringSlice Gets Slice As String Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetStringSlice("TestKey")
+			},
+			testJson:    `{"TestKey": ["foo", "bar"]}`,
+			expectErr:   false,
+			expectValue: []string{"foo", "bar"},
+		},
+		{
+			name: "GetStringSlice Gets Null Slice As Empty String Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetStringSlice("TestKey")
+			},
+			testJson:    `{"TestKey": null}`,
+			expectErr:   false,
+			expectValue: []string{},
+		},
+		{
+			name: "GetStringSlice Cannot Get Mixed Slice As String Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetStringSlice("TestKey")
+			},
+			testJson:    `{"TestKey": ["foo", 1]}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "GetIntSlice Gets Slice As Int Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetIntSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [1, 2]}`,
+			expectErr:   false,
+			expectValue: []int64{1, 2},
+		},
+		{
+			name: "GetIntSlice Gets Null Slice As Empty Int Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetIntSlice("TestKey")
+			},
+			testJson:    `{"TestKey": null}`,
+			expectErr:   false,
+			expectValue: []int64{},
+		},
+		{
+			name: "GetIntSlice Cannot Get Mixed Slice As Int Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetIntSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [1, "foo"]}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "GetFloatSlice Gets Slice As Float Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetFloatSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [1.1, 2.2]}`,
+			expectErr:   false,
+			expectValue: []float64{1.1, 2.2},
+		},
+		{
+			name: "GetFloatSlice Gets Null Slice As Empty Float Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetFloatSlice("TestKey")
+			},
+			testJson:    `{"TestKey": null}`,
+			expectErr:   false,
+			expectValue: []float64{},
+		},
+		{
+			name: "GetFloatSlice Cannot Get Mixed Slice As Float Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetFloatSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [1.1, "foo"]}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "GetBoolSlice Gets Slice As Bool Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetBoolSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [true, false]}`,
+			expectErr:   false,
+			expectValue: []bool{true, false},
+		},
+		{
+			name: "GetBoolSlice Gets Null Slice As Empty Bool Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetBoolSlice("TestKey")
+			},
+			testJson:    `{"TestKey": null}`,
+			expectErr:   false,
+			expectValue: []bool{},
+		},
+		{
+			name: "GetBoolSlice Cannot Get Mixed Slice As Bool Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetBoolSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [true, "foo"]}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "GetMapSlice Gets Slice As Map Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetMapSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [{"A": 1}, {"B": 2}]}`,
+			expectErr:   false,
+			expectValue: []JsonMap{{"A": json.Number("1")}, {"B": json.Number("2")}},
+		},
+		{
+			name: "GetMapSlice Gets Null Slice As Empty Map Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetMapSlice("TestKey")
+			},
+			testJson:    `{"TestKey": null}`,
+			expectErr:   false,
+			expectValue: []JsonMap{},
+		},
+		{
+			name: "GetMapSlice Cannot Get Mixed Slice As Map Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetMapSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [{"A": 1}, "foo"]}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "GetSliceSlice Gets Slice As Slice Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetSliceSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [[1], [2]]}`,
+			expectErr:   false,
+			expectValue: []JsonSlice{{json.Number("1")}, {json.Number("2")}},
+		},
+		{
+			name: "GetSliceSlice Gets Null Slice As Empty Slice Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetSliceSlice("TestKey")
+			},
+			testJson:    `{"TestKey": null}`,
+			expectErr:   false,
+			expectValue: []JsonSlice{},
+		},
+		{
+			name: "GetSliceSlice Cannot Get Mixed Slice As Slice Slice",
+			testFn: func(m JsonMap) (interface{}, error) {
+				return m.GetSliceSlice("TestKey")
+			},
+			testJson:    `{"TestKey": [[1], "foo"]}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
 	}
 
 	for _, tt := range tests {
@@ -506,11 +665,18 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 			expectValue: "TestStringValue1",
 		},
 		{
-			name:        "Out Of Bounds Array Indexing Returns Error",
+			name:        "Array Index Too Big Returns Error",
 			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
 			testPath:    "TestLevel1KeyWithMapValue.TestLevel2KeyWithSliceValue[1].TestString",
 			expectErr:   true,
-			expectValue: "TestStringValue1",
+			expectValue: nil,
+		},
+		{
+			name:        "Array Index Negative Returns Error",
+			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
+			testPath:    "TestLevel1KeyWithMapValue.TestLevel2KeyWithSliceValue[-1].TestString",
+			expectErr:   true,
+			expectValue: nil,
 		},
 		{
 			name:        "Nested Array Indexing Returns Value",

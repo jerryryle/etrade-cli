@@ -26,7 +26,13 @@ func pathGet(path string, root interface{}) (interface{}, error) {
 			case JsonSlice:
 				if pathElementTyped >= len(currentValueTyped) {
 					return nil, fmt.Errorf(
-						"cannot access %s because array index %d is out of bounds", currentPath, pathElementTyped,
+						"cannot access %s because array index %d is greater than slice len %d", currentPath,
+						pathElementTyped, len(currentValueTyped),
+					)
+				}
+				if pathElementTyped < 0 {
+					return nil, fmt.Errorf(
+						"cannot access %s because array index %d is negative", currentPath, pathElementTyped,
 					)
 				}
 				currentValue = currentValueTyped[pathElementTyped]
