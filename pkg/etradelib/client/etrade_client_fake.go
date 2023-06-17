@@ -45,61 +45,109 @@ type ETradeClientFake struct {
 	LookupProductFn          LookupProductFn
 	GetOptionChainsFn        GetOptionChainsFn
 	GetOptionExpireDatesFn   GetOptionExpireDatesFn
+
+	defaultJson []byte
+	defaultErr  error
+}
+
+func NewClientFake(defaultJson string, defaultError error) *ETradeClientFake {
+	clientFake := ETradeClientFake{defaultJson: []byte(defaultJson), defaultErr: defaultError}
+	return &clientFake
 }
 
 func (c *ETradeClientFake) ListAccounts() ([]byte, error) {
-	return c.ListAccountsFn()
+	if c.ListAccountsFn != nil {
+		return c.ListAccountsFn()
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) GetAccountBalances(accountIdKey string, realTimeNAV bool) ([]byte, error) {
-	return c.GetAccountBalancesFn(accountIdKey, realTimeNAV)
+	if c.GetAccountBalancesFn != nil {
+		return c.GetAccountBalancesFn(accountIdKey, realTimeNAV)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) ListTransactions(
 	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
 ) ([]byte, error) {
-	return c.ListTransactionsFn(accountIdKey, startDate, endDate, sortOrder, marker, count)
+	if c.ListTransactionsFn != nil {
+		return c.ListTransactionsFn(accountIdKey, startDate, endDate, sortOrder, marker, count)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) ListTransactionDetails(accountIdKey string, transactionId string) ([]byte, error) {
-	return c.ListTransactionDetailsFn(accountIdKey, transactionId)
+	if c.ListTransactionDetailsFn != nil {
+		return c.ListTransactionDetailsFn(accountIdKey, transactionId)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) ViewPortfolio(
 	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
 	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
 ) ([]byte, error) {
-	return c.ViewPortfolioFn(
-		accountIdKey, count, sortBy, sortOrder, pageNumber, marketSession, totalsRequired, lotsRequired, view,
-	)
+	if c.ViewPortfolioFn != nil {
+		return c.ViewPortfolioFn(
+			accountIdKey, count, sortBy, sortOrder, pageNumber, marketSession, totalsRequired, lotsRequired, view,
+		)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) ListAlerts() ([]byte, error) {
-	return c.ListAlertsFn()
+	if c.ListAlertsFn != nil {
+		return c.ListAlertsFn()
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) GetQuotes(
 	symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error) {
-	return c.GetQuotesFn(symbols, detailFlag, requireEarningsDate, skipMiniOptionsCheck)
+	if c.GetQuotesFn != nil {
+		return c.GetQuotesFn(symbols, detailFlag, requireEarningsDate, skipMiniOptionsCheck)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) LookupProduct(search string) ([]byte, error) {
-	return c.LookupProductFn(search)
+	if c.LookupProductFn != nil {
+		return c.LookupProductFn(search)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) GetOptionChains(
 	symbol string, expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
 	includeWeekly, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
 ) ([]byte, error) {
-	return c.GetOptionChainsFn(
-		symbol,
-		expiryYear, expiryMonth, expiryDay,
-		strikePriceNear, noOfStrikes, includeWeekly, skipAdjusted,
-		optionCategory, chainType, priceType,
-	)
+	if c.GetOptionChainsFn != nil {
+		return c.GetOptionChainsFn(
+			symbol,
+			expiryYear, expiryMonth, expiryDay,
+			strikePriceNear, noOfStrikes, includeWeekly, skipAdjusted,
+			optionCategory, chainType, priceType,
+		)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }
 
 func (c *ETradeClientFake) GetOptionExpireDates(symbol string, expiryType ExpiryType) ([]byte, error) {
-	return c.GetOptionExpireDatesFn(symbol, expiryType)
+	if c.GetOptionExpireDatesFn != nil {
+		return c.GetOptionExpireDatesFn(symbol, expiryType)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
 }

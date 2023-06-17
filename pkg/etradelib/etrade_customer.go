@@ -1,8 +1,8 @@
 package etradelib
 
 import (
+	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 )
 
 type ETradeCustomer interface {
@@ -39,21 +39,15 @@ func (c *eTradeCustomer) GetCustomerName() string {
 }
 
 func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
-	jsonMap, err := ExecuteClientCallAndWrapResponse(func() ([]byte, error) { return c.eTradeClient.ListAccounts() })
-	if err != nil {
-		return nil, err
-	}
-	accountsSlice, err := jsonMap.GetSliceAtPath("accountListResponse.accounts.account")
+	accountsSlice, err := SelectMapSliceFromResponse(
+		"accountListResponse.accounts.account", func() ([]byte, error) { return c.eTradeClient.ListAccounts() },
+	)
 	if err != nil {
 		return nil, err
 	}
 	allAccounts := make([]ETradeAccount, 0, len(accountsSlice))
 	for _, accountInfo := range accountsSlice {
-		accountInfoMap, err := jsonmap.FromInterface(accountInfo)
-		if err != nil {
-			return nil, err
-		}
-		account, err := CreateETradeAccount(c.eTradeClient, accountInfoMap)
+		account, err := CreateETradeAccount(c.eTradeClient, accountInfo)
 		if err != nil {
 			return nil, err
 		}
@@ -63,7 +57,16 @@ func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
 }
 
 func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error) {
-	return nil, nil
+	accounts, err := c.GetAllAccounts()
+	if err != nil {
+		return nil, err
+	}
+	for _, account := range accounts {
+		if account.GetAccountId() == accountID {
+			return account, nil
+		}
+	}
+	return nil, fmt.Errorf("account with ID %s not found", accountID)
 }
 
 func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {

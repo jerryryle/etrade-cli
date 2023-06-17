@@ -7,6 +7,8 @@ import (
 
 type ETradeAccount interface {
 	GetAccountInfo() jsonmap.JsonMap
+	GetAccountId() string
+	GetAccountIdKey() string
 	GetAccountBalances() (string, error)
 	ListTransactions() (string, error)
 	ViewPortfolio() (string, error)
@@ -39,26 +41,34 @@ func CreateETradeAccount(client client.ETradeClient, accountInfo jsonmap.JsonMap
 	}, nil
 }
 
-func (a *eTradeAccount) GetAccountInfo() jsonmap.JsonMap {
-	return a.accountInfo
+func (e *eTradeAccount) GetAccountInfo() jsonmap.JsonMap {
+	return e.accountInfo
 }
 
-func (a *eTradeAccount) GetAccountBalances() (string, error) {
+func (e *eTradeAccount) GetAccountId() string {
+	return e.accountId
+}
+
+func (e *eTradeAccount) GetAccountIdKey() string {
+	return e.accountIdKey
+}
+
+func (e *eTradeAccount) GetAccountBalances() (string, error) {
 	return "", nil
 }
 
-func (a *eTradeAccount) ListTransactions() (string, error) {
+func (e *eTradeAccount) ListTransactions() (string, error) {
 	return "", nil
 }
 
-func (a *eTradeAccount) ViewPortfolio() (string, error) {
+func (e *eTradeAccount) ViewPortfolio() (string, error) {
 	return "", nil
 }
 
-func (a *eTradeAccount) ListOrders() (string, error) {
+func (e *eTradeAccount) ListOrders() (string, error) {
 	return "", nil
 }
 
-func (a *eTradeAccount) CreateOrder() (string, error) {
+func (e *eTradeAccount) CreateOrder() (string, error) {
 	return "", nil
 }
