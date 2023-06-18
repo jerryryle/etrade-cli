@@ -32,8 +32,8 @@ func CreateETradeAlert(alertResponseMap jsonmap.JsonMap) (ETradeAlert, error) {
 	}
 
 	return &eTradeAlert{
-		infoMap: alertResponseMap,
 		id:      alertId,
+		infoMap: alertResponseMap,
 	}, nil
 }
 
