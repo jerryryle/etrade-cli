@@ -1,48 +1,51 @@
 package etradelib
 
 import (
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 )
 
 type ETradeAccount interface {
-	GetAccountInfo() jsonmap.JsonMap
 	GetAccountId() string
 	GetAccountIdKey() string
-	GetAccountBalances() (string, error)
-	ListTransactions() (string, error)
-	ViewPortfolio() (string, error)
-	ListOrders() (string, error)
-	CreateOrder() (string, error)
+	GetAccountInfoMap() jsonmap.JsonMap
 }
 
 type eTradeAccount struct {
-	eTradeClient client.ETradeClient
-	accountInfo  jsonmap.JsonMap
-	accountId    string
-	accountIdKey string
+	accountInfoMap jsonmap.JsonMap
+	accountId      string
+	accountIdKey   string
 }
 
-func CreateETradeAccount(client client.ETradeClient, accountInfo jsonmap.JsonMap) (ETradeAccount, error) {
-	accountId, err := accountInfo.GetString("accountId")
+const (
+	// The account response JSON looks like this:
+	// {
+	//   "accountId": "12345678",
+	//   "accountIdKey": "abcdefghijklmnop",
+	//   <other account keys/values>
+	// }
+
+	// accountIdResponseKey is the key for the account ID
+	accountIdResponseKey = "accountId"
+
+	// accountIdResponseKey is the key for the account ID Key
+	accountIdKeyResponseKey = "accountIdKey"
+)
+
+func CreateETradeAccount(accountResponseMap jsonmap.JsonMap) (ETradeAccount, error) {
+	accountId, err := accountResponseMap.GetString(accountIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
-	accountIdKey, err := accountInfo.GetString("accountIdKey")
+	accountIdKey, err := accountResponseMap.GetString(accountIdKeyResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeAccount{
-		eTradeClient: client,
-		accountInfo:  accountInfo,
-		accountId:    accountId,
-		accountIdKey: accountIdKey,
+		accountInfoMap: accountResponseMap,
+		accountId:      accountId,
+		accountIdKey:   accountIdKey,
 	}, nil
-}
-
-func (e *eTradeAccount) GetAccountInfo() jsonmap.JsonMap {
-	return e.accountInfo
 }
 
 func (e *eTradeAccount) GetAccountId() string {
@@ -53,22 +56,6 @@ func (e *eTradeAccount) GetAccountIdKey() string {
 	return e.accountIdKey
 }
 
-func (e *eTradeAccount) GetAccountBalances() (string, error) {
-	return "", nil
-}
-
-func (e *eTradeAccount) ListTransactions() (string, error) {
-	return "", nil
-}
-
-func (e *eTradeAccount) ViewPortfolio() (string, error) {
-	return "", nil
-}
-
-func (e *eTradeAccount) ListOrders() (string, error) {
-	return "", nil
-}
-
-func (e *eTradeAccount) CreateOrder() (string, error) {
-	return "", nil
+func (e *eTradeAccount) GetAccountInfoMap() jsonmap.JsonMap {
+	return e.accountInfoMap
 }

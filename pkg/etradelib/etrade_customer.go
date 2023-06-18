@@ -1,10 +1,5 @@
 package etradelib
 
-import (
-	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-)
-
 type ETradeCustomer interface {
 	GetCustomerName() string
 	GetAllAccounts() ([]ETradeAccount, error)
@@ -20,95 +15,4 @@ type ETradeCustomer interface {
 	LookUpProduct(search string) (string, error)
 	GetOptionChains() (string, error)
 	GetOptionExpireDates() (string, error)
-}
-
-type eTradeCustomer struct {
-	eTradeClient client.ETradeClient
-	customerName string
-}
-
-func CreateETradeCustomer(eTradeClient client.ETradeClient, customerName string) ETradeCustomer {
-	return &eTradeCustomer{
-		eTradeClient: eTradeClient,
-		customerName: customerName,
-	}
-}
-
-func (c *eTradeCustomer) GetCustomerName() string {
-	return c.customerName
-}
-
-func (c *eTradeCustomer) GetAllAccounts() ([]ETradeAccount, error) {
-	accountsSlice, err := SelectMapSliceFromResponse(
-		"accountListResponse.accounts.account", func() ([]byte, error) { return c.eTradeClient.ListAccounts() },
-	)
-	if err != nil {
-		return nil, err
-	}
-	allAccounts := make([]ETradeAccount, 0, len(accountsSlice))
-	for _, accountInfo := range accountsSlice {
-		account, err := CreateETradeAccount(c.eTradeClient, accountInfo)
-		if err != nil {
-			return nil, err
-		}
-		allAccounts = append(allAccounts, account)
-	}
-	return allAccounts, nil
-}
-
-func (c *eTradeCustomer) GetAccountById(accountID string) (ETradeAccount, error) {
-	accounts, err := c.GetAllAccounts()
-	if err != nil {
-		return nil, err
-	}
-	for _, account := range accounts {
-		if account.GetAccountId() == accountID {
-			return account, nil
-		}
-	}
-	return nil, fmt.Errorf("account with ID %s not found", accountID)
-}
-
-func (c *eTradeCustomer) GetAllAlerts() ([]ETradeAlert, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetAlertById(alertID int64) (ETradeAlert, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetQuotesAll(symbols []string) ([]ETradeQuoteAllInfo, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetQuotesFundamental(symbols []string) ([]ETradeQuoteFundamentalInfo, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetQuotesIntraday(symbols []string) ([]ETradeQuoteIntradayInfo, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetQuotesOptions(symbols []string) ([]ETradeQuoteOptionsInfo, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetQuotesWeek52(symbols []string) ([]ETradeQuoteWeek52Info, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) GetQuotesMutualFund(symbols []string) ([]ETradeQuoteMutualFundInfo, error) {
-	return nil, nil
-}
-
-func (c *eTradeCustomer) LookUpProduct(search string) (string, error) {
-	return "", nil
-}
-
-func (c *eTradeCustomer) GetOptionChains() (string, error) {
-	return "", nil
-}
-
-func (c *eTradeCustomer) GetOptionExpireDates() (string, error) {
-	return "", nil
 }
