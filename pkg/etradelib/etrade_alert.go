@@ -1,50 +1,46 @@
 package etradelib
 
 import (
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-	"time"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 )
 
 type ETradeAlert interface {
-	GetAlertInfo() ETradeAlertInfo
-	GetAlertDetails() (string, error)
-	DeleteAlert() (string, error)
-}
-
-const (
-	ETradeAlertStatusUnread    = "UNREAD"
-	ETradeAlertStatusRead      = "READ"
-	ETradeAlertStatusDeleted   = "DELETED"
-	ETradeAlertStatusUndeleted = "UNDELETED"
-)
-
-type ETradeAlertInfo struct {
-	Id         int64
-	CreateTime time.Time
-	Subject    string
-	Status     string
+	GetId() int64
+	GetInfoMap() jsonmap.JsonMap
 }
 
 type eTradeAlert struct {
-	eTradeClient client.ETradeClient
-	alertInfo    ETradeAlertInfo
+	id      int64
+	infoMap jsonmap.JsonMap
 }
 
-func CreateETradeAlert(client client.ETradeClient, alertInfo *ETradeAlertInfo) ETradeAlert {
-	return &eTradeAlert{
-		eTradeClient: client,
-		alertInfo:    *alertInfo,
+const (
+	// The alert response JSON looks like this:
+	// {
+	//   "id": 1234,
+	//   <other alert keys/values>
+	// }
+
+	// alertIdResponseKey is the key for the alert ID
+	alertIdResponseKey = "id"
+)
+
+func CreateETradeAlert(alertResponseMap jsonmap.JsonMap) (ETradeAlert, error) {
+	alertId, err := alertResponseMap.GetInt(alertIdResponseKey)
+	if err != nil {
+		return nil, err
 	}
+
+	return &eTradeAlert{
+		infoMap: alertResponseMap,
+		id:      alertId,
+	}, nil
 }
 
-func (a *eTradeAlert) GetAlertInfo() ETradeAlertInfo {
-	return a.alertInfo
+func (e *eTradeAlert) GetId() int64 {
+	return e.id
 }
 
-func (a *eTradeAlert) GetAlertDetails() (string, error) {
-	return "", nil
-}
-
-func (a *eTradeAlert) DeleteAlert() (string, error) {
-	return "", nil
+func (e *eTradeAlert) GetInfoMap() jsonmap.JsonMap {
+	return e.infoMap
 }
