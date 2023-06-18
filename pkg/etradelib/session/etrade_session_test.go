@@ -1,4 +1,4 @@
-package etradelib
+package session
 
 import (
 	"errors"
