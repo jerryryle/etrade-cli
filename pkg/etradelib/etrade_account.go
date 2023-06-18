@@ -11,9 +11,9 @@ type ETradeAccount interface {
 }
 
 type eTradeAccount struct {
-	accountInfoMap jsonmap.JsonMap
 	accountId      string
 	accountIdKey   string
+	accountInfoMap jsonmap.JsonMap
 }
 
 const (
@@ -42,9 +42,9 @@ func CreateETradeAccount(accountResponseMap jsonmap.JsonMap) (ETradeAccount, err
 	}
 
 	return &eTradeAccount{
-		accountInfoMap: accountResponseMap,
 		accountId:      accountId,
 		accountIdKey:   accountIdKey,
+		accountInfoMap: accountResponseMap,
 	}, nil
 }
 
