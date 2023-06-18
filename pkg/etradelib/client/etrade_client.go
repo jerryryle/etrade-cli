@@ -82,6 +82,9 @@ func (c *eTradeClient) ListAccounts() ([]byte, error) {
 }
 
 func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool) ([]byte, error) {
+	if accountIdKey == "" {
+		return nil, errors.New("accountIdKey not provided")
+	}
 	queryValues := url.Values{}
 	queryValues.Add("instType", "BROKERAGE")
 	queryValues.Add("realTimeNAV", fmt.Sprintf("%t", realTimeNAV))
@@ -97,6 +100,9 @@ func (c *eTradeClient) ListTransactions(
 	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder constants.SortOrder, marker string,
 	count int,
 ) ([]byte, error) {
+	if accountIdKey == "" {
+		return nil, errors.New("accountIdKey not provided")
+	}
 	queryValues := url.Values{}
 	if startDate != nil {
 		queryValues.Add("startDate", startDate.Format(queryDateLayout))
@@ -104,11 +110,13 @@ func (c *eTradeClient) ListTransactions(
 	if endDate != nil {
 		queryValues.Add("endDate", endDate.Format(queryDateLayout))
 	}
-	queryValues.Add("sortOrder", sortOrder.String())
+	if sortOrder != constants.SortOrderNil {
+		queryValues.Add("sortOrder", sortOrder.String())
+	}
 	if marker != "" {
 		queryValues.Add("marker", marker)
 	}
-	if count > 0 {
+	if count >= 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))
 	}
 
@@ -120,6 +128,12 @@ func (c *eTradeClient) ListTransactions(
 }
 
 func (c *eTradeClient) ListTransactionDetails(accountIdKey string, transactionId string) ([]byte, error) {
+	if accountIdKey == "" {
+		return nil, errors.New("accountIdKey not provided")
+	}
+	if transactionId == "" {
+		return nil, errors.New("transactionId not provided")
+	}
 	response, err := c.doRequest("GET", c.urls.ListTransactionDetailsUrl(accountIdKey, transactionId), nil)
 	if err != nil {
 		return nil, err
@@ -132,19 +146,30 @@ func (c *eTradeClient) ViewPortfolio(
 	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
 	view constants.PortfolioView,
 ) ([]byte, error) {
+	if accountIdKey == "" {
+		return nil, errors.New("accountIdKey not provided")
+	}
 	queryValues := url.Values{}
-	if count > 0 {
+	if count >= 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))
 	}
-	if pageNumber > 0 {
+	if pageNumber >= 0 {
 		queryValues.Add("pageNumber", fmt.Sprintf("%d", pageNumber))
 	}
 	queryValues.Add("totalsRequired", fmt.Sprintf("%t", totalsRequired))
 	queryValues.Add("lotsRequired", fmt.Sprintf("%t", lotsRequired))
-	queryValues.Add("sortBy", sortBy.String())
-	queryValues.Add("sortOrder", sortOrder.String())
-	queryValues.Add("marketSession", marketSession.String())
-	queryValues.Add("view", view.String())
+	if sortBy != constants.PortfolioSortByNil {
+		queryValues.Add("sortBy", sortBy.String())
+	}
+	if sortOrder != constants.SortOrderNil {
+		queryValues.Add("sortOrder", sortOrder.String())
+	}
+	if marketSession != constants.MarketSessionNil {
+		queryValues.Add("marketSession", marketSession.String())
+	}
+	if view != constants.PortfolioViewNil {
+		queryValues.Add("view", view.String())
+	}
 
 	response, err := c.doRequest("GET", c.urls.ViewPortfolioUrl(accountIdKey), queryValues)
 	if err != nil {
@@ -160,7 +185,7 @@ func (c *eTradeClient) ListAlerts(
 	[]byte, error,
 ) {
 	queryValues := url.Values{}
-	if count > 0 {
+	if count >= 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))
 	}
 	if category != constants.AlertCategoryNil {
@@ -186,6 +211,9 @@ func (c *eTradeClient) ListAlerts(
 func (c *eTradeClient) GetQuotes(
 	symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error) {
+	if len(symbols) < 1 {
+		return nil, errors.New("no symbols provided")
+	}
 	if len(symbols) > constants.GetQuotesMaxSymbols {
 		return nil, fmt.Errorf(
 			"%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols),
@@ -199,7 +227,9 @@ func (c *eTradeClient) GetQuotes(
 	}
 	queryValues.Add("requireEarningsDate", fmt.Sprintf("%t", requireEarningsDate))
 	queryValues.Add("skipMiniOptionsCheck", fmt.Sprintf("%t", skipMiniOptionsCheck))
-	queryValues.Add("detailFlag", detailFlag.String())
+	if detailFlag != constants.QuoteDetailNil {
+		queryValues.Add("detailFlag", detailFlag.String())
+	}
 
 	response, err := c.doRequest("GET", c.urls.GetQuotesUrl(symbolsList), queryValues)
 	if err != nil {
@@ -209,6 +239,9 @@ func (c *eTradeClient) GetQuotes(
 }
 
 func (c *eTradeClient) LookupProduct(search string) ([]byte, error) {
+	if search == "" {
+		return nil, errors.New("no search string provided")
+	}
 	response, err := c.doRequest("GET", c.urls.LookUpProductUrl(search), nil)
 	if err != nil {
 		return nil, err
@@ -221,6 +254,9 @@ func (c *eTradeClient) GetOptionChains(
 	includeWeekly, skipAdjusted bool, optionCategory constants.OptionCategory, chainType constants.OptionChainType,
 	priceType constants.OptionPriceType,
 ) ([]byte, error) {
+	if symbol == "" {
+		return nil, errors.New("no symbol provided")
+	}
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
 	if expiryYear > 0 {
@@ -240,9 +276,15 @@ func (c *eTradeClient) GetOptionChains(
 	}
 	queryValues.Add("includeWeekly", fmt.Sprintf("%t", includeWeekly))
 	queryValues.Add("skipAdjusted", fmt.Sprintf("%t", skipAdjusted))
-	queryValues.Add("optionCategory", optionCategory.String())
-	queryValues.Add("chainType", chainType.String())
-	queryValues.Add("priceType", priceType.String())
+	if optionCategory != constants.OptionCategoryNil {
+		queryValues.Add("optionCategory", optionCategory.String())
+	}
+	if chainType != constants.OptionChainTypeNil {
+		queryValues.Add("chainType", chainType.String())
+	}
+	if priceType != constants.OptionPriceTypeNil {
+		queryValues.Add("priceType", priceType.String())
+	}
 
 	response, err := c.doRequest("GET", c.urls.GetOptionChainsUrl(), queryValues)
 	if err != nil {
@@ -252,9 +294,14 @@ func (c *eTradeClient) GetOptionChains(
 }
 
 func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType constants.OptionExpiryType) ([]byte, error) {
+	if symbol == "" {
+		return nil, errors.New("no symbol provided")
+	}
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
-	queryValues.Add("expiryType", expiryType.String())
+	if expiryType != constants.OptionExpiryTypeNil {
+		queryValues.Add("expiryType", expiryType.String())
+	}
 
 	response, err := c.doRequest("GET", c.urls.GetOptionExpireDatesUrl(), queryValues)
 	if err != nil {

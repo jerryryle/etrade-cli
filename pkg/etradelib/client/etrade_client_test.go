@@ -45,7 +45,7 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "Get Account Balances With All Arguments",
+			name: "Get Account Balances",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetAccountBalances("1234", true)
 			},
@@ -53,7 +53,15 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "List Transactions With All Arguments",
+			name: "Get Account Balances Fails Without Account ID Key",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.GetAccountBalances("", true)
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "List Transactions With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactions(
 					"1234",
@@ -66,7 +74,23 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "List Transaction Details With All Arguments",
+			name: "List Transactions Can Omit All Optional Arguments",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListTransactions("1234", nil, nil, constants.SortOrderNil, "", -1)
+			},
+			expectUrl: "https://api.etrade.com/v1/accounts/1234/transactions",
+			expectErr: false,
+		},
+		{
+			name: "List Transactions Fails Without Account ID Key",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListTransactions("", nil, nil, constants.SortOrderNil, "", -1)
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "List Transaction Details",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactionDetails("1234", "5678")
 			},
@@ -74,7 +98,23 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "View Portfolio With All Arguments",
+			name: "List Transaction Details Fails Without Account ID Key",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListTransactionDetails("", "5678")
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "List Transaction Details Fails Without Transaction ID",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListTransactionDetails("1234", "")
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "View Portfolio With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ViewPortfolio(
 					"1234", 5, constants.PortfolioSortBySymbol, constants.SortOrderAsc, 6,
@@ -85,7 +125,39 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "List Alerts With No Optional Arguments",
+			name: "View Portfolio Can Omit All Optional Arguments",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ViewPortfolio(
+					"1234", -1, constants.PortfolioSortByNil, constants.SortOrderNil, -1,
+					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
+				)
+			},
+			expectUrl: "https://api.etrade.com/v1/accounts/1234/portfolio?lotsRequired=true&totalsRequired=true",
+			expectErr: false,
+		},
+		{
+			name: "View Portfolio Fails Without Account ID Key",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ViewPortfolio(
+					"", -1, constants.PortfolioSortByNil, constants.SortOrderNil, -1,
+					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
+				)
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "List Alerts With All Optional Arguments",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListAlerts(
+					1, constants.AlertCategoryAccount, constants.AlertStatusUnread, constants.SortOrderAsc, "FOO",
+				)
+			},
+			expectUrl: "https://api.etrade.com/v1/user/alerts?category=ACCOUNT&count=1&direction=ASC&search=FOO&status=UNREAD",
+			expectErr: false,
+		},
+		{
+			name: "List Alerts Can Omit All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListAlerts(
 					-1, constants.AlertCategoryNil, constants.AlertStatusNil, constants.SortOrderNil, "",
@@ -95,12 +167,28 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "Get Quotes With All Arguments",
+			name: "Get Quotes With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetQuotes([]string{"GOOG"}, constants.QuoteDetailAll, true, false)
 			},
 			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=ALL&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectErr: false,
+		},
+		{
+			name: "Get Quotes Can Omit All Optional Arguments",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.GetQuotes([]string{"GOOG"}, constants.QuoteDetailNil, true, false)
+			},
+			expectUrl: "https://api.etrade.com/v1/market/quote/GOOG?requireEarningsDate=true&skipMiniOptionsCheck=false",
+			expectErr: false,
+		},
+		{
+			name: "Get Quotes Fails Without Symbols",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.GetQuotes([]string{}, constants.QuoteDetailNil, true, false)
+			},
+			expectUrl: "",
+			expectErr: true,
 		},
 		{
 			name: "Get Quotes Overrides When More Than 25 Symbols",
@@ -131,7 +219,7 @@ func TestETradeClient(t *testing.T) {
 			expectErr: true,
 		},
 		{
-			name: "Lookup Product With All Arguments",
+			name: "Lookup Product",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.LookupProduct("A")
 			},
@@ -139,7 +227,15 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "Get Option Chains With All Arugments",
+			name: "Lookup Product Fails With Empty Search String",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.LookupProduct("")
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "Get Option Chains With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetOptionChains(
 					"GOOG",
@@ -153,26 +249,56 @@ func TestETradeClient(t *testing.T) {
 			expectErr: false,
 		},
 		{
-			name: "Get Option Chains With No Optional Arguments",
+			name: "Get Option Chains Can Omit All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetOptionChains(
 					"GOOG",
 					-1, -1, -1,
 					-1, -1,
 					true, true,
-					constants.OptionCategoryAll, constants.OptionChainTypeCall, constants.OptionPriceTypeAll,
+					constants.OptionCategoryNil, constants.OptionChainTypeNil, constants.OptionPriceTypeNil,
 				)
 			},
-			expectUrl: "https://api.etrade.com/v1/market/optionchains?chainType=CALL&includeWeekly=true&optionCategory=ALL&priceType=ALL&skipAdjusted=true&symbol=GOOG",
+			expectUrl: "https://api.etrade.com/v1/market/optionchains?includeWeekly=true&skipAdjusted=true&symbol=GOOG",
 			expectErr: false,
 		},
 		{
-			name: "Get Option Expire Date With All Arguments",
+			name: "Get Option Chains Fails Without Symbol",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.GetOptionChains(
+					"",
+					-1, -1, -1,
+					-1, -1,
+					true, true,
+					constants.OptionCategoryNil, constants.OptionChainTypeNil, constants.OptionPriceTypeNil,
+				)
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
+			name: "Get Option Expire Date With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetOptionExpireDates("GOOG", constants.OptionExpiryTypeAll)
 			},
 			expectUrl: "https://api.etrade.com/v1/market/optionexpiredate?expiryType=ALL&symbol=GOOG",
 			expectErr: false,
+		},
+		{
+			name: "Get Option Expire Date Can Omit All Optional Arguments",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.GetOptionExpireDates("GOOG", constants.OptionExpiryTypeNil)
+			},
+			expectUrl: "https://api.etrade.com/v1/market/optionexpiredate?symbol=GOOG",
+			expectErr: false,
+		},
+		{
+			name: "Get Option Expire Date Fails Without Symbol",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.GetOptionExpireDates("", constants.OptionExpiryTypeNil)
+			},
+			expectUrl: "",
+			expectErr: true,
 		},
 		{
 			name: "List Orders With All Arguments",
