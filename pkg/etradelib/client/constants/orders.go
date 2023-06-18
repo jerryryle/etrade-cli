@@ -188,30 +188,3 @@ func (e OrderTransactionType) String() string {
 func OrderTransactionTypeFromString(s string) (OrderTransactionType, error) {
 	return getKeyForValue(orderTransactionTypeToString, s)
 }
-
-var orderTypeToString = map[OrderType]string{
-	OrderTypeEquity:          "EQ",
-	OrderTypeOption:          "OPTN",
-	OrderTypeSpreads:         "SPREADS",
-	OrderTypeBuyWrites:       "BUY_WRITES",
-	OrderTypeButterfly:       "BUTTERFLY",
-	OrderTypeIronButterfly:   "IRON_BUTTERFLY",
-	OrderTypeCondor:          "CONDOR",
-	OrderTypeIronCondor:      "IRON_CONDOR",
-	OrderTypeMutualFund:      "MF",
-	OrderTypeMoneyMarketFund: "MMF",
-}
-
-// String converts an OrderType to its string representation.
-func (e OrderType) String() string {
-	if s, found := orderTypeToString[e]; found {
-		return s
-	}
-	return "UNKNOWN"
-}
-
-// OrderTypeFromString returns the OrderType for the specified string, or an
-// error if the string doesn't represent a valid value.
-func OrderTypeFromString(s string) (OrderType, error) {
-	return getKeyForValue(orderTypeToString, s)
-}
