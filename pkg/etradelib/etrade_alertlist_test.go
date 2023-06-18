@@ -20,7 +20,6 @@ func TestCreateETradeAlertList(t *testing.T) {
 			testJson: `
 {
   "AlertsResponse": {
-    "totalAlerts": 2,
     "Alert": [
       {
         "id": 1234
@@ -54,7 +53,6 @@ func TestCreateETradeAlertList(t *testing.T) {
 			testJson: `
 {
   "AlertsResponse": {
-    "totalAlerts": 2,
     "Alert": [
     ]
   }
@@ -70,7 +68,6 @@ func TestCreateETradeAlertList(t *testing.T) {
 			testJson: `
 {
   "AlertsResponse": {
-    "totalAlerts": 2,
     "Alert": {
       "id": 1234
     }
