@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +23,9 @@ func (c *ListAlertsCommand) Command() *cobra.Command {
 }
 
 func (c *ListAlertsCommand) ListAlerts() error {
-	response, err := c.AppContext.Client.ListAlerts()
+	response, err := c.AppContext.Client.ListAlerts(
+		-1, constants.AlertCategoryNil, constants.AlertStatusNil, constants.SortOrderNil, "",
+	)
 	if err != nil {
 		return err
 	}

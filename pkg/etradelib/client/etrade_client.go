@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"golang.org/x/exp/slog"
 	"io"
 	"net/http"
@@ -16,30 +17,37 @@ type ETradeClient interface {
 	GetAccountBalances(accountIdKey string, realTimeNAV bool) ([]byte, error)
 
 	ListTransactions(
-		accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
+		accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder constants.SortOrder, marker string,
+		count int,
 	) ([]byte, error)
 
 	ListTransactionDetails(accountIdKey string, transactionId string) ([]byte, error)
 
 	ViewPortfolio(
-		accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
-		marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+		accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
+		marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+		view constants.PortfolioView,
 	) ([]byte, error)
 
-	ListAlerts() ([]byte, error)
+	ListAlerts(
+		count int, category constants.AlertCategory, status constants.AlertStatus, sort constants.SortOrder,
+		search string,
+	) ([]byte, error)
 
 	GetQuotes(
-		symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+		symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 	) ([]byte, error)
 
 	LookupProduct(search string) ([]byte, error)
 
 	GetOptionChains(
 		symbol string, expiryYear int, expiryMonth int, expiryDay int, strikePriceNear int, noOfStrikes int,
-		includeWeekly bool, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+		includeWeekly bool, skipAdjusted bool, optionCategory constants.OptionCategory,
+		chainType constants.OptionChainType,
+		priceType constants.OptionPriceType,
 	) ([]byte, error)
 
-	GetOptionExpireDates(symbol string, expiryType ExpiryType) ([]byte, error)
+	GetOptionExpireDates(symbol string, expiryType constants.OptionExpiryType) ([]byte, error)
 }
 
 type eTradeClient struct {
@@ -77,7 +85,8 @@ func (c *eTradeClient) GetAccountBalances(accountIdKey string, realTimeNAV bool)
 }
 
 func (c *eTradeClient) ListTransactions(
-	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
+	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder constants.SortOrder, marker string,
+	count int,
 ) ([]byte, error) {
 	dateLayout := "01022006"
 	queryValues := url.Values{}
@@ -111,8 +120,9 @@ func (c *eTradeClient) ListTransactionDetails(accountIdKey string, transactionId
 }
 
 func (c *eTradeClient) ViewPortfolio(
-	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
-	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
+	marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+	view constants.PortfolioView,
 ) ([]byte, error) {
 	queryValues := url.Values{}
 	if count > 0 {
@@ -135,8 +145,30 @@ func (c *eTradeClient) ViewPortfolio(
 	return response, nil
 }
 
-func (c *eTradeClient) ListAlerts() ([]byte, error) {
-	response, err := c.doRequest("GET", c.urls.ListAlertsUrl(), nil)
+func (c *eTradeClient) ListAlerts(
+	count int, category constants.AlertCategory, status constants.AlertStatus, sortOrder constants.SortOrder,
+	search string,
+) (
+	[]byte, error,
+) {
+	queryValues := url.Values{}
+	if count > 0 {
+		queryValues.Add("count", fmt.Sprintf("%d", count))
+	}
+	if category != constants.AlertCategoryNil {
+		queryValues.Add("category", category.String())
+	}
+	if status != constants.AlertStatusNil {
+		queryValues.Add("status", status.String())
+	}
+	if sortOrder != constants.SortOrderNil {
+		queryValues.Add("direction", sortOrder.String())
+	}
+	if search != "" {
+		queryValues.Add("search", search)
+	}
+
+	response, err := c.doRequest("GET", c.urls.ListAlertsUrl(), queryValues)
 	if err != nil {
 		return nil, err
 	}
@@ -144,17 +176,17 @@ func (c *eTradeClient) ListAlerts() ([]byte, error) {
 }
 
 func (c *eTradeClient) GetQuotes(
-	symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+	symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error) {
-	if len(symbols) > GetQuotesMaxSymbols {
+	if len(symbols) > constants.GetQuotesMaxSymbols {
 		return nil, fmt.Errorf(
 			"%d symbols requested, which exceeds the maximum of %d symbols in a request", len(symbols),
-			GetQuotesMaxSymbols,
+			constants.GetQuotesMaxSymbols,
 		)
 	}
 	symbolsList := strings.Join(symbols, ",")
 	queryValues := url.Values{}
-	if len(symbols) > GetQuotesMaxSymbolsBeforeOverride {
+	if len(symbols) > constants.GetQuotesMaxSymbolsBeforeOverride {
 		queryValues.Add("overrideSymbolCount", "true")
 	}
 	queryValues.Add("requireEarningsDate", fmt.Sprintf("%t", requireEarningsDate))
@@ -178,7 +210,8 @@ func (c *eTradeClient) LookupProduct(search string) ([]byte, error) {
 
 func (c *eTradeClient) GetOptionChains(
 	symbol string, expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
-	includeWeekly, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+	includeWeekly, skipAdjusted bool, optionCategory constants.OptionCategory, chainType constants.OptionChainType,
+	priceType constants.OptionPriceType,
 ) ([]byte, error) {
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
@@ -210,7 +243,7 @@ func (c *eTradeClient) GetOptionChains(
 	return response, nil
 }
 
-func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType ExpiryType) ([]byte, error) {
+func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType constants.OptionExpiryType) ([]byte, error) {
 	queryValues := url.Values{}
 	queryValues.Add("symbol", symbol)
 	queryValues.Add("expiryType", expiryType.String())

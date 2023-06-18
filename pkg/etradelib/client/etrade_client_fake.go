@@ -1,6 +1,7 @@
 package client
 
 import (
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"time"
 )
 
@@ -9,30 +10,35 @@ type ListAccountsFn func() ([]byte, error)
 type GetAccountBalancesFn func(accountIdKey string, realTimeNAV bool) ([]byte, error)
 
 type ListTransactionsFn func(
-	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
+	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder constants.SortOrder, marker string,
+	count int,
 ) ([]byte, error)
 
 type ListTransactionDetailsFn func(accountIdKey string, transactionId string) ([]byte, error)
 
 type ViewPortfolioFn func(
-	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
-	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
+	marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+	view constants.PortfolioView,
 ) ([]byte, error)
 
-type ListAlertsFn func() ([]byte, error)
+type ListAlertsFn func(
+	count int, category constants.AlertCategory, status constants.AlertStatus, sort constants.SortOrder, search string,
+) ([]byte, error)
 
 type GetQuotesFn func(
-	symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+	symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error)
 
 type LookupProductFn func(search string) ([]byte, error)
 
 type GetOptionChainsFn func(
 	symbol string, expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
-	includeWeekly, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+	includeWeekly, skipAdjusted bool, optionCategory constants.OptionCategory, chainType constants.OptionChainType,
+	priceType constants.OptionPriceType,
 ) ([]byte, error)
 
-type GetOptionExpireDatesFn func(symbol string, expiryType ExpiryType) ([]byte, error)
+type GetOptionExpireDatesFn func(symbol string, expiryType constants.OptionExpiryType) ([]byte, error)
 
 type ETradeClientFake struct {
 	ListAccountsFn           ListAccountsFn
@@ -72,7 +78,8 @@ func (c *ETradeClientFake) GetAccountBalances(accountIdKey string, realTimeNAV b
 }
 
 func (c *ETradeClientFake) ListTransactions(
-	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder SortOrder, marker string, count int,
+	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder constants.SortOrder, marker string,
+	count int,
 ) ([]byte, error) {
 	if c.ListTransactionsFn != nil {
 		return c.ListTransactionsFn(accountIdKey, startDate, endDate, sortOrder, marker, count)
@@ -90,8 +97,9 @@ func (c *ETradeClientFake) ListTransactionDetails(accountIdKey string, transacti
 }
 
 func (c *ETradeClientFake) ViewPortfolio(
-	accountIdKey string, count int, sortBy PortfolioSortBy, sortOrder SortOrder, pageNumber int,
-	marketSession PortfolioMarketSession, totalsRequired bool, lotsRequired bool, view PortfolioView,
+	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
+	marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+	view constants.PortfolioView,
 ) ([]byte, error) {
 	if c.ViewPortfolioFn != nil {
 		return c.ViewPortfolioFn(
@@ -102,16 +110,18 @@ func (c *ETradeClientFake) ViewPortfolio(
 	}
 }
 
-func (c *ETradeClientFake) ListAlerts() ([]byte, error) {
+func (c *ETradeClientFake) ListAlerts(
+	count int, category constants.AlertCategory, status constants.AlertStatus, sort constants.SortOrder, search string,
+) ([]byte, error) {
 	if c.ListAlertsFn != nil {
-		return c.ListAlertsFn()
+		return c.ListAlertsFn(count, category, status, sort, search)
 	} else {
 		return c.defaultJson, c.defaultErr
 	}
 }
 
 func (c *ETradeClientFake) GetQuotes(
-	symbols []string, detailFlag QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
+	symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error) {
 	if c.GetQuotesFn != nil {
 		return c.GetQuotesFn(symbols, detailFlag, requireEarningsDate, skipMiniOptionsCheck)
@@ -130,7 +140,8 @@ func (c *ETradeClientFake) LookupProduct(search string) ([]byte, error) {
 
 func (c *ETradeClientFake) GetOptionChains(
 	symbol string, expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes int,
-	includeWeekly, skipAdjusted bool, optionCategory OptionCategory, chainType ChainType, priceType PriceType,
+	includeWeekly, skipAdjusted bool, optionCategory constants.OptionCategory, chainType constants.OptionChainType,
+	priceType constants.OptionPriceType,
 ) ([]byte, error) {
 	if c.GetOptionChainsFn != nil {
 		return c.GetOptionChainsFn(
@@ -144,7 +155,7 @@ func (c *ETradeClientFake) GetOptionChains(
 	}
 }
 
-func (c *ETradeClientFake) GetOptionExpireDates(symbol string, expiryType ExpiryType) ([]byte, error) {
+func (c *ETradeClientFake) GetOptionExpireDates(symbol string, expiryType constants.OptionExpiryType) ([]byte, error) {
 	if c.GetOptionExpireDatesFn != nil {
 		return c.GetOptionExpireDatesFn(symbol, expiryType)
 	} else {

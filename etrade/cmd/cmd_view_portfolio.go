@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +25,9 @@ func (c *ViewPortfolioCommand) Command() *cobra.Command {
 
 func (c *ViewPortfolioCommand) ViewPortfolio(accountKeyId string) error {
 	response, err := c.AppContext.Client.ViewPortfolio(
-		accountKeyId, 0, client.PortfolioSortBySymbol, client.SortOrderAsc, 0, client.PortfolioMarketSessionRegular,
-		true, true, client.PortfolioViewComplete,
+		accountKeyId, 0, constants.PortfolioSortBySymbol, constants.SortOrderAsc, 0,
+		constants.PortfolioMarketSessionRegular,
+		true, true, constants.PortfolioViewComplete,
 	)
 	if err != nil {
 		return err

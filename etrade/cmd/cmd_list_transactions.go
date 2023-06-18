@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -52,7 +52,7 @@ func (c *ListTransactionsCommand) ListTransactions(
 ) error {
 	response, err := c.AppContext.Client.ListTransactions(
 		accountKeyId,
-		startDate, endDate, client.SortOrderAsc, "", 0,
+		startDate, endDate, constants.SortOrderAsc, "", 0,
 	)
 	if err != nil {
 		return err

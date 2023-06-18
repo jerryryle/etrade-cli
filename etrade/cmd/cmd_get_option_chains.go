@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
 
@@ -91,16 +91,16 @@ func (e *optionCategory) Type() string {
 	return "optionCategory"
 }
 
-func (e *optionCategory) OptionCategory() client.OptionCategory {
+func (e *optionCategory) OptionCategory() constants.OptionCategory {
 	switch *e {
 	case optionCategoryStandard:
-		return client.OptionCategoryStandard
+		return constants.OptionCategoryStandard
 	case optionCategoryAll:
-		return client.OptionCategoryAll
+		return constants.OptionCategoryAll
 	case optionCategoryMini:
-		return client.OptionCategoryMini
+		return constants.OptionCategoryMini
 	}
-	return client.OptionCategoryAll
+	return constants.OptionCategoryAll
 }
 
 type chainType string
@@ -129,16 +129,16 @@ func (e *chainType) Type() string {
 	return "chainType"
 }
 
-func (e *chainType) ChainType() client.ChainType {
+func (e *chainType) ChainType() constants.OptionChainType {
 	switch *e {
 	case chainTypeCall:
-		return client.ChainTypeCall
+		return constants.OptionChainTypeCall
 	case chainTypePut:
-		return client.ChainTypePut
+		return constants.OptionChainTypePut
 	case chainTypeCallPut:
-		return client.ChainTypeCallPut
+		return constants.OptionChainTypeCallPut
 	}
-	return client.ChainTypeCallPut
+	return constants.OptionChainTypeCallPut
 }
 
 type priceType string
@@ -166,12 +166,12 @@ func (e *priceType) Type() string {
 	return "priceType"
 }
 
-func (e *priceType) PriceType() client.PriceType {
+func (e *priceType) PriceType() constants.OptionPriceType {
 	switch *e {
 	case priceTypeAtnm:
-		return client.PriceTypeAtnm
+		return constants.OptionPriceTypeAtnm
 	case priceTypeAll:
-		return client.PriceTypeAll
+		return constants.OptionPriceTypeAll
 	}
-	return client.PriceTypeAll
+	return constants.OptionPriceTypeAll
 }

@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
 
@@ -77,24 +77,24 @@ func (e *expiryType) Type() string {
 	return "expiryType"
 }
 
-func (e *expiryType) ExpiryType() client.ExpiryType {
+func (e *expiryType) ExpiryType() constants.OptionExpiryType {
 	switch *e {
 	case expiryTypeUnspecified:
-		return client.ExpiryTypeUnspecified
+		return constants.OptionExpiryTypeUnspecified
 	case expiryTypeDaily:
-		return client.ExpiryTypeDaily
+		return constants.OptionExpiryTypeDaily
 	case expiryTypeWeekly:
-		return client.ExpiryTypeWeekly
+		return constants.OptionExpiryTypeWeekly
 	case expiryTypeMonthly:
-		return client.ExpiryTypeMonthly
+		return constants.OptionExpiryTypeMonthly
 	case expiryTypeQuarterly:
-		return client.ExpiryTypeQuarterly
+		return constants.OptionExpiryTypeQuarterly
 	case expiryTypeVix:
-		return client.ExpiryTypeVix
+		return constants.OptionExpiryTypeVix
 	case expiryTypeAll:
-		return client.ExpiryTypeAll
+		return constants.OptionExpiryTypeAll
 	case expiryTypeMonthEnd:
-		return client.ExpiryTypeMonthEnd
+		return constants.OptionExpiryTypeMonthEnd
 	}
-	return client.ExpiryTypeAll
+	return constants.OptionExpiryTypeAll
 }

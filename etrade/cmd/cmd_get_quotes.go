@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
 
@@ -38,7 +38,7 @@ func (c *GetQuotesCommand) Command() *cobra.Command {
 
 func (c *GetQuotesCommand) GetQuotes(symbols []string) error {
 	response, err := c.AppContext.Client.GetQuotes(
-		symbols, client.QuoteDetailAll, c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck,
+		symbols, constants.QuoteDetailAll, c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck,
 	)
 	if err != nil {
 		return err
