@@ -51,7 +51,7 @@ func (e *eTradeAccountList) GetAllAccounts() []ETradeAccount {
 
 func (e *eTradeAccountList) GetAccountById(accountID string) ETradeAccount {
 	for _, account := range e.accounts {
-		if account.GetAccountId() == accountID {
+		if account.GetId() == accountID {
 			return account
 		}
 	}

@@ -23,12 +23,12 @@ func TestCreateETradeAccount(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeAccount{
-				accountInfoMap: jsonmap.JsonMap{
+				infoMap: jsonmap.JsonMap{
 					"accountId":    "Account 1 ID",
 					"accountIdKey": "Account 1 ID Key",
 				},
-				accountId:    "Account 1 ID",
-				accountIdKey: "Account 1 ID Key",
+				id:    "Account 1 ID",
+				idKey: "Account 1 ID Key",
 			},
 		},
 		{
@@ -69,50 +69,50 @@ func TestCreateETradeAccount(t *testing.T) {
 	}
 }
 
-func TestETradeAccount_GetAccountInfoMap(t *testing.T) {
+func TestETradeAccount_GetId(t *testing.T) {
 	testAccount := &eTradeAccount{
-		accountInfoMap: jsonmap.JsonMap{
+		infoMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
 		},
-		accountId:    "Account 1 ID",
-		accountIdKey: "Account 1 ID Key",
+		id:    "Account 1 ID",
+		idKey: "Account 1 ID Key",
+	}
+	expectedValue := "Account 1 ID"
+
+	actualValue := testAccount.GetId()
+	assert.Equal(t, expectedValue, actualValue)
+}
+
+func TestETradeAccount_GetIdKey(t *testing.T) {
+	testAccount := &eTradeAccount{
+		infoMap: jsonmap.JsonMap{
+			"accountId":    "Account 1 ID",
+			"accountIdKey": "Account 1 ID Key",
+		},
+		id:    "Account 1 ID",
+		idKey: "Account 1 ID Key",
+	}
+	expectedValue := "Account 1 ID Key"
+
+	actualValue := testAccount.GetIdKey()
+	assert.Equal(t, expectedValue, actualValue)
+}
+
+func TestETradeAccount_GetInfoMap(t *testing.T) {
+	testAccount := &eTradeAccount{
+		infoMap: jsonmap.JsonMap{
+			"accountId":    "Account 1 ID",
+			"accountIdKey": "Account 1 ID Key",
+		},
+		id:    "Account 1 ID",
+		idKey: "Account 1 ID Key",
 	}
 	expectedValue := jsonmap.JsonMap{
 		"accountId":    "Account 1 ID",
 		"accountIdKey": "Account 1 ID Key",
 	}
 
-	actualValue := testAccount.GetAccountInfoMap()
-	assert.Equal(t, expectedValue, actualValue)
-}
-
-func TestETradeAccount_GetAccountId(t *testing.T) {
-	testAccount := &eTradeAccount{
-		accountInfoMap: jsonmap.JsonMap{
-			"accountId":    "Account 1 ID",
-			"accountIdKey": "Account 1 ID Key",
-		},
-		accountId:    "Account 1 ID",
-		accountIdKey: "Account 1 ID Key",
-	}
-	expectedValue := "Account 1 ID"
-
-	actualValue := testAccount.GetAccountId()
-	assert.Equal(t, expectedValue, actualValue)
-}
-
-func TestETradeAccount_GetAccountIdKey(t *testing.T) {
-	testAccount := &eTradeAccount{
-		accountInfoMap: jsonmap.JsonMap{
-			"accountId":    "Account 1 ID",
-			"accountIdKey": "Account 1 ID Key",
-		},
-		accountId:    "Account 1 ID",
-		accountIdKey: "Account 1 ID Key",
-	}
-	expectedValue := "Account 1 ID Key"
-
-	actualValue := testAccount.GetAccountIdKey()
+	actualValue := testAccount.GetInfoMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

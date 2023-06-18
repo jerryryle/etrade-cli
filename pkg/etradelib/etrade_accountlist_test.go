@@ -37,20 +37,20 @@ func TestCreateETradeAccountList(t *testing.T) {
 			expectValue: &eTradeAccountList{
 				[]ETradeAccount{
 					&eTradeAccount{
-						accountInfoMap: jsonmap.JsonMap{
+						infoMap: jsonmap.JsonMap{
 							"accountId":    "Account 1 ID",
 							"accountIdKey": "Account 1 ID Key",
 						},
-						accountId:    "Account 1 ID",
-						accountIdKey: "Account 1 ID Key",
+						id:    "Account 1 ID",
+						idKey: "Account 1 ID Key",
 					},
 					&eTradeAccount{
-						accountInfoMap: jsonmap.JsonMap{
+						infoMap: jsonmap.JsonMap{
 							"accountId":    "Account 2 ID",
 							"accountIdKey": "Account 2 ID Key",
 						},
-						accountId:    "Account 2 ID",
-						accountIdKey: "Account 2 ID Key",
+						id:    "Account 2 ID",
+						idKey: "Account 2 ID Key",
 					},
 				},
 			},
@@ -123,39 +123,39 @@ func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 			testAccountList: &eTradeAccountList{
 				[]ETradeAccount{
 					&eTradeAccount{
-						accountInfoMap: jsonmap.JsonMap{
+						infoMap: jsonmap.JsonMap{
 							"accountId":    "Account 1 ID",
 							"accountIdKey": "Account 1 ID Key",
 						},
-						accountId:    "Account 1 ID",
-						accountIdKey: "Account 1 ID Key",
+						id:    "Account 1 ID",
+						idKey: "Account 1 ID Key",
 					},
 					&eTradeAccount{
-						accountInfoMap: jsonmap.JsonMap{
+						infoMap: jsonmap.JsonMap{
 							"accountId":    "Account 2 ID",
 							"accountIdKey": "Account 2 ID Key",
 						},
-						accountId:    "Account 2 ID",
-						accountIdKey: "Account 2 ID Key",
+						id:    "Account 2 ID",
+						idKey: "Account 2 ID Key",
 					},
 				},
 			},
 			expectValue: []ETradeAccount{
 				&eTradeAccount{
-					accountInfoMap: jsonmap.JsonMap{
+					infoMap: jsonmap.JsonMap{
 						"accountId":    "Account 1 ID",
 						"accountIdKey": "Account 1 ID Key",
 					},
-					accountId:    "Account 1 ID",
-					accountIdKey: "Account 1 ID Key",
+					id:    "Account 1 ID",
+					idKey: "Account 1 ID Key",
 				},
 				&eTradeAccount{
-					accountInfoMap: jsonmap.JsonMap{
+					infoMap: jsonmap.JsonMap{
 						"accountId":    "Account 2 ID",
 						"accountIdKey": "Account 2 ID Key",
 					},
-					accountId:    "Account 2 ID",
-					accountIdKey: "Account 2 ID Key",
+					id:    "Account 2 ID",
+					idKey: "Account 2 ID Key",
 				},
 			},
 		},
@@ -191,23 +191,23 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 			testAccountList: &eTradeAccountList{
 				[]ETradeAccount{
 					&eTradeAccount{
-						accountInfoMap: jsonmap.JsonMap{
+						infoMap: jsonmap.JsonMap{
 							"accountId":    "Account 1 ID",
 							"accountIdKey": "Account 1 ID Key",
 						},
-						accountId:    "Account 1 ID",
-						accountIdKey: "Account 1 ID Key",
+						id:    "Account 1 ID",
+						idKey: "Account 1 ID Key",
 					},
 				},
 			},
 			testAccountID: "Account 1 ID",
 			expectValue: &eTradeAccount{
-				accountInfoMap: jsonmap.JsonMap{
+				infoMap: jsonmap.JsonMap{
 					"accountId":    "Account 1 ID",
 					"accountIdKey": "Account 1 ID Key",
 				},
-				accountId:    "Account 1 ID",
-				accountIdKey: "Account 1 ID Key",
+				id:    "Account 1 ID",
+				idKey: "Account 1 ID Key",
 			},
 		},
 		{
@@ -215,12 +215,12 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 			testAccountList: &eTradeAccountList{
 				[]ETradeAccount{
 					&eTradeAccount{
-						accountInfoMap: jsonmap.JsonMap{
+						infoMap: jsonmap.JsonMap{
 							"accountId":    "Account 1 ID",
 							"accountIdKey": "Account 1 ID Key",
 						},
-						accountId:    "Account 1 ID",
-						accountIdKey: "Account 1 ID Key",
+						id:    "Account 1 ID",
+						idKey: "Account 1 ID Key",
 					},
 				},
 			},
