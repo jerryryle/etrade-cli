@@ -5,13 +5,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ListAccountsCommand struct {
+type CommandAccountsList struct {
 	AppContext *ApplicationContext
 }
 
-func (c *ListAccountsCommand) Command() *cobra.Command {
+func (c *CommandAccountsList) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listaccounts",
+		Use:   "list",
 		Short: "List accounts",
 		Long:  "List all accounts for the current customer",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -21,7 +21,7 @@ func (c *ListAccountsCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *ListAccountsCommand) ListAccounts() error {
+func (c *CommandAccountsList) ListAccounts() error {
 	response, err := c.AppContext.Client.ListAccounts()
 	if err != nil {
 		return err

@@ -6,13 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ListOrdersCommand struct {
+type CommandOrdersList struct {
 	AppContext *ApplicationContext
 }
 
-func (c *ListOrdersCommand) Command() *cobra.Command {
+func (c *CommandOrdersList) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listorders [account ID]",
+		Use:   "list [account ID]",
 		Short: "List orders",
 		Long:  "List orders",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
@@ -23,7 +23,7 @@ func (c *ListOrdersCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *ListOrdersCommand) ListOrders(accountKeyId string) error {
+func (c *CommandOrdersList) ListOrders(accountKeyId string) error {
 	response, err := c.AppContext.Client.ListOrders(
 		accountKeyId, "", -1, constants.OrderStatusNil, nil, nil, nil, constants.OrderSecurityTypeNil,
 		constants.OrderTransactionTypeNil, constants.MarketSessionNil,

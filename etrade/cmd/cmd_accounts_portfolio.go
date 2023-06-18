@@ -6,13 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ViewPortfolioCommand struct {
+type CommandAccountsPortfolio struct {
 	AppContext *ApplicationContext
 }
 
-func (c *ViewPortfolioCommand) Command() *cobra.Command {
+func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "viewportfolio [account ID]",
+		Use:   "portfolio [account ID]",
 		Short: "View Portfolio",
 		Long:  "View Portfolio",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
@@ -23,7 +23,7 @@ func (c *ViewPortfolioCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *ViewPortfolioCommand) ViewPortfolio(accountKeyId string) error {
+func (c *CommandAccountsPortfolio) ViewPortfolio(accountKeyId string) error {
 	response, err := c.AppContext.Client.ViewPortfolio(
 		accountKeyId, 0, constants.PortfolioSortBySymbol, constants.SortOrderAsc, 0,
 		constants.MarketSessionRegular,

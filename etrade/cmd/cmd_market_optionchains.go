@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type getOptionChainsCommandFlags struct {
+type marketOptionchainsFlags struct {
 	expiryYear, expiryMonth, expiryDay int
 	strikePriceNear, noOfStrikes       int
 	includeWeekly, skipAdjusted        bool
@@ -15,14 +15,14 @@ type getOptionChainsCommandFlags struct {
 	priceType                          priceType
 }
 
-type GetOptionChainsCommand struct {
+type CommandMarketOptionchains struct {
 	AppContext *ApplicationContext
-	flags      getOptionChainsCommandFlags
+	flags      marketOptionchainsFlags
 }
 
-func (c *GetOptionChainsCommand) Command() *cobra.Command {
+func (c *CommandMarketOptionchains) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "getoptionchains [symbol]",
+		Use:   "optionchains [symbol]",
 		Short: "Get option chains",
 		Long:  "Get option chains for a specific underlying instrument",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
@@ -51,7 +51,7 @@ func (c *GetOptionChainsCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *GetOptionChainsCommand) GetOptionChains(symbol string) error {
+func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
 	result, err := c.AppContext.Client.GetOptionChains(
 		symbol,
 		c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,

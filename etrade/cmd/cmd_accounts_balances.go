@@ -5,18 +5,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type getAccountBalancesCommandFlags struct {
+type commandAccountsBalancesFlags struct {
 	realTimeNAV bool
 }
 
-type GetAccountBalancesCommand struct {
+type CommandAccountsBalances struct {
 	AppContext *ApplicationContext
-	flags      getAccountBalancesCommandFlags
+	flags      commandAccountsBalancesFlags
 }
 
-func (c *GetAccountBalancesCommand) Command() *cobra.Command {
+func (c *CommandAccountsBalances) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "getaccountbalances [account ID]",
+		Use:   "balances [account ID]",
 		Short: "Get account balances",
 		Long:  "Get account balances",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
@@ -28,7 +28,7 @@ func (c *GetAccountBalancesCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *GetAccountBalancesCommand) GetAccountBalances(accountKeyId string) error {
+func (c *CommandAccountsBalances) GetAccountBalances(accountKeyId string) error {
 	response, err := c.AppContext.Client.GetAccountBalances(accountKeyId, c.flags.realTimeNAV)
 	if err != nil {
 		return err

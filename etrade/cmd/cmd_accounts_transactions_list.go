@@ -8,21 +8,21 @@ import (
 	"time"
 )
 
-type listTransactionsFlags struct {
+type accountsTransactionsListFlags struct {
 	startDate string
 	endDate   string
 }
 
-type ListTransactionsCommand struct {
+type CommandAccountsTransactionsList struct {
 	AppContext *ApplicationContext
-	flags      listTransactionsFlags
+	flags      accountsTransactionsListFlags
 }
 
-func (c *ListTransactionsCommand) Command() *cobra.Command {
+func (c *CommandAccountsTransactionsList) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listtransactions [account ID]",
+		Use:   "list [account ID]",
 		Short: "List transactions",
-		Long:  "List transactions",
+		Long:  "List transactions for account",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var startDate, endDate *time.Time = nil, nil
@@ -47,7 +47,7 @@ func (c *ListTransactionsCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *ListTransactionsCommand) ListTransactions(
+func (c *CommandAccountsTransactionsList) ListTransactions(
 	accountKeyId string, startDate *time.Time, endDate *time.Time,
 ) error {
 	response, err := c.AppContext.Client.ListTransactions(

@@ -6,18 +6,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type getOptionExpireDatesFlags struct {
+type marketOptionExpireFlags struct {
 	expiryType expiryType
 }
 
-type GetOptionExpireDatesCommand struct {
+type CommandMarketOptionexpire struct {
 	AppContext *ApplicationContext
-	flags      getOptionExpireDatesFlags
+	flags      marketOptionExpireFlags
 }
 
-func (c *GetOptionExpireDatesCommand) Command() *cobra.Command {
+func (c *CommandMarketOptionexpire) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "getoptionexpiredates [symbol]",
+		Use:   "optionexpire [symbol]",
 		Short: "Get option expire dates",
 		Long:  "Get option expire dates for a specific underlying instrument",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
@@ -34,7 +34,7 @@ func (c *GetOptionExpireDatesCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *GetOptionExpireDatesCommand) GetOptionExpireDates(symbol string) error {
+func (c *CommandMarketOptionexpire) GetOptionExpireDates(symbol string) error {
 	response, err := c.AppContext.Client.GetOptionExpireDates(symbol, c.flags.expiryType.ExpiryType())
 	if err != nil {
 		return err

@@ -13,17 +13,6 @@ func main() {
 	var appContext = cmd.ApplicationContext{}
 
 	rootCmd := (&cmd.RootCommand{AppContext: &appContext}).Command()
-	rootCmd.AddCommand((&cmd.ListAccountsCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.ListAlertsCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.GetQuotesCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.LookupCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.GetOptionChainsCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.GetOptionExpireDatesCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.GetAccountBalancesCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.ListTransactionsCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.ListTransactionDetailsCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.ViewPortfolioCommand{AppContext: &appContext}).Command())
-	rootCmd.AddCommand((&cmd.ListOrdersCommand{AppContext: &appContext}).Command())
 
 	if err := rootCmd.Execute(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

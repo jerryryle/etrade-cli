@@ -5,11 +5,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type LookupCommand struct {
+type CommandMarketLookup struct {
 	AppContext *ApplicationContext
 }
 
-func (c *LookupCommand) Command() *cobra.Command {
+func (c *CommandMarketLookup) Command() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "lookup [search]",
 		Short: "Look up product",
@@ -22,7 +22,7 @@ func (c *LookupCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *LookupCommand) Lookup(search string) error {
+func (c *CommandMarketLookup) Lookup(search string) error {
 	response, err := c.AppContext.Client.LookupProduct(search)
 	if err != nil {
 		return err

@@ -32,6 +32,12 @@ func (c *RootCommand) Command() *cobra.Command {
 	_ = cmd.MarkPersistentFlagRequired("customerId")
 	cmd.PersistentFlags().BoolVar(&c.flags.debug, "debug", false, "debug output")
 
+	// Add Subcommands
+	cmd.AddCommand((&CommandAccounts{AppContext: c.AppContext}).Command())
+	cmd.AddCommand((&CommandAlerts{AppContext: c.AppContext}).Command())
+	cmd.AddCommand((&CommandMarket{AppContext: c.AppContext}).Command())
+	cmd.AddCommand((&CommandOrders{AppContext: c.AppContext}).Command())
+
 	return cmd
 }
 

@@ -6,21 +6,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type getQuotesCommandFlags struct {
+type marketQuotesFlags struct {
 	requireEarningsDate, skipMiniOptionsCheck bool
 }
 
-type GetQuotesCommand struct {
+type CommandMarketQuote struct {
 	AppContext *ApplicationContext
-	flags      getQuotesCommandFlags
+	flags      marketQuotesFlags
 }
 
-func (c *GetQuotesCommand) Command() *cobra.Command {
+func (c *CommandMarketQuote) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "getquotes [symbol] ...",
+		Use:   "quote [symbol] ...",
 		Short: "Get quotes",
 		Long:  "Get quotes for one or more symbols",
-		Args:  cobra.MatchAll(cobra.MinimumNArgs(50)),
+		Args:  cobra.MatchAll(cobra.MaximumNArgs(50)),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return c.GetQuotes(args)
 		},
@@ -36,7 +36,7 @@ func (c *GetQuotesCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *GetQuotesCommand) GetQuotes(symbols []string) error {
+func (c *CommandMarketQuote) GetQuotes(symbols []string) error {
 	response, err := c.AppContext.Client.GetQuotes(
 		symbols, constants.QuoteDetailAll, c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck,
 	)

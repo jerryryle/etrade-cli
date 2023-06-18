@@ -5,13 +5,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type ListTransactionDetailsCommand struct {
+type CommandAccountsTransactionsDetails struct {
 	AppContext *ApplicationContext
 }
 
-func (c *ListTransactionDetailsCommand) Command() *cobra.Command {
+func (c *CommandAccountsTransactionsDetails) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "listtransactiondetails [account ID] [transaction ID]",
+		Use:   "details [account ID] [transaction ID]",
 		Short: "List transaction details",
 		Long:  "List transaction details",
 		Args:  cobra.MatchAll(cobra.ExactArgs(2)),
@@ -22,7 +22,7 @@ func (c *ListTransactionDetailsCommand) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *ListTransactionDetailsCommand) ListTransactionDetails(accountKeyId string, transactionId string) error {
+func (c *CommandAccountsTransactionsDetails) ListTransactionDetails(accountKeyId string, transactionId string) error {
 	response, err := c.AppContext.Client.ListTransactionDetails(accountKeyId, transactionId)
 	if err != nil {
 		return err
