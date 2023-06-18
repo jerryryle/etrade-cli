@@ -29,17 +29,17 @@ const (
 )
 
 func CreateETradeAlertList(alertListResponseMap jsonmap.JsonMap) (ETradeAlertList, error) {
-	accountsSlice, err := alertListResponseMap.GetMapSliceAtPath(alertsSliceResponsePath)
+	alertsSlice, err := alertListResponseMap.GetMapSliceAtPath(alertsSliceResponsePath)
 	if err != nil {
 		return nil, err
 	}
-	allAlerts := make([]ETradeAlert, 0, len(accountsSlice))
-	for _, alertInfoMap := range accountsSlice {
-		account, err := CreateETradeAlert(alertInfoMap)
+	allAlerts := make([]ETradeAlert, 0, len(alertsSlice))
+	for _, alertInfoMap := range alertsSlice {
+		alert, err := CreateETradeAlert(alertInfoMap)
 		if err != nil {
 			return nil, err
 		}
-		allAlerts = append(allAlerts, account)
+		allAlerts = append(allAlerts, alert)
 	}
 	return &eTradeAlertList{alerts: allAlerts}, nil
 }
