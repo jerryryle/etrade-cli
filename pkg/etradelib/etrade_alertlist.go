@@ -15,7 +15,6 @@ const (
 	// The alert list response JSON looks like this:
 	// {
 	//   "AlertsResponse": {
-	//     "totalAlerts": 1,
 	//     "Alert": [
 	//       {
 	//         <alert info>
