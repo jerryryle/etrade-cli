@@ -53,7 +53,7 @@ const (
 	// OrderSecurityTypeMutualFund gets mutual fund orders
 	OrderSecurityTypeMutualFund
 
-	// OrderSecurityTypeMoneyMarketFund gets money market fund orders
+	// OrderSecurityTypeMoneyMarketFund gets money market mutual fund orders
 	OrderSecurityTypeMoneyMarketFund
 )
 
@@ -83,6 +83,42 @@ const (
 
 	// OrderTransactionTypeMutualFundExchange gets mutual fund exchange orders
 	OrderTransactionTypeMutualFundExchange
+)
+
+// OrderType specifies the type of order to retrieve place.
+// See the constants below for semantics.
+type OrderType int
+
+const (
+	// OrderTypeEquity places an equity order
+	OrderTypeEquity OrderType = iota
+
+	// OrderTypeOption places an option order
+	OrderTypeOption
+
+	// OrderTypeSpreads places a spread order
+	OrderTypeSpreads
+
+	// OrderTypeBuyWrites places a buy-write options order
+	OrderTypeBuyWrites
+
+	// OrderTypeButterfly places a butterfly options order
+	OrderTypeButterfly
+
+	// OrderTypeIronButterfly places an iron butterfly options order
+	OrderTypeIronButterfly
+
+	// OrderTypeCondor places a condor options order
+	OrderTypeCondor
+
+	// OrderTypeIronCondor places an iron condor options order
+	OrderTypeIronCondor
+
+	// OrderTypeMutualFund places a mutual fund order
+	OrderTypeMutualFund
+
+	// OrderTypeMoneyMarketFund places a money market mutual fund order
+	OrderTypeMoneyMarketFund
 )
 
 var orderStatusToString = map[OrderStatus]string{
@@ -151,4 +187,31 @@ func (e OrderTransactionType) String() string {
 // specified string, or an error if the string doesn't represent a valid value.
 func OrderTransactionTypeFromString(s string) (OrderTransactionType, error) {
 	return getKeyForValue(orderTransactionTypeToString, s)
+}
+
+var orderTypeToString = map[OrderType]string{
+	OrderTypeEquity:          "EQ",
+	OrderTypeOption:          "OPTN",
+	OrderTypeSpreads:         "SPREADS",
+	OrderTypeBuyWrites:       "BUY_WRITES",
+	OrderTypeButterfly:       "BUTTERFLY",
+	OrderTypeIronButterfly:   "IRON_BUTTERFLY",
+	OrderTypeCondor:          "CONDOR",
+	OrderTypeIronCondor:      "IRON_CONDOR",
+	OrderTypeMutualFund:      "MF",
+	OrderTypeMoneyMarketFund: "MMF",
+}
+
+// String converts an OrderType to its string representation.
+func (e OrderType) String() string {
+	if s, found := orderTypeToString[e]; found {
+		return s
+	}
+	return "UNKNOWN"
+}
+
+// OrderTypeFromString returns the OrderType for the specified string, or an
+// error if the string doesn't represent a valid value.
+func OrderTypeFromString(s string) (OrderType, error) {
+	return getKeyForValue(orderTypeToString, s)
 }
