@@ -1,6 +1,7 @@
 package client
 
 import (
+	"errors"
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"golang.org/x/exp/slog"
@@ -25,7 +26,7 @@ type ETradeClient interface {
 
 	ViewPortfolio(
 		accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-		marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+		marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
 		view constants.PortfolioView,
 	) ([]byte, error)
 
@@ -48,6 +49,12 @@ type ETradeClient interface {
 	) ([]byte, error)
 
 	GetOptionExpireDates(symbol string, expiryType constants.OptionExpiryType) ([]byte, error)
+
+	ListOrders(
+		accountIdKey string, marker string, count int, status constants.OrderStatus, fromDate *time.Time,
+		toDate *time.Time, symbols []string, securityType constants.OrderSecurityType,
+		transactionType constants.OrderTransactionType, marketSession constants.MarketSession,
+	) ([]byte, error)
 }
 
 type eTradeClient struct {
@@ -63,6 +70,8 @@ func CreateETradeClient(urls EndpointUrls, httpClient *http.Client, logger *slog
 		Logger:     logger,
 	}
 }
+
+const queryDateLayout = "01022006"
 
 func (c *eTradeClient) ListAccounts() ([]byte, error) {
 	response, err := c.doRequest("GET", c.urls.ListAccountsUrl(), nil)
@@ -88,13 +97,12 @@ func (c *eTradeClient) ListTransactions(
 	accountIdKey string, startDate *time.Time, endDate *time.Time, sortOrder constants.SortOrder, marker string,
 	count int,
 ) ([]byte, error) {
-	dateLayout := "01022006"
 	queryValues := url.Values{}
 	if startDate != nil {
-		queryValues.Add("startDate", startDate.Format(dateLayout))
+		queryValues.Add("startDate", startDate.Format(queryDateLayout))
 	}
 	if endDate != nil {
-		queryValues.Add("endDate", endDate.Format(dateLayout))
+		queryValues.Add("endDate", endDate.Format(queryDateLayout))
 	}
 	queryValues.Add("sortOrder", sortOrder.String())
 	if marker != "" {
@@ -121,7 +129,7 @@ func (c *eTradeClient) ListTransactionDetails(accountIdKey string, transactionId
 
 func (c *eTradeClient) ViewPortfolio(
 	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-	marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
 	view constants.PortfolioView,
 ) ([]byte, error) {
 	queryValues := url.Values{}
@@ -249,6 +257,55 @@ func (c *eTradeClient) GetOptionExpireDates(symbol string, expiryType constants.
 	queryValues.Add("expiryType", expiryType.String())
 
 	response, err := c.doRequest("GET", c.urls.GetOptionExpireDatesUrl(), queryValues)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *eTradeClient) ListOrders(
+	accountIdKey string, marker string, count int, status constants.OrderStatus, fromDate *time.Time, toDate *time.Time,
+	symbols []string, securityType constants.OrderSecurityType, transactionType constants.OrderTransactionType,
+	marketSession constants.MarketSession,
+) ([]byte, error) {
+	if accountIdKey == "" {
+		return nil, errors.New("accountIdKey not provided")
+	}
+	queryValues := url.Values{}
+	if marker != "" {
+		queryValues.Add("marker", marker)
+	}
+	if count >= 0 {
+		queryValues.Add("count", fmt.Sprintf("%d", count))
+	}
+	if status != constants.OrderStatusNil {
+		queryValues.Add("status", status.String())
+	}
+	if fromDate != nil {
+		queryValues.Add("fromDate", fromDate.Format(queryDateLayout))
+	}
+	if toDate != nil {
+		queryValues.Add("toDate", toDate.Format(queryDateLayout))
+	}
+	if len(symbols) > 0 {
+		if len(symbols) > constants.ListOrdersMaxSymbols {
+			return nil, fmt.Errorf(
+				"%d symbols provided, which exceeds the limit of %d", len(symbols), constants.ListOrdersMaxSymbols,
+			)
+		}
+		queryValues.Add("symbols", strings.Join(symbols, ","))
+	}
+	if securityType != constants.OrderSecurityTypeNil {
+		queryValues.Add("securityType", securityType.String())
+	}
+	if transactionType != constants.OrderTransactionTypeNil {
+		queryValues.Add("transactionType", transactionType.String())
+	}
+	if marketSession != constants.MarketSessionNil {
+		queryValues.Add("marketSession", marketSession.String())
+	}
+
+	response, err := c.doRequest("GET", c.urls.ListOrdersUrl(accountIdKey), queryValues)
 	if err != nil {
 		return nil, err
 	}

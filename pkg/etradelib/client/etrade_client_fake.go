@@ -18,7 +18,7 @@ type ListTransactionDetailsFn func(accountIdKey string, transactionId string) ([
 
 type ViewPortfolioFn func(
 	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-	marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
 	view constants.PortfolioView,
 ) ([]byte, error)
 
@@ -40,6 +40,12 @@ type GetOptionChainsFn func(
 
 type GetOptionExpireDatesFn func(symbol string, expiryType constants.OptionExpiryType) ([]byte, error)
 
+type ListOrdersFn func(
+	accountIdKey string, marker string, count int, status constants.OrderStatus, fromDate *time.Time, toDate *time.Time,
+	symbols []string, securityType constants.OrderSecurityType, transactionType constants.OrderTransactionType,
+	marketSession constants.MarketSession,
+) ([]byte, error)
+
 type ETradeClientFake struct {
 	ListAccountsFn           ListAccountsFn
 	GetAccountBalancesFn     GetAccountBalancesFn
@@ -51,12 +57,13 @@ type ETradeClientFake struct {
 	LookupProductFn          LookupProductFn
 	GetOptionChainsFn        GetOptionChainsFn
 	GetOptionExpireDatesFn   GetOptionExpireDatesFn
+	ListOrdersFn             ListOrdersFn
 
 	defaultJson []byte
 	defaultErr  error
 }
 
-func NewClientFake(defaultJson string, defaultError error) *ETradeClientFake {
+func NewClientFake(defaultJson string, defaultError error) ETradeClient {
 	clientFake := ETradeClientFake{defaultJson: []byte(defaultJson), defaultErr: defaultError}
 	return &clientFake
 }
@@ -98,7 +105,7 @@ func (c *ETradeClientFake) ListTransactionDetails(accountIdKey string, transacti
 
 func (c *ETradeClientFake) ViewPortfolio(
 	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-	marketSession constants.PortfolioMarketSession, totalsRequired bool, lotsRequired bool,
+	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
 	view constants.PortfolioView,
 ) ([]byte, error) {
 	if c.ViewPortfolioFn != nil {
@@ -158,6 +165,20 @@ func (c *ETradeClientFake) GetOptionChains(
 func (c *ETradeClientFake) GetOptionExpireDates(symbol string, expiryType constants.OptionExpiryType) ([]byte, error) {
 	if c.GetOptionExpireDatesFn != nil {
 		return c.GetOptionExpireDatesFn(symbol, expiryType)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
+}
+
+func (c *ETradeClientFake) ListOrders(
+	accountIdKey string, marker string, count int, status constants.OrderStatus, fromDate *time.Time, toDate *time.Time,
+	symbols []string, securityType constants.OrderSecurityType, transactionType constants.OrderTransactionType,
+	marketSession constants.MarketSession,
+) ([]byte, error) {
+	if c.ListOrdersFn != nil {
+		return c.ListOrdersFn(
+			accountIdKey, marker, count, status, fromDate, toDate, symbols, securityType, transactionType, marketSession,
+		)
 	} else {
 		return c.defaultJson, c.defaultErr
 	}

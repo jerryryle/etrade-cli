@@ -23,6 +23,7 @@ func main() {
 	rootCmd.AddCommand((&cmd.ListTransactionsCommand{AppContext: &appContext}).Command())
 	rootCmd.AddCommand((&cmd.ListTransactionDetailsCommand{AppContext: &appContext}).Command())
 	rootCmd.AddCommand((&cmd.ViewPortfolioCommand{AppContext: &appContext}).Command())
+	rootCmd.AddCommand((&cmd.ListOrdersCommand{AppContext: &appContext}).Command())
 
 	if err := rootCmd.Execute(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

@@ -169,7 +169,7 @@ func (e *priceType) Type() string {
 func (e *priceType) PriceType() constants.OptionPriceType {
 	switch *e {
 	case priceTypeAtnm:
-		return constants.OptionPriceTypeAtnm
+		return constants.OptionPriceTypeExtendedHours
 	case priceTypeAll:
 		return constants.OptionPriceTypeAll
 	}

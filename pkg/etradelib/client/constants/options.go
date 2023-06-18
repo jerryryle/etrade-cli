@@ -47,8 +47,8 @@ const (
 	// (e.g. to make a query use the default value from ETrade)
 	OptionPriceTypeNil OptionPriceType = iota
 
-	// OptionPriceTypeAtnm gets ATNM prices (At The Next Market open)
-	OptionPriceTypeAtnm
+	// OptionPriceTypeExtendedHours gets extended hours prices
+	OptionPriceTypeExtendedHours
 
 	// OptionPriceTypeAll gets all prices
 	OptionPriceTypeAll
@@ -129,8 +129,8 @@ func ChainTypeFromString(s string) (OptionChainType, error) {
 }
 
 var priceTypeToString = map[OptionPriceType]string{
-	OptionPriceTypeAtnm: "ATNM",
-	OptionPriceTypeAll:  "ALL",
+	OptionPriceTypeExtendedHours: "ATNM",
+	OptionPriceTypeAll:           "ALL",
 }
 
 // String converts a OptionPriceType to its string representation.

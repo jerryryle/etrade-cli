@@ -263,22 +263,6 @@ const (
 	PortfolioSortByExpandCollapseFlag
 )
 
-// PortfolioMarketSession specifies the market session for which to get results
-// See the constants below for semantics.
-type PortfolioMarketSession int
-
-const (
-	// PortfolioMarketSessionNil indicates no market session
-	// (e.g. to make a query use the default value from ETrade)
-	PortfolioMarketSessionNil PortfolioMarketSession = iota
-
-	// PortfolioMarketSessionRegular gets results for the regular market session
-	PortfolioMarketSessionRegular
-
-	// PortfolioMarketSessionExtended gets results for the extended market session
-	PortfolioMarketSessionExtended
-)
-
 // PortfolioView specifies the type of portfolio view to retrieve
 // See the constants below for semantics.
 type PortfolioView int
@@ -408,25 +392,6 @@ func (e *PortfolioSortBy) String() string {
 // string, or an error if the string doesn't represent a valid value.
 func PortfolioSortByFromString(s string) (PortfolioSortBy, error) {
 	return getKeyForValue(portfolioSortByToString, s)
-}
-
-var portfolioMarketSessionToString = map[PortfolioMarketSession]string{
-	PortfolioMarketSessionRegular:  "REGULAR",
-	PortfolioMarketSessionExtended: "EXTENDED",
-}
-
-// String converts a PortfolioMarketSession to its string representation.
-func (e *PortfolioMarketSession) String() string {
-	if s, found := portfolioMarketSessionToString[*e]; found {
-		return s
-	}
-	return "UNKNOWN"
-}
-
-// PortfolioMarketSessionFromString returns the PortfolioMarketSession for the
-// specified string, or an error if the string doesn't represent a valid value.
-func PortfolioMarketSessionFromString(s string) (PortfolioMarketSession, error) {
-	return getKeyForValue(portfolioMarketSessionToString, s)
 }
 
 var portfolioViewToString = map[PortfolioView]string{
