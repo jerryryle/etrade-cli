@@ -24,6 +24,11 @@ func (c *RootCommand) Command() *cobra.Command {
 		Short: "E*TRADE CLI",
 		Long:  "E*TRADE Command Line Interface",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			// Don't try to set up the application context if we're just
+			// displaying help.
+			if cmd.CalledAs() == "help" {
+				return nil
+			}
 			return c.RootSetupApplicationContext()
 		},
 	}
