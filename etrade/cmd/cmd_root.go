@@ -88,8 +88,5 @@ func (c *RootCommand) RootSetupApplicationContext() error {
 		return err
 	}
 
-	// Create an ETrade customer object
-	//c.AppContext.Customer = etradelib.CreateETradeCustomer(c.AppContext.Client, customerConfig.CustomerName)
-
 	return nil
 }
