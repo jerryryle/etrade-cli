@@ -10,9 +10,9 @@ type marketOptionchainsFlags struct {
 	expiryYear, expiryMonth, expiryDay int
 	strikePriceNear, noOfStrikes       int
 	includeWeekly, skipAdjusted        bool
-	optionCategory                     optionCategory
-	chainType                          chainType
-	priceType                          priceType
+	optionCategory                     enumFlagValue[constants.OptionCategory]
+	chainType                          enumFlagValue[constants.OptionChainType]
+	priceType                          enumFlagValue[constants.OptionPriceType]
 }
 
 type CommandMarketOptionchains struct {
@@ -30,6 +30,8 @@ func (c *CommandMarketOptionchains) Command() *cobra.Command {
 			return c.GetOptionChains(args[0])
 		},
 	}
+
+	// Add Flags
 	cmd.Flags().IntVarP(&c.flags.expiryYear, "expiryYear", "y", -1, "expiration year")
 	cmd.Flags().IntVarP(&c.flags.expiryMonth, "expiryMonth", "m", -1, "expiration month")
 	cmd.Flags().IntVarP(&c.flags.expiryDay, "expiryDay", "d", -1, "expiration day")
@@ -37,17 +39,46 @@ func (c *CommandMarketOptionchains) Command() *cobra.Command {
 	cmd.Flags().IntVarP(&c.flags.noOfStrikes, "noOfStrikes", "n", -1, "number of strikes")
 	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "includeWeekly", "w", false, "include weekly options")
 	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "skipAdjusted", "a", true, "skip adjusted")
+
+	// Initialize Enum Flag Values
+	c.flags.optionCategory = *newEnumFlagValue(optionCategoryMap, constants.OptionCategoryNil)
+	c.flags.chainType = *newEnumFlagValue(chainTypeMap, constants.OptionChainTypeNil)
+	c.flags.priceType = *newEnumFlagValue(priceTypeMap, constants.OptionPriceTypeNil)
+
+	// Add Enum Flags
 	cmd.Flags().VarP(
 		&c.flags.optionCategory, "optionCategory", "c",
-		fmt.Sprintf("option category (%s, %s, %s)", optionCategoryStandard, optionCategoryAll, optionCategoryMini),
+		fmt.Sprintf("option category (%s)", c.flags.optionCategory.JoinAllowedValues(", ")),
 	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"optionCategory",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.optionCategory.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
 	cmd.Flags().VarP(
 		&c.flags.chainType, "chainType", "t",
-		fmt.Sprintf("chain type (%s, %s, %s)", chainTypeCall, chainTypePut, chainTypeCallPut),
+		fmt.Sprintf("chain type (%s)", c.flags.chainType.JoinAllowedValues(", ")),
 	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"chainType",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.chainType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
 	cmd.Flags().VarP(
-		&c.flags.priceType, "priceType", "p", fmt.Sprintf("price type (%s, %s)", priceTypeAtnm, priceTypeAll),
+		&c.flags.priceType, "priceType", "p",
+		fmt.Sprintf("price type (%s)", c.flags.priceType.JoinAllowedValues(", ")),
 	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"priceType",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.priceType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
 	return cmd
 }
 
@@ -56,7 +87,7 @@ func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
 		symbol,
 		c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,
 		c.flags.strikePriceNear, c.flags.noOfStrikes, c.flags.includeWeekly, c.flags.skipAdjusted,
-		c.flags.optionCategory.OptionCategory(), c.flags.chainType.ChainType(), c.flags.priceType.PriceType(),
+		c.flags.optionCategory.Value(), c.flags.chainType.Value(), c.flags.priceType.Value(),
 	)
 	if err != nil {
 		return err
@@ -65,113 +96,19 @@ func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
 	return nil
 }
 
-type optionCategory string
-
-const (
-	optionCategoryStandard optionCategory = "standard"
-	optionCategoryAll      optionCategory = "all"
-	optionCategoryMini     optionCategory = "mini"
-)
-
-func (e *optionCategory) String() string {
-	return string(*e)
+var optionCategoryMap = map[string]enumValueWithHelp[constants.OptionCategory]{
+	"standard": {constants.OptionCategoryStandard, "only standard options"},
+	"all":      {constants.OptionCategoryAll, "all options"},
+	"mini":     {constants.OptionCategoryMini, "only mini options"},
 }
 
-func (e *optionCategory) Set(v string) error {
-	switch optionCategory(v) {
-	case optionCategoryStandard, optionCategoryAll, optionCategoryMini:
-		*e = optionCategory(v)
-		return nil
-	default:
-		return fmt.Errorf("must be %s, %s, or %s", optionCategoryStandard, optionCategoryAll, optionCategoryMini)
-	}
+var chainTypeMap = map[string]enumValueWithHelp[constants.OptionChainType]{
+	"call":    {constants.OptionChainTypeCall, "only call options"},
+	"put":     {constants.OptionChainTypePut, "only put options"},
+	"callput": {constants.OptionChainTypeCallPut, "call and put options"},
 }
 
-func (e *optionCategory) Type() string {
-	return "optionCategory"
-}
-
-func (e *optionCategory) OptionCategory() constants.OptionCategory {
-	switch *e {
-	case optionCategoryStandard:
-		return constants.OptionCategoryStandard
-	case optionCategoryAll:
-		return constants.OptionCategoryAll
-	case optionCategoryMini:
-		return constants.OptionCategoryMini
-	}
-	return constants.OptionCategoryAll
-}
-
-type chainType string
-
-const (
-	chainTypeCall    chainType = "call"
-	chainTypePut     chainType = "put"
-	chainTypeCallPut chainType = "callput"
-)
-
-func (e *chainType) String() string {
-	return string(*e)
-}
-
-func (e *chainType) Set(v string) error {
-	switch chainType(v) {
-	case chainTypeCall, chainTypePut, chainTypeCallPut:
-		*e = chainType(v)
-		return nil
-	default:
-		return fmt.Errorf("must be %s, %s, or %s", chainTypeCall, chainTypePut, chainTypeCallPut)
-	}
-}
-
-func (e *chainType) Type() string {
-	return "chainType"
-}
-
-func (e *chainType) ChainType() constants.OptionChainType {
-	switch *e {
-	case chainTypeCall:
-		return constants.OptionChainTypeCall
-	case chainTypePut:
-		return constants.OptionChainTypePut
-	case chainTypeCallPut:
-		return constants.OptionChainTypeCallPut
-	}
-	return constants.OptionChainTypeCallPut
-}
-
-type priceType string
-
-const (
-	priceTypeAtnm priceType = "atnm"
-	priceTypeAll  priceType = "all"
-)
-
-func (e *priceType) String() string {
-	return string(*e)
-}
-
-func (e *priceType) Set(v string) error {
-	switch priceType(v) {
-	case priceTypeAtnm, priceTypeAll:
-		*e = priceType(v)
-		return nil
-	default:
-		return fmt.Errorf("must be %s or %s", priceTypeAtnm, priceTypeAll)
-	}
-}
-
-func (e *priceType) Type() string {
-	return "priceType"
-}
-
-func (e *priceType) PriceType() constants.OptionPriceType {
-	switch *e {
-	case priceTypeAtnm:
-		return constants.OptionPriceTypeExtendedHours
-	case priceTypeAll:
-		return constants.OptionPriceTypeAll
-	}
-	return constants.OptionPriceTypeAll
+var priceTypeMap = map[string]enumValueWithHelp[constants.OptionPriceType]{
+	"extendedhours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
+	"all":           {constants.OptionPriceTypeAll, "all price types"},
 }
