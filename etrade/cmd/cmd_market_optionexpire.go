@@ -11,8 +11,8 @@ type marketOptionExpireFlags struct {
 }
 
 type CommandMarketOptionexpire struct {
-	AppContext *ApplicationContext
-	flags      marketOptionExpireFlags
+	Resources *CommandResources
+	flags     marketOptionExpireFlags
 }
 
 func (c *CommandMarketOptionexpire) Command() *cobra.Command {
@@ -35,7 +35,7 @@ func (c *CommandMarketOptionexpire) Command() *cobra.Command {
 }
 
 func (c *CommandMarketOptionexpire) GetOptionExpireDates(symbol string) error {
-	response, err := c.AppContext.Client.GetOptionExpireDates(symbol, c.flags.expiryType.ExpiryType())
+	response, err := c.Resources.Client.GetOptionExpireDates(symbol, c.flags.expiryType.ExpiryType())
 	if err != nil {
 		return err
 	}

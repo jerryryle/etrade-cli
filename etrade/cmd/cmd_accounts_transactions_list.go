@@ -14,8 +14,8 @@ type accountsTransactionsListFlags struct {
 }
 
 type CommandAccountsTransactionsList struct {
-	AppContext *ApplicationContext
-	flags      accountsTransactionsListFlags
+	Resources *CommandResources
+	flags     accountsTransactionsListFlags
 }
 
 func (c *CommandAccountsTransactionsList) Command() *cobra.Command {
@@ -50,7 +50,7 @@ func (c *CommandAccountsTransactionsList) Command() *cobra.Command {
 func (c *CommandAccountsTransactionsList) ListTransactions(
 	accountKeyId string, startDate *time.Time, endDate *time.Time,
 ) error {
-	response, err := c.AppContext.Client.ListTransactions(
+	response, err := c.Resources.Client.ListTransactions(
 		accountKeyId,
 		startDate, endDate, constants.SortOrderAsc, "", 0,
 	)

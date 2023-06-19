@@ -7,7 +7,7 @@ import (
 )
 
 type CommandOrdersList struct {
-	AppContext *ApplicationContext
+	Resources *CommandResources
 }
 
 func (c *CommandOrdersList) Command() *cobra.Command {
@@ -24,7 +24,7 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 }
 
 func (c *CommandOrdersList) ListOrders(accountKeyId string) error {
-	response, err := c.AppContext.Client.ListOrders(
+	response, err := c.Resources.Client.ListOrders(
 		accountKeyId, "", -1, constants.OrderStatusNil, nil, nil, nil, constants.OrderSecurityTypeNil,
 		constants.OrderTransactionTypeNil, constants.MarketSessionNil,
 	)

@@ -7,7 +7,7 @@ import (
 )
 
 type CommandAlertsList struct {
-	AppContext *ApplicationContext
+	Resources *CommandResources
 }
 
 func (c *CommandAlertsList) Command() *cobra.Command {
@@ -23,7 +23,7 @@ func (c *CommandAlertsList) Command() *cobra.Command {
 }
 
 func (c *CommandAlertsList) ListAlerts() error {
-	response, err := c.AppContext.Client.ListAlerts(
+	response, err := c.Resources.Client.ListAlerts(
 		-1, constants.AlertCategoryNil, constants.AlertStatusNil, constants.SortOrderNil, "",
 	)
 	if err != nil {

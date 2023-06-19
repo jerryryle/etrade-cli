@@ -5,7 +5,8 @@ import (
 )
 
 type CommandOrders struct {
-	AppContext *ApplicationContext
+	GlobalFlags *GlobalFlags
+	resources   CommandResources
 }
 
 func (c *CommandOrders) Command() *cobra.Command {
@@ -13,8 +14,16 @@ func (c *CommandOrders) Command() *cobra.Command {
 		Use:   "orders",
 		Short: "Order actions",
 		Long:  "Perform order actions",
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			resources, err := NewCommandResources(c.GlobalFlags.customerId, c.GlobalFlags.debug)
+			if err != nil {
+				return err
+			}
+			c.resources = *resources
+			return nil
+		},
 	}
 	// Add Subcommands
-	cmd.AddCommand((&CommandOrdersList{AppContext: c.AppContext}).Command())
+	cmd.AddCommand((&CommandOrdersList{Resources: &c.resources}).Command())
 	return cmd
 }

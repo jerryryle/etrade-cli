@@ -11,8 +11,8 @@ type marketQuotesFlags struct {
 }
 
 type CommandMarketQuote struct {
-	AppContext *ApplicationContext
-	flags      marketQuotesFlags
+	Resources *CommandResources
+	flags     marketQuotesFlags
 }
 
 func (c *CommandMarketQuote) Command() *cobra.Command {
@@ -37,7 +37,7 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 }
 
 func (c *CommandMarketQuote) GetQuotes(symbols []string) error {
-	response, err := c.AppContext.Client.GetQuotes(
+	response, err := c.Resources.Client.GetQuotes(
 		symbols, constants.QuoteDetailAll, c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck,
 	)
 	if err != nil {

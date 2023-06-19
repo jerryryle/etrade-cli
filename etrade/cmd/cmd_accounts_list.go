@@ -6,7 +6,7 @@ import (
 )
 
 type CommandAccountsList struct {
-	AppContext *ApplicationContext
+	Resources *CommandResources
 }
 
 func (c *CommandAccountsList) Command() *cobra.Command {
@@ -22,7 +22,7 @@ func (c *CommandAccountsList) Command() *cobra.Command {
 }
 
 func (c *CommandAccountsList) ListAccounts() error {
-	response, err := c.AppContext.Client.ListAccounts()
+	response, err := c.Resources.Client.ListAccounts()
 	if err != nil {
 		return err
 	}

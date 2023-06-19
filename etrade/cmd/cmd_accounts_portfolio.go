@@ -7,7 +7,7 @@ import (
 )
 
 type CommandAccountsPortfolio struct {
-	AppContext *ApplicationContext
+	Resources *CommandResources
 }
 
 func (c *CommandAccountsPortfolio) Command() *cobra.Command {
@@ -24,7 +24,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 }
 
 func (c *CommandAccountsPortfolio) ViewPortfolio(accountKeyId string) error {
-	response, err := c.AppContext.Client.ViewPortfolio(
+	response, err := c.Resources.Client.ViewPortfolio(
 		accountKeyId, 0, constants.PortfolioSortBySymbol, constants.SortOrderAsc, 0,
 		constants.MarketSessionRegular,
 		true, true, constants.PortfolioViewComplete,

@@ -6,7 +6,7 @@ import (
 )
 
 type CommandAccountsTransactionsDetails struct {
-	AppContext *ApplicationContext
+	Resources *CommandResources
 }
 
 func (c *CommandAccountsTransactionsDetails) Command() *cobra.Command {
@@ -23,7 +23,7 @@ func (c *CommandAccountsTransactionsDetails) Command() *cobra.Command {
 }
 
 func (c *CommandAccountsTransactionsDetails) ListTransactionDetails(accountKeyId string, transactionId string) error {
-	response, err := c.AppContext.Client.ListTransactionDetails(accountKeyId, transactionId)
+	response, err := c.Resources.Client.ListTransactionDetails(accountKeyId, transactionId)
 	if err != nil {
 		return err
 	}

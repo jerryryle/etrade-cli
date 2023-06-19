@@ -10,9 +10,7 @@ import (
 )
 
 func main() {
-	var appContext = cmd.ApplicationContext{}
-
-	rootCmd := (&cmd.RootCommand{AppContext: &appContext}).Command()
+	rootCmd := (&cmd.RootCommand{}).Command()
 
 	if err := rootCmd.Execute(); err != nil {
 		_, _ = fmt.Fprintln(os.Stderr, err)

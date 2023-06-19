@@ -16,8 +16,8 @@ type marketOptionchainsFlags struct {
 }
 
 type CommandMarketOptionchains struct {
-	AppContext *ApplicationContext
-	flags      marketOptionchainsFlags
+	Resources *CommandResources
+	flags     marketOptionchainsFlags
 }
 
 func (c *CommandMarketOptionchains) Command() *cobra.Command {
@@ -83,7 +83,7 @@ func (c *CommandMarketOptionchains) Command() *cobra.Command {
 }
 
 func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
-	result, err := c.AppContext.Client.GetOptionChains(
+	result, err := c.Resources.Client.GetOptionChains(
 		symbol,
 		c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,
 		c.flags.strikePriceNear, c.flags.noOfStrikes, c.flags.includeWeekly, c.flags.skipAdjusted,

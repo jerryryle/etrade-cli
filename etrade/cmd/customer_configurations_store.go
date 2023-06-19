@@ -19,10 +19,6 @@ type CustomerConfigurationsStore struct {
 	customerConfigMap map[string]CustomerConfiguration
 }
 
-func CreateCustomerConfigurationsStore() *CustomerConfigurationsStore {
-	return &CustomerConfigurationsStore{make(map[string]CustomerConfiguration)}
-}
-
 func LoadCustomerConfigurationsStore(reader io.Reader) (*CustomerConfigurationsStore, error) {
 	bytes, err := io.ReadAll(reader)
 	if err != nil {
@@ -42,7 +38,7 @@ func LoadCustomerConfigurationsStoreFromFile(filename string, logger *slog.Logge
 	if file != nil {
 		defer func(file *os.File) {
 			err := file.Close()
-			if err != nil {
+			if err != nil && logger != nil {
 				logger.Error(err.Error())
 			}
 		}(file)
@@ -63,13 +59,17 @@ func SaveCustomerConfigurationsStore(writer io.Writer, cc *CustomerConfiguration
 }
 
 func SaveCustomerConfigurationsStoreToFile(
-	filename string, cc *CustomerConfigurationsStore, logger *slog.Logger,
+	filename string, overwriteExisting bool, cc *CustomerConfigurationsStore, logger *slog.Logger,
 ) error {
-	file, err := os.Create(filename)
+	openFlags := os.O_RDWR | os.O_CREATE | os.O_TRUNC
+	if !overwriteExisting {
+		openFlags |= os.O_EXCL
+	}
+	file, err := os.OpenFile(filename, openFlags, 0666)
 	if file != nil {
 		defer func(file *os.File) {
 			err := file.Close()
-			if err != nil {
+			if err != nil && logger != nil {
 				logger.Error(err.Error())
 			}
 		}(file)
@@ -92,4 +92,12 @@ func (c *CustomerConfigurationsStore) SetCustomerConfigurationForId(
 	configId string, configuration *CustomerConfiguration,
 ) {
 	c.customerConfigMap[configId] = *configuration
+}
+
+func (c *CustomerConfigurationsStore) ForEachCustomerConfig(
+	fn func(configId string, customerName string, production bool),
+) {
+	for k, v := range c.customerConfigMap {
+		fn(k, v.CustomerName, v.CustomerProduction)
+	}
 }

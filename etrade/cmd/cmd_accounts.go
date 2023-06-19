@@ -5,7 +5,8 @@ import (
 )
 
 type CommandAccounts struct {
-	AppContext *ApplicationContext
+	GlobalFlags *GlobalFlags
+	resources   CommandResources
 }
 
 func (c *CommandAccounts) Command() *cobra.Command {
@@ -13,10 +14,18 @@ func (c *CommandAccounts) Command() *cobra.Command {
 		Use:   "accounts",
 		Short: "Account actions",
 		Long:  "Perform actions on accounts",
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			resources, err := NewCommandResources(c.GlobalFlags.customerId, c.GlobalFlags.debug)
+			if err != nil {
+				return err
+			}
+			c.resources = *resources
+			return nil
+		},
 	}
 	// Add Subcommands
-	cmd.AddCommand((&CommandAccountsList{AppContext: c.AppContext}).Command())
-	cmd.AddCommand((&CommandAccountsBalances{AppContext: c.AppContext}).Command())
-	cmd.AddCommand((&CommandAccountsPortfolio{AppContext: c.AppContext}).Command())
+	cmd.AddCommand((&CommandAccountsList{Resources: &c.resources}).Command())
+	cmd.AddCommand((&CommandAccountsBalances{Resources: &c.resources}).Command())
+	cmd.AddCommand((&CommandAccountsPortfolio{Resources: &c.resources}).Command())
 	return cmd
 }
