@@ -45,3 +45,33 @@ func NewSliceFromJsonBytes(jsonBytes []byte) (JsonSlice, error) {
 func NewSliceFromJsonString(jsonString string) (JsonSlice, error) {
 	return NewSliceFromIoReader(strings.NewReader(jsonString))
 }
+
+func (s *JsonSlice) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
+	encoder := json.NewEncoder(jsonWriter)
+	if pretty {
+		encoder.SetIndent("", "  ")
+	}
+	err := encoder.Encode(*s)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *JsonSlice) ToJsonBytes(pretty bool) ([]byte, error) {
+	var byteBuffer bytes.Buffer
+	err := s.ToIoWriter(&byteBuffer, pretty)
+	if err != nil {
+		return nil, err
+	}
+	return byteBuffer.Bytes(), nil
+}
+
+func (s *JsonSlice) ToJsonString(pretty bool) (string, error) {
+	var byteBuffer bytes.Buffer
+	err := s.ToIoWriter(&byteBuffer, pretty)
+	if err != nil {
+		return "", err
+	}
+	return byteBuffer.String(), nil
+}

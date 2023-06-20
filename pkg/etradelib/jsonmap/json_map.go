@@ -45,3 +45,33 @@ func NewMapFromJsonBytes(jsonBytes []byte) (JsonMap, error) {
 func NewMapFromJsonString(jsonString string) (JsonMap, error) {
 	return NewMapFromIoReader(strings.NewReader(jsonString))
 }
+
+func (m *JsonMap) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
+	encoder := json.NewEncoder(jsonWriter)
+	if pretty {
+		encoder.SetIndent("", "  ")
+	}
+	err := encoder.Encode(*m)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *JsonMap) ToJsonBytes(pretty bool) ([]byte, error) {
+	var byteBuffer bytes.Buffer
+	err := m.ToIoWriter(&byteBuffer, pretty)
+	if err != nil {
+		return nil, err
+	}
+	return byteBuffer.Bytes(), nil
+}
+
+func (m *JsonMap) ToJsonString(pretty bool) (string, error) {
+	var byteBuffer bytes.Buffer
+	err := m.ToIoWriter(&byteBuffer, pretty)
+	if err != nil {
+		return "", err
+	}
+	return byteBuffer.String(), nil
+}

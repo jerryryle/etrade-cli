@@ -98,3 +98,91 @@ func TestJsonMap_New(t *testing.T) {
 		)
 	}
 }
+
+func TestJsonMap_ToJsonString(t *testing.T) {
+	var testJsonMap = JsonMap{
+		"TestMap": JsonMap{
+			"TestMap": JsonMap{
+				"TestSlice": JsonSlice{
+					JsonMap{
+						"TestString": "TestStringValue",
+						"TestFloat":  json.Number("123.456"),
+						"TestInt":    json.Number("123"),
+						"TestBool":   true,
+					},
+				},
+			},
+		},
+	}
+
+	const expectedJsonStringPretty = `{
+  "TestMap": {
+    "TestMap": {
+      "TestSlice": [
+        {
+          "TestBool": true,
+          "TestFloat": 123.456,
+          "TestInt": 123,
+          "TestString": "TestStringValue"
+        }
+      ]
+    }
+  }
+}
+`
+
+	const expectedJsonStringUgly = `{"TestMap":{"TestMap":{"TestSlice":[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue"}]}}}
+`
+
+	actualString, err := testJsonMap.ToJsonString(true)
+	assert.Nil(t, err)
+	assert.Equal(t, expectedJsonStringPretty, actualString)
+
+	actualString, err = testJsonMap.ToJsonString(false)
+	assert.Nil(t, err)
+	assert.Equal(t, expectedJsonStringUgly, actualString)
+}
+
+func TestJsonMap_ToJsonBytes(t *testing.T) {
+	var testJsonMap = JsonMap{
+		"TestMap": JsonMap{
+			"TestMap": JsonMap{
+				"TestSlice": JsonSlice{
+					JsonMap{
+						"TestString": "TestStringValue",
+						"TestFloat":  json.Number("123.456"),
+						"TestInt":    json.Number("123"),
+						"TestBool":   true,
+					},
+				},
+			},
+		},
+	}
+
+	const expectedJsonStringPretty = `{
+  "TestMap": {
+    "TestMap": {
+      "TestSlice": [
+        {
+          "TestBool": true,
+          "TestFloat": 123.456,
+          "TestInt": 123,
+          "TestString": "TestStringValue"
+        }
+      ]
+    }
+  }
+}
+`
+
+	const expectedJsonStringUgly = `{"TestMap":{"TestMap":{"TestSlice":[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue"}]}}}
+`
+
+	actualBytes, err := testJsonMap.ToJsonBytes(true)
+	assert.Nil(t, err)
+	assert.Equal(t, []byte(expectedJsonStringPretty), actualBytes)
+
+	actualBytes, err = testJsonMap.ToJsonBytes(false)
+	assert.Nil(t, err)
+	assert.Equal(t, []byte(expectedJsonStringUgly), actualBytes)
+}
