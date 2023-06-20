@@ -395,12 +395,6 @@ func (e *PortfolioSortBy) String() string {
 	return "UNKNOWN"
 }
 
-// PortfolioSortByFromString returns the PortfolioSortBy for the specified
-// string, or an error if the string doesn't represent a valid value.
-func PortfolioSortByFromString(s string) (PortfolioSortBy, error) {
-	return getKeyForValue(portfolioSortByToString, s)
-}
-
 var portfolioViewToString = map[PortfolioView]string{
 	PortfolioViewPerformance:  "PERFORMANCE",
 	PortfolioViewFundamental:  "FUNDAMENTAL",
@@ -415,10 +409,4 @@ func (e *PortfolioView) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// PortfolioViewFromString returns the PortfolioView for the specified string,
-// or an error if the string doesn't represent a valid value.
-func PortfolioViewFromString(s string) (PortfolioView, error) {
-	return getKeyForValue(portfolioViewToString, s)
 }

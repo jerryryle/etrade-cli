@@ -102,12 +102,6 @@ func (e OptionCategory) String() string {
 	return "UNKNOWN"
 }
 
-// OptionCategoryFromString returns the OptionCategory for the specified string,
-// or an error if the string doesn't represent a valid value.
-func OptionCategoryFromString(s string) (OptionCategory, error) {
-	return getKeyForValue(optionCategoryToString, s)
-}
-
 var chainTypeToString = map[OptionChainType]string{
 	OptionChainTypeCall:    "CALL",
 	OptionChainTypePut:     "PUT",
@@ -122,12 +116,6 @@ func (e OptionChainType) String() string {
 	return "UNKNOWN"
 }
 
-// ChainTypeFromString returns the OptionChainType for the specified string,
-// or an error if the string doesn't represent a valid value.
-func ChainTypeFromString(s string) (OptionChainType, error) {
-	return getKeyForValue(chainTypeToString, s)
-}
-
 var priceTypeToString = map[OptionPriceType]string{
 	OptionPriceTypeExtendedHours: "ATNM",
 	OptionPriceTypeAll:           "ALL",
@@ -139,12 +127,6 @@ func (e OptionPriceType) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// PriceTypeFromString returns the OptionPriceType for the specified string,
-// or an error if the string doesn't represent a valid value.
-func PriceTypeFromString(s string) (OptionPriceType, error) {
-	return getKeyForValue(priceTypeToString, s)
 }
 
 var expiryTypeToString = map[OptionExpiryType]string{
@@ -164,10 +146,4 @@ func (e OptionExpiryType) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// ExpiryTypeFromString returns the OptionExpiryType for the specified string,
-// or an error if the string doesn't represent a valid value.
-func ExpiryTypeFromString(s string) (OptionExpiryType, error) {
-	return getKeyForValue(expiryTypeToString, s)
 }

@@ -48,12 +48,6 @@ func (e AlertCategory) String() string {
 	return "UNKNOWN"
 }
 
-// AlertCategoryFromString returns the AlertCategory for the specified string,
-// or an error if the string doesn't represent a valid value.
-func AlertCategoryFromString(s string) (AlertCategory, error) {
-	return getKeyForValue(alertCategoryToString, s)
-}
-
 var alertStatusToString = map[AlertStatus]string{
 	AlertStatusRead:    "READ",
 	AlertStatusUnread:  "UNREAD",
@@ -66,10 +60,4 @@ func (e AlertStatus) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// AlertStatusFromString returns the AlertStatus for the specified string,
-// or an error if the string doesn't represent a valid value.
-func AlertStatusFromString(s string) (AlertStatus, error) {
-	return getKeyForValue(alertStatusToString, s)
 }

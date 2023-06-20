@@ -39,12 +39,6 @@ func (e SortOrder) String() string {
 	return "UNKNOWN"
 }
 
-// SortOrderFromString returns the SortOrder for the specified string,
-// or an error if the string doesn't represent a valid value.
-func SortOrderFromString(s string) (SortOrder, error) {
-	return getKeyForValue(sortOrderToString, s)
-}
-
 var marketSessionToString = map[MarketSession]string{
 	MarketSessionRegular:  "REGULAR",
 	MarketSessionExtended: "EXTENDED",
@@ -56,10 +50,4 @@ func (e *MarketSession) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// MarketSessionFromString returns the MarketSession for the
-// specified string, or an error if the string doesn't represent a valid value.
-func MarketSessionFromString(s string) (MarketSession, error) {
-	return getKeyForValue(marketSessionToString, s)
 }

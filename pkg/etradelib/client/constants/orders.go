@@ -139,12 +139,6 @@ func (e OrderStatus) String() string {
 	return "UNKNOWN"
 }
 
-// OrderStatusFromString returns the OrderStatus for the specified string,
-// or an error if the string doesn't represent a valid value.
-func OrderStatusFromString(s string) (OrderStatus, error) {
-	return getKeyForValue(orderStatusToString, s)
-}
-
 var orderSecurityTypeToString = map[OrderSecurityType]string{
 	OrderSecurityTypeEquity:          "EQ",
 	OrderSecurityTypeOption:          "OPTN",
@@ -158,12 +152,6 @@ func (e OrderSecurityType) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// OrderSecurityTypeFromString returns the OrderSecurityType for the specified
-// string, or an error if the string doesn't represent a valid value.
-func OrderSecurityTypeFromString(s string) (OrderSecurityType, error) {
-	return getKeyForValue(orderSecurityTypeToString, s)
 }
 
 var orderTransactionTypeToString = map[OrderTransactionType]string{
@@ -181,10 +169,4 @@ func (e OrderTransactionType) String() string {
 		return s
 	}
 	return "UNKNOWN"
-}
-
-// OrderTransactionTypeFromString returns the OrderTransactionType for the
-// specified string, or an error if the string doesn't represent a valid value.
-func OrderTransactionTypeFromString(s string) (OrderTransactionType, error) {
-	return getKeyForValue(orderTransactionTypeToString, s)
 }

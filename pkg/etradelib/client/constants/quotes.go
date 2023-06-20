@@ -59,9 +59,3 @@ func (e QuoteDetailFlag) String() string {
 	}
 	return "UNKNOWN"
 }
-
-// QuoteDetailFlagFromString returns the QuoteDetailFlag for the specified
-// string, or an error if the string doesn't represent a valid value.
-func QuoteDetailFlagFromString(s string) (QuoteDetailFlag, error) {
-	return getKeyForValue(quoteDetailFlagToString, s)
-}
