@@ -63,8 +63,8 @@ func NewCommandResources(customerId string, debug bool, outputFile string) (*Com
 		closeOFile = true
 	}
 
-	// Get an ETrade client that's authorized for the customer
-	etradeClient, err := getClientWithCredentialCache(
+	// Create an ETrade client that's authorized for the customer
+	etradeClient, err := createClientWithCredentialCache(
 		customerConfig.CustomerProduction,
 		customerConfig.CustomerConsumerKey,
 		customerConfig.CustomerConsumerSecret,

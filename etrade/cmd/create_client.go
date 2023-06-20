@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func getClientWithCredentialCache(
+func createClientWithCredentialCache(
 	production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger,
 ) (client.ETradeClient, error) {
 	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath, logger)
