@@ -17,9 +17,8 @@ type ListTransactionsFn func(
 type ListTransactionDetailsFn func(accountIdKey string, transactionId string) ([]byte, error)
 
 type ViewPortfolioFn func(
-	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
-	view constants.PortfolioView,
+	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber string,
+	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool, view constants.PortfolioView,
 ) ([]byte, error)
 
 type ListAlertsFn func(
@@ -104,9 +103,8 @@ func (c *ETradeClientFake) ListTransactionDetails(accountIdKey string, transacti
 }
 
 func (c *ETradeClientFake) ViewPortfolio(
-	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
-	view constants.PortfolioView,
+	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber string,
+	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool, view constants.PortfolioView,
 ) ([]byte, error) {
 	if c.ViewPortfolioFn != nil {
 		return c.ViewPortfolioFn(
@@ -177,7 +175,8 @@ func (c *ETradeClientFake) ListOrders(
 ) ([]byte, error) {
 	if c.ListOrdersFn != nil {
 		return c.ListOrdersFn(
-			accountIdKey, marker, count, status, fromDate, toDate, symbols, securityType, transactionType, marketSession,
+			accountIdKey, marker, count, status, fromDate, toDate, symbols, securityType, transactionType,
+			marketSession,
 		)
 	} else {
 		return c.defaultJson, c.defaultErr

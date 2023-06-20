@@ -91,7 +91,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 
 func (c *CommandAccountsPortfolio) ViewPortfolio(accountKeyId string) error {
 	response, err := c.Resources.Client.ViewPortfolio(
-		accountKeyId, -1, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), -1, c.flags.marketSession.Value(), true,
+		accountKeyId, -1, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), "", c.flags.marketSession.Value(), true,
 		true, c.flags.portfolioView.Value(),
 	)
 	if err != nil {

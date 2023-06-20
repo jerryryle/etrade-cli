@@ -127,7 +127,7 @@ func TestETradeClient(t *testing.T) {
 			name: "View Portfolio With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ViewPortfolio(
-					"1234", 5, constants.PortfolioSortBySymbol, constants.SortOrderAsc, 6,
+					"1234", 5, constants.PortfolioSortBySymbol, constants.SortOrderAsc, "6",
 					constants.MarketSessionRegular, true, true, constants.PortfolioViewComplete,
 				)
 			},
@@ -139,7 +139,7 @@ func TestETradeClient(t *testing.T) {
 			name: "View Portfolio Can Omit All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ViewPortfolio(
-					"1234", -1, constants.PortfolioSortByNil, constants.SortOrderNil, -1,
+					"1234", -1, constants.PortfolioSortByNil, constants.SortOrderNil, "",
 					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
 				)
 			},
@@ -151,7 +151,7 @@ func TestETradeClient(t *testing.T) {
 			name: "View Portfolio Fails Without Account ID Key",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ViewPortfolio(
-					"", -1, constants.PortfolioSortByNil, constants.SortOrderNil, -1,
+					"", -1, constants.PortfolioSortByNil, constants.SortOrderNil, "",
 					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
 				)
 			},
@@ -163,7 +163,7 @@ func TestETradeClient(t *testing.T) {
 			name: "View Portfolio Fails If Count Is Too Big",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ViewPortfolio(
-					"1234", constants.PortfolioMaxCount+1, constants.PortfolioSortByNil, constants.SortOrderNil, -1,
+					"1234", constants.PortfolioMaxCount+1, constants.PortfolioSortByNil, constants.SortOrderNil, "",
 					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
 				)
 			},

@@ -25,8 +25,8 @@ type ETradeClient interface {
 	ListTransactionDetails(accountIdKey string, transactionId string) ([]byte, error)
 
 	ViewPortfolio(
-		accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-		marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
+		accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder,
+		pageNumber string, marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
 		view constants.PortfolioView,
 	) ([]byte, error)
 
@@ -142,9 +142,8 @@ func (c *eTradeClient) ListTransactionDetails(accountIdKey string, transactionId
 }
 
 func (c *eTradeClient) ViewPortfolio(
-	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber int,
-	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool,
-	view constants.PortfolioView,
+	accountIdKey string, count int, sortBy constants.PortfolioSortBy, sortOrder constants.SortOrder, pageNumber string,
+	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool, view constants.PortfolioView,
 ) ([]byte, error) {
 	if accountIdKey == "" {
 		return nil, errors.New("accountIdKey not provided")
@@ -158,8 +157,8 @@ func (c *eTradeClient) ViewPortfolio(
 	if count >= 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))
 	}
-	if pageNumber >= 0 {
-		queryValues.Add("pageNumber", fmt.Sprintf("%d", pageNumber))
+	if pageNumber != "" {
+		queryValues.Add("pageNumber", pageNumber)
 	}
 	queryValues.Add("totalsRequired", fmt.Sprintf("%t", totalsRequired))
 	queryValues.Add("lotsRequired", fmt.Sprintf("%t", lotsRequired))
