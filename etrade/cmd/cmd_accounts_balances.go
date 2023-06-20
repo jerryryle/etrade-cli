@@ -6,7 +6,7 @@ import (
 )
 
 type commandAccountsBalancesFlags struct {
-	realTimeNAV bool
+	realTimeBalance bool
 }
 
 type CommandAccountsBalances struct {
@@ -24,12 +24,12 @@ func (c *CommandAccountsBalances) Command() *cobra.Command {
 			return c.GetAccountBalances(args[0])
 		},
 	}
-	cmd.Flags().BoolVarP(&c.flags.realTimeNAV, "realTimeNAV", "r", true, "return real time balance")
+	cmd.Flags().BoolVarP(&c.flags.realTimeBalance, "realtime-balance", "r", true, "return real time balance")
 	return cmd
 }
 
 func (c *CommandAccountsBalances) GetAccountBalances(accountKeyId string) error {
-	response, err := c.Resources.Client.GetAccountBalances(accountKeyId, c.flags.realTimeNAV)
+	response, err := c.Resources.Client.GetAccountBalances(accountKeyId, c.flags.realTimeBalance)
 	if err != nil {
 		return err
 	}

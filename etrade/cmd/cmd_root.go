@@ -16,22 +16,22 @@ func (c *RootCommand) Command() *cobra.Command {
 		Long:  "E*TRADE Command Line Interface",
 	}
 	// Add Global Flags
-	cmd.PersistentFlags().StringVar(&c.globalFlags.customerId, "customerId", "", "customer identifier")
+	cmd.PersistentFlags().StringVar(&c.globalFlags.customerId, "customer-id", "", "customer identifier")
 	cmd.PersistentFlags().BoolVar(&c.globalFlags.debug, "debug", false, "debug output")
 	cmd.PersistentFlags().StringVar(
-		&c.globalFlags.outputFileName, "outputFile", "", "write output to specified file instead of stdout",
+		&c.globalFlags.outputFileName, "output-file", "", "write output to specified file instead of stdout",
 	)
 
 	// Initialize Global Enum Flag Values
 	c.globalFlags.outputFormat = *newEnumFlagValue(outputFormatMap, OutputFormatText)
 
 	// Add Global Enum Flags
-	cmd.Flags().VarP(
-		&c.globalFlags.outputFormat, "outputFormat", "v",
+	cmd.Flags().Var(
+		&c.globalFlags.outputFormat, "format",
 		fmt.Sprintf("output format (%s)", c.globalFlags.outputFormat.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"outputFormat",
+		"format",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.globalFlags.outputFormat.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},

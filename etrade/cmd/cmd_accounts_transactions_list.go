@@ -42,8 +42,8 @@ func (c *CommandAccountsTransactionsList) Command() *cobra.Command {
 			return c.ListTransactions(args[0], startDate, endDate)
 		},
 	}
-	cmd.Flags().StringVarP(&c.flags.startDate, "startDate", "s", "", "start date (MMDDYYYY)")
-	cmd.Flags().StringVarP(&c.flags.endDate, "endDate", "e", "", "end date (MMDDYYYY)")
+	cmd.Flags().StringVarP(&c.flags.startDate, "start-date", "s", "", "start date (MMDDYYYY)")
+	cmd.Flags().StringVarP(&c.flags.endDate, "end-date", "e", "", "end date (MMDDYYYY)")
 	return cmd
 }
 

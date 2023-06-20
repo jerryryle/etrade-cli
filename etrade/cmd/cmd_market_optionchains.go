@@ -32,13 +32,13 @@ func (c *CommandMarketOptionchains) Command() *cobra.Command {
 	}
 
 	// Add Flags
-	cmd.Flags().IntVarP(&c.flags.expiryYear, "expiryYear", "y", -1, "expiration year")
-	cmd.Flags().IntVarP(&c.flags.expiryMonth, "expiryMonth", "m", -1, "expiration month")
-	cmd.Flags().IntVarP(&c.flags.expiryDay, "expiryDay", "d", -1, "expiration day")
-	cmd.Flags().IntVarP(&c.flags.strikePriceNear, "strikePriceNear", "s", -1, "strike price near")
-	cmd.Flags().IntVarP(&c.flags.noOfStrikes, "noOfStrikes", "n", -1, "number of strikes")
-	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "includeWeekly", "w", false, "include weekly options")
-	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "skipAdjusted", "a", true, "skip adjusted")
+	cmd.Flags().IntVarP(&c.flags.expiryYear, "expiry-year", "y", -1, "expiration year")
+	cmd.Flags().IntVarP(&c.flags.expiryMonth, "expiry-month", "m", -1, "expiration month")
+	cmd.Flags().IntVarP(&c.flags.expiryDay, "expiry-day", "d", -1, "expiration day")
+	cmd.Flags().IntVarP(&c.flags.strikePriceNear, "strike-price-near", "s", -1, "strike price near")
+	cmd.Flags().IntVarP(&c.flags.noOfStrikes, "strikes", "n", -1, "number of strikes")
+	cmd.Flags().BoolVarP(&c.flags.includeWeekly, "include-weekly", "w", false, "include weekly options")
+	cmd.Flags().BoolVarP(&c.flags.skipAdjusted, "skip-adjusted", "a", true, "skip adjusted")
 
 	// Initialize Enum Flag Values
 	c.flags.optionCategory = *newEnumFlagValue(optionCategoryMap, constants.OptionCategoryNil)
@@ -47,33 +47,33 @@ func (c *CommandMarketOptionchains) Command() *cobra.Command {
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
-		&c.flags.optionCategory, "optionCategory", "c",
+		&c.flags.optionCategory, "category", "c",
 		fmt.Sprintf("option category (%s)", c.flags.optionCategory.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"optionCategory",
+		"category",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.optionCategory.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.chainType, "chainType", "t",
+		&c.flags.chainType, "chain-type", "t",
 		fmt.Sprintf("chain type (%s)", c.flags.chainType.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"chainType",
+		"chain-type",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.chainType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.priceType, "priceType", "p",
+		&c.flags.priceType, "price-type", "p",
 		fmt.Sprintf("price type (%s)", c.flags.priceType.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"priceType",
+		"price-type",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.priceType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},
@@ -106,10 +106,10 @@ var optionCategoryMap = map[string]enumValueWithHelp[constants.OptionCategory]{
 var chainTypeMap = map[string]enumValueWithHelp[constants.OptionChainType]{
 	"call":    {constants.OptionChainTypeCall, "only call options"},
 	"put":     {constants.OptionChainTypePut, "only put options"},
-	"callput": {constants.OptionChainTypeCallPut, "call and put options"},
+	"callPut": {constants.OptionChainTypeCallPut, "call and put options"},
 }
 
 var priceTypeMap = map[string]enumValueWithHelp[constants.OptionPriceType]{
-	"extendedhours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
+	"extendedHours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
 	"all":           {constants.OptionPriceTypeAll, "all price types"},
 }

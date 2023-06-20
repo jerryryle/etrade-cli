@@ -32,8 +32,8 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	}
 
 	// Add Flags
-	cmd.Flags().BoolVarP(&c.flags.totalsRequired, "totalsRequired", "t", true, "include totals in results")
-	cmd.Flags().BoolVarP(&c.flags.lotsRequired, "lotsRequired", "l", false, "include lots in results")
+	cmd.Flags().BoolVarP(&c.flags.totalsRequired, "totals-required", "t", true, "include totals in results")
+	cmd.Flags().BoolVarP(&c.flags.lotsRequired, "lots-required", "l", false, "include lots in results")
 
 	// Initialize Enum Flag Values
 	c.flags.portfolioView = *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewNil)
@@ -43,44 +43,44 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "portfolioView", "v",
+		&c.flags.portfolioView, "portfolio-view", "v",
 		fmt.Sprintf("portfolio view (%s)", c.flags.portfolioView.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"portfolioView",
+		"portfolio-view",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.portfolioView.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "sortBy", "s",
+		&c.flags.portfolioView, "sort-by", "s",
 		fmt.Sprintf("sort results by (%s)", c.flags.sortBy.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"sortBy",
+		"sort-by",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.sortBy.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "sortOrder", "o",
+		&c.flags.portfolioView, "sort-order", "o",
 		fmt.Sprintf("sort order (%s)", c.flags.sortOrder.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"sortOrder",
+		"sort-order",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.sortOrder.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "marketSession", "m",
+		&c.flags.portfolioView, "market-session", "m",
 		fmt.Sprintf("market session (%s)", c.flags.marketSession.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
-		"marketSession",
+		"market-session",
 		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return c.flags.marketSession.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
 		},

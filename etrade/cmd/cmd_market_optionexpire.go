@@ -26,7 +26,7 @@ func (c *CommandMarketOptionexpire) Command() *cobra.Command {
 		},
 	}
 	cmd.Flags().VarP(
-		&c.flags.expiryType, "expiryType", "e", fmt.Sprintf(
+		&c.flags.expiryType, "expiry-type", "e", fmt.Sprintf(
 			"expiry type (%s, %s, %s, %s, %s, %s, %s, %s)", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
 			expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
 		),

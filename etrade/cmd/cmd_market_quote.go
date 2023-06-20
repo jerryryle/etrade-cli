@@ -26,11 +26,11 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 		},
 	}
 	cmd.Flags().BoolVarP(
-		&c.flags.requireEarningsDate, "requireEarningsDate", "r", true, "include next earning date in output",
+		&c.flags.requireEarningsDate, "require-earnings-date", "r", true, "include next earning date in output",
 	)
 	cmd.Flags().BoolVarP(
-		&c.flags.skipMiniOptionsCheck, "skipMiniOptionsCheck", "s", false,
-		"skip checking whether the symbol has mini options",
+		&c.flags.skipMiniOptionsCheck, "skip-mini-check", "s", false,
+		"skip the check for whether the symbol has mini options",
 	)
 
 	return cmd

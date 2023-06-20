@@ -42,7 +42,7 @@ func (c *CommandCfgCreate) CreateConfig() error {
 				CustomerConsumerKey:    "consumer key",
 				CustomerConsumerSecret: "consumer secret",
 			},
-			"CustomerId2": {
+			"CustomerId2 - a short customer ID that you'll specify with --customer-id to use this configuration": {
 				CustomerName:           "A human-readable customer name of your choosing. For display purposes.",
 				CustomerProduction:     true,
 				CustomerConsumerKey:    "The consumer key you got from ETrade. Change the above boolean to reflect whether this is a sandbox (false) or production (true) key",
