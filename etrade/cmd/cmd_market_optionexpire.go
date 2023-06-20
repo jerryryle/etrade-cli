@@ -7,7 +7,7 @@ import (
 )
 
 type marketOptionExpireFlags struct {
-	expiryType expiryType
+	expiryType enumFlagValue[constants.OptionExpiryType]
 }
 
 type CommandMarketOptionexpire struct {
@@ -25,17 +25,27 @@ func (c *CommandMarketOptionexpire) Command() *cobra.Command {
 			return c.GetOptionExpireDates(args[0])
 		},
 	}
+
+	// Initialize Enum Flag Values
+	c.flags.expiryType = *newEnumFlagValue(expiryTypeMap, constants.OptionExpiryTypeNil)
+
+	// Add Enum Flags
 	cmd.Flags().VarP(
-		&c.flags.expiryType, "expiry-type", "e", fmt.Sprintf(
-			"expiry type (%s, %s, %s, %s, %s, %s, %s, %s)", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
-			expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
-		),
+		&c.flags.expiryType, "expiry-type", "e",
+		fmt.Sprintf("expiry type (%s)", c.flags.expiryType.JoinAllowedValues(", ")),
 	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"expiry-type",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.expiryType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
 	return cmd
 }
 
 func (c *CommandMarketOptionexpire) GetOptionExpireDates(symbol string) error {
-	response, err := c.Resources.Client.GetOptionExpireDates(symbol, c.flags.expiryType.ExpiryType())
+	response, err := c.Resources.Client.GetOptionExpireDates(symbol, c.flags.expiryType.Value())
 	if err != nil {
 		return err
 	}
@@ -43,58 +53,13 @@ func (c *CommandMarketOptionexpire) GetOptionExpireDates(symbol string) error {
 	return nil
 }
 
-type expiryType string
-
-const (
-	expiryTypeUnspecified expiryType = "unspecified"
-	expiryTypeDaily                  = "daily"
-	expiryTypeWeekly                 = "weekly"
-	expiryTypeMonthly                = "monthly"
-	expiryTypeQuarterly              = "quarterly"
-	expiryTypeVix                    = "vix"
-	expiryTypeAll                    = "all"
-	expiryTypeMonthEnd               = "monthEnd"
-)
-
-func (e *expiryType) String() string {
-	return string(*e)
-}
-
-func (e *expiryType) Set(v string) error {
-	switch expiryType(v) {
-	case expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly, expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd:
-		*e = expiryType(v)
-		return nil
-	default:
-		return fmt.Errorf(
-			"must be %s, %s, %s, %s, %s, %s, %s, or %s", expiryTypeUnspecified, expiryTypeDaily, expiryTypeWeekly,
-			expiryTypeMonthly, expiryTypeQuarterly, expiryTypeVix, expiryTypeAll, expiryTypeMonthEnd,
-		)
-	}
-}
-
-func (e *expiryType) Type() string {
-	return "expiryType"
-}
-
-func (e *expiryType) ExpiryType() constants.OptionExpiryType {
-	switch *e {
-	case expiryTypeUnspecified:
-		return constants.OptionExpiryTypeUnspecified
-	case expiryTypeDaily:
-		return constants.OptionExpiryTypeDaily
-	case expiryTypeWeekly:
-		return constants.OptionExpiryTypeWeekly
-	case expiryTypeMonthly:
-		return constants.OptionExpiryTypeMonthly
-	case expiryTypeQuarterly:
-		return constants.OptionExpiryTypeQuarterly
-	case expiryTypeVix:
-		return constants.OptionExpiryTypeVix
-	case expiryTypeAll:
-		return constants.OptionExpiryTypeAll
-	case expiryTypeMonthEnd:
-		return constants.OptionExpiryTypeMonthEnd
-	}
-	return constants.OptionExpiryTypeAll
+var expiryTypeMap = map[string]enumValueWithHelp[constants.OptionExpiryType]{
+	"unspecified": {constants.OptionExpiryTypeUnspecified, "unspecified expiry type"},
+	"daily":       {constants.OptionExpiryTypeDaily, "daily expiry type"},
+	"weekly":      {constants.OptionExpiryTypeWeekly, "weekly expiry type"},
+	"monthly":     {constants.OptionExpiryTypeMonthly, "monthly expiry type"},
+	"quarterly":   {constants.OptionExpiryTypeQuarterly, "quarterly expiry type"},
+	"vix":         {constants.OptionExpiryTypeVix, "VIX expiry type"},
+	"all":         {constants.OptionExpiryTypeAll, "all expiry types"},
+	"monthEnd":    {constants.OptionExpiryTypeMonthEnd, "month-end expiry type"},
 }
