@@ -42,10 +42,10 @@ const (
 	positionListTotalsMapResponsePath = "portfolioResponse.totals"
 
 	// positionListPositionsSliceResponsePath is the path to a slice of positions.
-	positionListPositionsSliceResponsePath = "portfolioResponse.accountPortfolio.position"
+	positionListPositionsSliceResponsePath = "portfolioResponse.accountPortfolio[0].position"
 
 	// positionListNextPageStringPath is the path to the next page number string
-	positionListNextPageStringPath = "portfolioResponse.accountPortfolio.nextPageNo"
+	positionListNextPageStringPath = "portfolioResponse.accountPortfolio[0].nextPageNo"
 )
 
 func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePositionList, error) {

@@ -23,17 +23,19 @@ func TestCreateETradePositionList(t *testing.T) {
     "Totals": {
       "bogusTotal": 9999
     },
-    "AccountPortfolio": {
-      "nextPageNo": "2",
-      "Position": [
-        {
-          "positionId": 1234
-        },
-        {
-          "positionId": 5678
-        }
-      ]
-    }
+    "AccountPortfolio": [
+      {
+        "nextPageNo": "2",
+        "Position": [
+          {
+            "positionId": 1234
+          },
+          {
+            "positionId": 5678
+          }
+        ]
+      }
+    ]
   }
 }`,
 			expectErr: false,
@@ -63,10 +65,12 @@ func TestCreateETradePositionList(t *testing.T) {
 			testJson: `
 {
   "PortfolioResponse": {
-    "AccountPortfolio": {
-      "Position": [
-      ]
-    }
+    "AccountPortfolio": [
+      {
+        "Position": [
+        ]
+      }
+    ]
   }
 }`,
 			expectErr: false,
@@ -78,11 +82,14 @@ func TestCreateETradePositionList(t *testing.T) {
 		},
 		{
 			name: "CreateETradePositionList Fails With Invalid Response",
-			// The "Position" key is missing in the following string
+			// The "AccountPortfolio" key holds a map value instead of a slice
+			// value in the following string
 			testJson: `
 {
   "PortfolioResponse": {
     "AccountPortfolio": {
+      "Position": [
+      ]
     }
   }
 }`,
@@ -243,14 +250,16 @@ func TestETradePositionList_AddPage(t *testing.T) {
     "Totals": {
       "bogusTotal": 9999
     },
-    "AccountPortfolio": {
-      "nextPageNo": "2",
-      "Position": [
-        {
-          "positionId": 1234
-        }
-      ]
-    }
+    "AccountPortfolio": [
+      {
+        "nextPageNo": "2",
+        "Position": [
+          {
+            "positionId": 1234
+          }
+        ]
+      }
+    ]
   }
 }`,
 					expectErr: false,
@@ -276,13 +285,15 @@ func TestETradePositionList_AddPage(t *testing.T) {
     "Totals": {
       "bogusTotal": 8888
     },
-    "AccountPortfolio": {
-      "Position": [
-        {
-          "positionId": 5678
-        }
-      ]
-    }
+    "AccountPortfolio": [
+      {
+        "Position": [
+          {
+            "positionId": 5678
+          }
+        ]
+      }
+    ]
   }
 }`,
 					expectErr: false,
