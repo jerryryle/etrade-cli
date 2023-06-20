@@ -43,6 +43,6 @@ func (c *CommandMarketQuote) GetQuotes(symbols []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(response))
+	_, _ = fmt.Fprintf(c.Resources.OFile, string(response))
 	return nil
 }

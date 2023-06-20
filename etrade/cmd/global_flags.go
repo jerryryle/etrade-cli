@@ -1,6 +1,7 @@
 package cmd
 
 type GlobalFlags struct {
-	customerId string
-	debug      bool
+	customerId     string
+	debug          bool
+	outputFileName string
 }

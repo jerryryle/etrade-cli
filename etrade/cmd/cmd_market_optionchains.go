@@ -83,7 +83,7 @@ func (c *CommandMarketOptionchains) Command() *cobra.Command {
 }
 
 func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
-	result, err := c.Resources.Client.GetOptionChains(
+	response, err := c.Resources.Client.GetOptionChains(
 		symbol,
 		c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,
 		c.flags.strikePriceNear, c.flags.noOfStrikes, c.flags.includeWeekly, c.flags.skipAdjusted,
@@ -92,7 +92,8 @@ func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%#v\n", result)
+	_, _ = fmt.Fprintf(c.Resources.OFile, string(response))
+
 	return nil
 }
 

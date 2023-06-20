@@ -15,12 +15,17 @@ func (c *CommandAccounts) Command() *cobra.Command {
 		Short: "Account actions",
 		Long:  "Perform actions on accounts",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			resources, err := NewCommandResources(c.GlobalFlags.customerId, c.GlobalFlags.debug)
+			resources, err := NewCommandResources(
+				c.GlobalFlags.customerId, c.GlobalFlags.debug, c.GlobalFlags.outputFileName,
+			)
 			if err != nil {
 				return err
 			}
 			c.resources = *resources
 			return nil
+		},
+		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
+			return CleanupCommandResources(&c.resources)
 		},
 	}
 	// Add Subcommands

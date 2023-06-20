@@ -17,6 +17,9 @@ func (c *RootCommand) Command() *cobra.Command {
 	// Add Global Flags
 	cmd.PersistentFlags().StringVar(&c.globalFlags.customerId, "customerId", "", "customer identifier")
 	cmd.PersistentFlags().BoolVar(&c.globalFlags.debug, "debug", false, "debug output")
+	cmd.PersistentFlags().StringVar(
+		&c.globalFlags.outputFileName, "outputFile", "", "write output to specified file instead of stdout",
+	)
 
 	// Add Subcommands
 	cmd.AddCommand((&CommandAccounts{GlobalFlags: &c.globalFlags}).Command())

@@ -15,12 +15,17 @@ func (c *CommandAlerts) Command() *cobra.Command {
 		Short: "Alert actions",
 		Long:  "Perform actions on alerts",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			resources, err := NewCommandResources(c.GlobalFlags.customerId, c.GlobalFlags.debug)
+			resources, err := NewCommandResources(
+				c.GlobalFlags.customerId, c.GlobalFlags.debug, c.GlobalFlags.outputFileName,
+			)
 			if err != nil {
 				return err
 			}
 			c.resources = *resources
 			return nil
+		},
+		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
+			return CleanupCommandResources(&c.resources)
 		},
 	}
 	// Add Subcommands

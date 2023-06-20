@@ -57,6 +57,6 @@ func (c *CommandAccountsTransactionsList) ListTransactions(
 	if err != nil {
 		return err
 	}
-	fmt.Println(string(response))
+	_, _ = fmt.Fprintln(c.Resources.OFile, string(response))
 	return nil
 }

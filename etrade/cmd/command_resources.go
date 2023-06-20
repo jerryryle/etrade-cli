@@ -11,9 +11,12 @@ import (
 type CommandResources struct {
 	Logger *slog.Logger
 	Client client.ETradeClient
+	OFile  *os.File
+
+	closeOFile bool
 }
 
-func NewCommandResources(customerId string, debug bool) (*CommandResources, error) {
+func NewCommandResources(customerId string, debug bool, outputFile string) (*CommandResources, error) {
 	// Set the default log level, based on the verbose flag.
 	var logLevel = slog.LevelError
 	if debug {
@@ -49,6 +52,17 @@ func NewCommandResources(customerId string, debug bool) (*CommandResources, erro
 	}
 	cacheFilePath := getFileCachePathForCustomer(userHomeFolder, customerConfig.CustomerConsumerKey)
 
+	// Set the command output destination
+	oDest := os.Stdout
+	closeOFile := false
+	if outputFile != "" {
+		oDest, err = os.Create(outputFile)
+		if err != nil {
+			return nil, err
+		}
+		closeOFile = true
+	}
+
 	// Get an ETrade client that's authorized for the customer
 	etradeClient, err := getClientWithCredentialCache(
 		customerConfig.CustomerProduction,
@@ -62,7 +76,19 @@ func NewCommandResources(customerId string, debug bool) (*CommandResources, erro
 	}
 
 	return &CommandResources{
-		Logger: logger,
-		Client: etradeClient,
+		Logger:     logger,
+		Client:     etradeClient,
+		OFile:      oDest,
+		closeOFile: closeOFile,
 	}, nil
+}
+
+func CleanupCommandResources(resources *CommandResources) error {
+	if resources.closeOFile {
+		err := resources.OFile.Close()
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
