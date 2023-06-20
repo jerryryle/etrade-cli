@@ -149,6 +149,11 @@ func (c *eTradeClient) ViewPortfolio(
 	if accountIdKey == "" {
 		return nil, errors.New("accountIdKey not provided")
 	}
+	if count > constants.PortfolioMaxCount {
+		return nil, fmt.Errorf(
+			"count of %d requested, which exceeds the maximum of %d", count, constants.PortfolioMaxCount,
+		)
+	}
 	queryValues := url.Values{}
 	if count >= 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))

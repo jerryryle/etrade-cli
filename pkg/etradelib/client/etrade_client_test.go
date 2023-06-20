@@ -147,6 +147,17 @@ func TestETradeClient(t *testing.T) {
 			expectErr: true,
 		},
 		{
+			name: "View Portfolio Fails If Count Is Too Big",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ViewPortfolio(
+					"1234", constants.PortfolioMaxCount+1, constants.PortfolioSortByNil, constants.SortOrderNil, -1,
+					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
+				)
+			},
+			expectUrl: "",
+			expectErr: true,
+		},
+		{
 			name: "List Alerts With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListAlerts(

@@ -1,5 +1,12 @@
 package constants
 
+// PortfolioMaxCount is the maximum count that can be included in a View
+// Portfolio request. Note that ETrade does not document this value, so I
+// determined it empirically by increasing the count until I got a
+// 500 Internal Server Error. I do not have a portfolio with this many
+// positions in it, so I'm not sure if there's a practical lower limit.
+const PortfolioMaxCount = 65535
+
 // PortfolioSortBy specifies the column by which the portfolio results will be sorted.
 // See the constants below for semantics.
 type PortfolioSortBy int
