@@ -62,8 +62,8 @@ func TestCreateETradeAccount(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectValue, actualValue)
 				}
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}

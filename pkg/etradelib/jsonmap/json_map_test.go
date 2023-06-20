@@ -92,8 +92,8 @@ func TestJsonMap_New(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectMap, testResultMap)
 				}
+				assert.Equal(t, tt.expectMap, testResultMap)
 			},
 		)
 	}

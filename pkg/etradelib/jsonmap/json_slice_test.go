@@ -92,8 +92,8 @@ func TestJsonSlice_New(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectSlice, testResultSlice)
 				}
+				assert.Equal(t, tt.expectSlice, testResultSlice)
 			},
 		)
 	}

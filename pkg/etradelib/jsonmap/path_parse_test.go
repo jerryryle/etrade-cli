@@ -83,8 +83,8 @@ func TestPathParse(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectValue, testPathElements)
 				}
+				assert.Equal(t, tt.expectValue, testPathElements)
 			},
 		)
 	}

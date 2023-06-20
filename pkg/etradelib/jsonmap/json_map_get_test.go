@@ -41,8 +41,8 @@ func TestJsonMap_GetValue(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectValue, testResultValue)
 				}
+				assert.Equal(t, tt.expectValue, testResultValue)
 			},
 		)
 	}
@@ -137,7 +137,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": "1234"}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetInt Cannot Get Float As Int",
@@ -146,7 +146,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": 1234.5}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetInt Cannot Get Bool As Int",
@@ -155,7 +155,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": true}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetInt Cannot Get Null As Int",
@@ -164,7 +164,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": null}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetInt Cannot Get Map As Int",
@@ -173,7 +173,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": {"foo": "bar"}}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetInt Cannot Get Slice As Int",
@@ -182,7 +182,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": ["foo", "bar"]}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetFloat Gets Float As Float",
@@ -209,7 +209,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": "1234.5678"}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: float64(0),
 		},
 		{
 			name: "GetFloat Cannot Get Bool As Float",
@@ -218,7 +218,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": true}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: float64(0),
 		},
 		{
 			name: "GetFloat Cannot Get Null As Float",
@@ -227,7 +227,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": null}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: float64(0),
 		},
 		{
 			name: "GetFloat Cannot Get Map As Float",
@@ -236,7 +236,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": {"foo": "bar"}}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: float64(0),
 		},
 		{
 			name: "GetFloat Cannot Get Slice As Float",
@@ -245,7 +245,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": ["foo", "bar"]}`,
 			expectErr:   true,
-			expectValue: 0,
+			expectValue: float64(0),
 		},
 		{
 			name: "GetBool Gets Bool As Bool",
@@ -335,7 +335,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": "StringValue"}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonMap(nil),
 		},
 		{
 			name: "GetMap Cannot Get Int As JsonMap",
@@ -344,7 +344,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": 1234}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonMap(nil),
 		},
 		{
 			name: "GetMap Cannot Get Float As JsonMap",
@@ -353,7 +353,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": 1234.5678}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonMap(nil),
 		},
 		{
 			name: "GetMap Cannot Get Bool As JsonMap",
@@ -362,7 +362,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": true}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonMap(nil),
 		},
 		{
 			name: "GetMap Cannot Get Slice As JsonMap",
@@ -371,7 +371,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": ["foo", "bar"]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonMap(nil),
 		},
 		{
 			name: "GetSlice Gets Slice As Slice",
@@ -398,7 +398,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": "StringValue"}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetSlice Cannot Get Int As Slice",
@@ -407,7 +407,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": 1234}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetSlice Cannot Get Float As Slice",
@@ -416,7 +416,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": 1234.5678}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetSlice Cannot Get Bool As Slice",
@@ -425,7 +425,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": true}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetSlice Cannot Get Map As Slice",
@@ -434,7 +434,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": {"foo": "bar"}}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetStringSlice Gets Slice As String Slice",
@@ -461,7 +461,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": ["foo", 1]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: []string(nil),
 		},
 		{
 			name: "GetIntSlice Gets Slice As Int Slice",
@@ -488,7 +488,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": [1, "foo"]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: []int64(nil),
 		},
 		{
 			name: "GetFloatSlice Gets Slice As Float Slice",
@@ -515,7 +515,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": [1.1, "foo"]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: []float64(nil),
 		},
 		{
 			name: "GetBoolSlice Gets Slice As Bool Slice",
@@ -542,7 +542,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": [true, "foo"]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: []bool(nil),
 		},
 		{
 			name: "GetMapSlice Gets Slice As Map Slice",
@@ -569,7 +569,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": [{"A": 1}, "foo"]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: []JsonMap(nil),
 		},
 		{
 			name: "GetSliceSlice Gets Slice As Slice Slice",
@@ -596,7 +596,7 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": [[1], "foo"]}`,
 			expectErr:   true,
-			expectValue: nil,
+			expectValue: []JsonSlice(nil),
 		},
 	}
 
@@ -611,8 +611,8 @@ func TestJsonMap_GetType(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectValue, testResultValue)
 				}
+				assert.Equal(t, tt.expectValue, testResultValue)
 			},
 		)
 	}
@@ -712,8 +712,8 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
-					assert.Equal(t, tt.expectValue, testResultValue)
 				}
+				assert.Equal(t, tt.expectValue, testResultValue)
 			},
 		)
 	}
