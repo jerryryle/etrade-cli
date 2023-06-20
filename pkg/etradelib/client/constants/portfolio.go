@@ -42,9 +42,9 @@ const (
 	// PortfolioSortByMarketValue sorts results by the market value
 	PortfolioSortByMarketValue
 
-	// PortfolioSortByBi sorts results by the bid
+	// PortfolioSortByBid sorts results by the bid
 	// TODO: Confirm whether this is supposed to be "Bid" (ETrade documentation says "bi")
-	PortfolioSortByBi
+	PortfolioSortByBid
 
 	// PortfolioSortByAsk sorts results by the ask
 	PortfolioSortByAsk
@@ -241,8 +241,8 @@ const (
 	// PortfolioSortByOpenInterest sorts results by the open interest
 	PortfolioSortByOpenInterest
 
-	// PortfolioSortByInstrinicValue sorts results by the intrinsic value
-	PortfolioSortByInstrinicValue
+	// PortfolioSortByIntrinsicValue sorts results by the intrinsic value
+	PortfolioSortByIntrinsicValue
 
 	// PortfolioSortByRho sorts results by the rho
 	PortfolioSortByRho
@@ -305,7 +305,7 @@ var portfolioSortByToString = map[PortfolioSortBy]string{
 	PortfolioSortByTotalGain:           "TOTAL_GAIN",
 	PortfolioSortByTotalGainPct:        "TOTAL_GAIN_PCT",
 	PortfolioSortByMarketValue:         "MARKET_VALUE",
-	PortfolioSortByBi:                  "BI", // TODO: Confirm whether this is supposed to be "BID" (ETrade documentation says "BI")
+	PortfolioSortByBid:                 "BI", // TODO: Confirm whether this is supposed to be "BID" (ETrade documentation says "BI")
 	PortfolioSortByAsk:                 "ASK",
 	PortfolioSortByPriceChange:         "PRICE_CHANGE",
 	PortfolioSortByPriceChangePct:      "PRICE_CHANGE_PCT",
@@ -371,7 +371,7 @@ var portfolioSortByToString = map[PortfolioSortBy]string{
 	PortfolioSortByAdjNonadjFlag:       "ADJ_NONADJ_FLAG",
 	PortfolioSortByDaysExpiration:      "DAYS_EXPIRATION",
 	PortfolioSortByOpenInterest:        "OPEN_INTEREST",
-	PortfolioSortByInstrinicValue:      "INSTRINIC_VALUE",
+	PortfolioSortByIntrinsicValue:      "INSTRINIC_VALUE", //TODO: Confirm whether this is supposed to be "INTRINSIC" (ETrade documentation says "INSTRINIC")
 	PortfolioSortByRho:                 "RHO",
 	PortfolioSortByTypeCode:            "TYPE_CODE",
 	PortfolioSortByDisplaySymbol:       "DISPLAY_SYMBOL",

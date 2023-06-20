@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -45,6 +46,9 @@ func newEnumFlagValue[T comparable](
 			defaultStringValue = k
 		}
 	}
+
+	sort.Strings(allowedValues)
+	sort.Strings(allowedValuesWithHelp)
 
 	return &enumFlagValue[T]{
 		StringValue:           defaultStringValue,
