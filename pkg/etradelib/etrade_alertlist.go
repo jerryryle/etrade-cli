@@ -33,8 +33,8 @@ func CreateETradeAlertList(alertListResponseMap jsonmap.JsonMap) (ETradeAlertLis
 		return nil, err
 	}
 	allAlerts := make([]ETradeAlert, 0, len(alertsSlice))
-	for _, alertInfoMap := range alertsSlice {
-		alert, err := CreateETradeAlert(alertInfoMap)
+	for _, alertJsonMap := range alertsSlice {
+		alert, err := CreateETradeAlert(alertJsonMap)
 		if err != nil {
 			return nil, err
 		}

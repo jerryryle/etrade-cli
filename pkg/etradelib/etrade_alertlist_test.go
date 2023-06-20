@@ -35,13 +35,13 @@ func TestCreateETradeAlertList(t *testing.T) {
 				[]ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"id": json.Number("1234"),
 						},
 					},
 					&eTradeAlert{
 						id: 5678,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"id": json.Number("5678"),
 						},
 					},
@@ -108,13 +108,13 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 				[]ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"id": json.Number("1234"),
 						},
 					},
 					&eTradeAlert{
 						id: 5678,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"id": json.Number("5678"),
 						},
 					},
@@ -123,13 +123,13 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 			expectValue: []ETradeAlert{
 				&eTradeAlert{
 					id: 1234,
-					infoMap: jsonmap.JsonMap{
+					jsonMap: jsonmap.JsonMap{
 						"id": json.Number("1234"),
 					},
 				},
 				&eTradeAlert{
 					id: 5678,
-					infoMap: jsonmap.JsonMap{
+					jsonMap: jsonmap.JsonMap{
 						"id": json.Number("5678"),
 					},
 				},
@@ -168,7 +168,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 				[]ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"id": json.Number("1234"),
 						},
 					},
@@ -177,7 +177,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 			testAlertID: 1234,
 			expectValue: &eTradeAlert{
 				id: 1234,
-				infoMap: jsonmap.JsonMap{
+				jsonMap: jsonmap.JsonMap{
 					"id": json.Number("1234"),
 				},
 			},
@@ -188,7 +188,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 				[]ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"id": json.Number("1234"),
 						},
 					},

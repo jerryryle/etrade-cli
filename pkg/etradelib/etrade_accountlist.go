@@ -35,8 +35,8 @@ func CreateETradeAccountList(accountListResponseMap jsonmap.JsonMap) (ETradeAcco
 		return nil, err
 	}
 	allAccounts := make([]ETradeAccount, 0, len(accountsSlice))
-	for _, accountInfoMap := range accountsSlice {
-		account, err := CreateETradeAccount(accountInfoMap)
+	for _, accountJsonMap := range accountsSlice {
+		account, err := CreateETradeAccount(accountJsonMap)
 		if err != nil {
 			return nil, err
 		}

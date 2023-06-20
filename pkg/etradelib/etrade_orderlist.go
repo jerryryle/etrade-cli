@@ -33,8 +33,8 @@ func CreateETradeOrderList(orderListResponseMap jsonmap.JsonMap) (ETradeOrderLis
 		return nil, err
 	}
 	allOrders := make([]ETradeOrder, 0, len(ordersSlice))
-	for _, orderInfoMap := range ordersSlice {
-		order, err := CreateETradeOrder(orderInfoMap)
+	for _, orderJsonMap := range ordersSlice {
+		order, err := CreateETradeOrder(orderJsonMap)
 		if err != nil {
 			return nil, err
 		}

@@ -24,7 +24,7 @@ func TestCreateETradeOrder(t *testing.T) {
 			expectErr: false,
 			expectValue: &eTradeOrder{
 				id: 1234,
-				infoMap: jsonmap.JsonMap{
+				jsonMap: jsonmap.JsonMap{
 					"orderId": json.Number("1234"),
 				},
 			},
@@ -61,7 +61,7 @@ func TestCreateETradeOrder(t *testing.T) {
 func TestETradeOrder_GetId(t *testing.T) {
 	testOrder := &eTradeOrder{
 		id: 1234,
-		infoMap: jsonmap.JsonMap{
+		jsonMap: jsonmap.JsonMap{
 			"orderId": json.Number("1234"),
 		},
 	}
@@ -71,10 +71,10 @@ func TestETradeOrder_GetId(t *testing.T) {
 	assert.Equal(t, expectedValue, actualValue)
 }
 
-func TestETradeOrder_GetInfoMap(t *testing.T) {
+func TestETradeOrder_GetJsonMap(t *testing.T) {
 	testOrder := &eTradeOrder{
 		id: 1234,
-		infoMap: jsonmap.JsonMap{
+		jsonMap: jsonmap.JsonMap{
 			"orderId": json.Number("1234"),
 		},
 	}
@@ -82,6 +82,6 @@ func TestETradeOrder_GetInfoMap(t *testing.T) {
 		"orderId": json.Number("1234"),
 	}
 
-	actualValue := testOrder.GetInfoMap()
+	actualValue := testOrder.GetJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

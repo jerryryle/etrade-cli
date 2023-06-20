@@ -7,13 +7,13 @@ import (
 type ETradeAccount interface {
 	GetId() string
 	GetIdKey() string
-	GetInfoMap() jsonmap.JsonMap
+	GetJsonMap() jsonmap.JsonMap
 }
 
 type eTradeAccount struct {
 	id      string
 	idKey   string
-	infoMap jsonmap.JsonMap
+	jsonMap jsonmap.JsonMap
 }
 
 const (
@@ -31,12 +31,12 @@ const (
 	accountIdKeyResponseKey = "accountIdKey"
 )
 
-func CreateETradeAccount(accountResponseMap jsonmap.JsonMap) (ETradeAccount, error) {
-	accountId, err := accountResponseMap.GetString(accountIdResponseKey)
+func CreateETradeAccount(accountJsonMap jsonmap.JsonMap) (ETradeAccount, error) {
+	accountId, err := accountJsonMap.GetString(accountIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
-	accountIdKey, err := accountResponseMap.GetString(accountIdKeyResponseKey)
+	accountIdKey, err := accountJsonMap.GetString(accountIdKeyResponseKey)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func CreateETradeAccount(accountResponseMap jsonmap.JsonMap) (ETradeAccount, err
 	return &eTradeAccount{
 		id:      accountId,
 		idKey:   accountIdKey,
-		infoMap: accountResponseMap,
+		jsonMap: accountJsonMap,
 	}, nil
 }
 
@@ -56,6 +56,6 @@ func (e *eTradeAccount) GetIdKey() string {
 	return e.idKey
 }
 
-func (e *eTradeAccount) GetInfoMap() jsonmap.JsonMap {
-	return e.infoMap
+func (e *eTradeAccount) GetJsonMap() jsonmap.JsonMap {
+	return e.jsonMap
 }

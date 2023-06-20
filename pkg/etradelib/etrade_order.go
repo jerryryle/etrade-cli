@@ -4,12 +4,12 @@ import "github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 
 type ETradeOrder interface {
 	GetId() int64
-	GetInfoMap() jsonmap.JsonMap
+	GetJsonMap() jsonmap.JsonMap
 }
 
 type eTradeOrder struct {
 	id      int64
-	infoMap jsonmap.JsonMap
+	jsonMap jsonmap.JsonMap
 }
 
 const (
@@ -23,15 +23,15 @@ const (
 	orderIdResponseKey = "orderId"
 )
 
-func CreateETradeOrder(orderResponseMap jsonmap.JsonMap) (ETradeOrder, error) {
-	orderId, err := orderResponseMap.GetInt(orderIdResponseKey)
+func CreateETradeOrder(orderJsonMap jsonmap.JsonMap) (ETradeOrder, error) {
+	orderId, err := orderJsonMap.GetInt(orderIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeOrder{
 		id:      orderId,
-		infoMap: orderResponseMap,
+		jsonMap: orderJsonMap,
 	}, nil
 }
 
@@ -39,6 +39,6 @@ func (e *eTradeOrder) GetId() int64 {
 	return e.id
 }
 
-func (e *eTradeOrder) GetInfoMap() jsonmap.JsonMap {
-	return e.infoMap
+func (e *eTradeOrder) GetJsonMap() jsonmap.JsonMap {
+	return e.jsonMap
 }

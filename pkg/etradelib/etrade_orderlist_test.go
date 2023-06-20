@@ -35,13 +35,13 @@ func TestCreateETradeOrderList(t *testing.T) {
 				[]ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"orderId": json.Number("1234"),
 						},
 					},
 					&eTradeOrder{
 						id: 5678,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"orderId": json.Number("5678"),
 						},
 					},
@@ -108,13 +108,13 @@ func TestETradeOrderList_GetAllOrders(t *testing.T) {
 				[]ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"orderId": json.Number("1234"),
 						},
 					},
 					&eTradeOrder{
 						id: 5678,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"orderId": json.Number("5678"),
 						},
 					},
@@ -123,13 +123,13 @@ func TestETradeOrderList_GetAllOrders(t *testing.T) {
 			expectValue: []ETradeOrder{
 				&eTradeOrder{
 					id: 1234,
-					infoMap: jsonmap.JsonMap{
+					jsonMap: jsonmap.JsonMap{
 						"orderId": json.Number("1234"),
 					},
 				},
 				&eTradeOrder{
 					id: 5678,
-					infoMap: jsonmap.JsonMap{
+					jsonMap: jsonmap.JsonMap{
 						"orderId": json.Number("5678"),
 					},
 				},
@@ -168,7 +168,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 				[]ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"orderId": json.Number("1234"),
 						},
 					},
@@ -177,7 +177,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 			testOrderID: 1234,
 			expectValue: &eTradeOrder{
 				id: 1234,
-				infoMap: jsonmap.JsonMap{
+				jsonMap: jsonmap.JsonMap{
 					"orderId": json.Number("1234"),
 				},
 			},
@@ -188,7 +188,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 				[]ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"orderId": json.Number("1234"),
 						},
 					},

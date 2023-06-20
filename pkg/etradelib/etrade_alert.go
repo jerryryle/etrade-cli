@@ -6,12 +6,12 @@ import (
 
 type ETradeAlert interface {
 	GetId() int64
-	GetInfoMap() jsonmap.JsonMap
+	GetJsonMap() jsonmap.JsonMap
 }
 
 type eTradeAlert struct {
 	id      int64
-	infoMap jsonmap.JsonMap
+	jsonMap jsonmap.JsonMap
 }
 
 const (
@@ -25,15 +25,15 @@ const (
 	alertIdResponseKey = "id"
 )
 
-func CreateETradeAlert(alertResponseMap jsonmap.JsonMap) (ETradeAlert, error) {
-	alertId, err := alertResponseMap.GetInt(alertIdResponseKey)
+func CreateETradeAlert(alertJsonMap jsonmap.JsonMap) (ETradeAlert, error) {
+	alertId, err := alertJsonMap.GetInt(alertIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeAlert{
 		id:      alertId,
-		infoMap: alertResponseMap,
+		jsonMap: alertJsonMap,
 	}, nil
 }
 
@@ -41,6 +41,6 @@ func (e *eTradeAlert) GetId() int64 {
 	return e.id
 }
 
-func (e *eTradeAlert) GetInfoMap() jsonmap.JsonMap {
-	return e.infoMap
+func (e *eTradeAlert) GetJsonMap() jsonmap.JsonMap {
+	return e.jsonMap
 }

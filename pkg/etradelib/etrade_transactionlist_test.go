@@ -35,13 +35,13 @@ func TestCreateETradeTransactionList(t *testing.T) {
 				[]ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"transactionId": json.Number("1234"),
 						},
 					},
 					&eTradeTransaction{
 						id: 5678,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"transactionId": json.Number("5678"),
 						},
 					},
@@ -108,13 +108,13 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 				[]ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"transactionId": json.Number("1234"),
 						},
 					},
 					&eTradeTransaction{
 						id: 5678,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"transactionId": json.Number("5678"),
 						},
 					},
@@ -123,13 +123,13 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 			expectValue: []ETradeTransaction{
 				&eTradeTransaction{
 					id: 1234,
-					infoMap: jsonmap.JsonMap{
+					jsonMap: jsonmap.JsonMap{
 						"transactionId": json.Number("1234"),
 					},
 				},
 				&eTradeTransaction{
 					id: 5678,
-					infoMap: jsonmap.JsonMap{
+					jsonMap: jsonmap.JsonMap{
 						"transactionId": json.Number("5678"),
 					},
 				},
@@ -168,7 +168,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 				[]ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"transactionId": json.Number("1234"),
 						},
 					},
@@ -177,7 +177,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 			testTransactionID: 1234,
 			expectValue: &eTradeTransaction{
 				id: 1234,
-				infoMap: jsonmap.JsonMap{
+				jsonMap: jsonmap.JsonMap{
 					"transactionId": json.Number("1234"),
 				},
 			},
@@ -188,7 +188,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 				[]ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
-						infoMap: jsonmap.JsonMap{
+						jsonMap: jsonmap.JsonMap{
 							"transactionId": json.Number("1234"),
 						},
 					},

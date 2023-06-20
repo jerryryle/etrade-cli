@@ -23,7 +23,7 @@ func TestCreateETradeAccount(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeAccount{
-				infoMap: jsonmap.JsonMap{
+				jsonMap: jsonmap.JsonMap{
 					"accountId":    "Account 1 ID",
 					"accountIdKey": "Account 1 ID Key",
 				},
@@ -71,7 +71,7 @@ func TestCreateETradeAccount(t *testing.T) {
 
 func TestETradeAccount_GetId(t *testing.T) {
 	testAccount := &eTradeAccount{
-		infoMap: jsonmap.JsonMap{
+		jsonMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
 		},
@@ -86,7 +86,7 @@ func TestETradeAccount_GetId(t *testing.T) {
 
 func TestETradeAccount_GetIdKey(t *testing.T) {
 	testAccount := &eTradeAccount{
-		infoMap: jsonmap.JsonMap{
+		jsonMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
 		},
@@ -99,9 +99,9 @@ func TestETradeAccount_GetIdKey(t *testing.T) {
 	assert.Equal(t, expectedValue, actualValue)
 }
 
-func TestETradeAccount_GetInfoMap(t *testing.T) {
+func TestETradeAccount_GetJsonMap(t *testing.T) {
 	testAccount := &eTradeAccount{
-		infoMap: jsonmap.JsonMap{
+		jsonMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
 		},
@@ -113,6 +113,6 @@ func TestETradeAccount_GetInfoMap(t *testing.T) {
 		"accountIdKey": "Account 1 ID Key",
 	}
 
-	actualValue := testAccount.GetInfoMap()
+	actualValue := testAccount.GetJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

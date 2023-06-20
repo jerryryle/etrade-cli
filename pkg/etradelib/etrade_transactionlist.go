@@ -33,8 +33,8 @@ func CreateETradeTransactionList(transactionListResponseMap jsonmap.JsonMap) (ET
 		return nil, err
 	}
 	allTransactions := make([]ETradeTransaction, 0, len(transactionsSlice))
-	for _, transactionInfoMap := range transactionsSlice {
-		transaction, err := CreateETradeTransaction(transactionInfoMap)
+	for _, transactionJsonMap := range transactionsSlice {
+		transaction, err := CreateETradeTransaction(transactionJsonMap)
 		if err != nil {
 			return nil, err
 		}
