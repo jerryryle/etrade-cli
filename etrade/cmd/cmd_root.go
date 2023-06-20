@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
 )
 
@@ -21,6 +22,21 @@ func (c *RootCommand) Command() *cobra.Command {
 		&c.globalFlags.outputFileName, "outputFile", "", "write output to specified file instead of stdout",
 	)
 
+	// Initialize Global Enum Flag Values
+	c.globalFlags.outputFormat = *newEnumFlagValue(outputFormatMap, OutputFormatText)
+
+	// Add Global Enum Flags
+	cmd.Flags().VarP(
+		&c.globalFlags.outputFormat, "outputFormat", "v",
+		fmt.Sprintf("output format (%s)", c.globalFlags.outputFormat.JoinAllowedValues(", ")),
+	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"outputFormat",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.globalFlags.outputFormat.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
 	// Add Subcommands
 	cmd.AddCommand((&CommandAccounts{GlobalFlags: &c.globalFlags}).Command())
 	cmd.AddCommand((&CommandAlerts{GlobalFlags: &c.globalFlags}).Command())
@@ -29,4 +45,11 @@ func (c *RootCommand) Command() *cobra.Command {
 	cmd.AddCommand((&CommandCfg{}).Command())
 
 	return cmd
+}
+
+var outputFormatMap = map[string]enumValueWithHelp[OutputFormat]{
+	"text":       {OutputFormatText, "text output"},
+	"json":       {OutputFormatJson, "raw JSON output"},
+	"jsonPretty": {OutputFormatJsonPretty, "formatted JSON output"},
+	"csv":        {OutputFormatCsv, "csv output (where possible, otherwise text)"},
 }
