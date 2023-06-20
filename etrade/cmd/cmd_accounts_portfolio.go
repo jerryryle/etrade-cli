@@ -54,7 +54,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "sort-by", "s",
+		&c.flags.sortBy, "sort-by", "s",
 		fmt.Sprintf("sort results by (%s)", c.flags.sortBy.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
@@ -65,7 +65,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "sort-order", "o",
+		&c.flags.sortOrder, "sort-order", "o",
 		fmt.Sprintf("sort order (%s)", c.flags.sortOrder.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
@@ -76,7 +76,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.portfolioView, "market-session", "m",
+		&c.flags.marketSession, "market-session", "m",
 		fmt.Sprintf("market session (%s)", c.flags.marketSession.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
