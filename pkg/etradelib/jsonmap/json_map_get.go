@@ -249,7 +249,7 @@ func (m JsonMap) GetSliceAtPath(path string) (JsonSlice, error) {
 	return valueToSlice(value)
 }
 
-// GetStringSliceAtPath attempts to retrieve a []string from the map at the
+// GetSliceOfStringsAtPath attempts to retrieve a []string from the map at the
 // specified path. It will return an error if the path is invalid, if the value
 // at the path is not a JsonSlice, or if any value in the slice is not a
 // string.
@@ -257,7 +257,7 @@ func (m JsonMap) GetSliceAtPath(path string) (JsonSlice, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetStringSliceAtPath(path string) ([]string, error) {
+func (m JsonMap) GetSliceOfStringsAtPath(path string) ([]string, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -265,7 +265,7 @@ func (m JsonMap) GetStringSliceAtPath(path string) ([]string, error) {
 	return valueToStringSlice(value)
 }
 
-// GetIntSliceAtPath attempts to retrieve a []int64 from the map at the
+// GetSliceOfIntsAtPath attempts to retrieve a []int64 from the map at the
 // specified path. It will return an error if the path is invalid, if the value
 // at the path is not a JsonSlice, or if any value in the slice is not an
 // int.
@@ -273,7 +273,7 @@ func (m JsonMap) GetStringSliceAtPath(path string) ([]string, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetIntSliceAtPath(path string) ([]int64, error) {
+func (m JsonMap) GetSliceOfIntsAtPath(path string) ([]int64, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -281,7 +281,7 @@ func (m JsonMap) GetIntSliceAtPath(path string) ([]int64, error) {
 	return valueToIntSlice(value)
 }
 
-// GetFloatSliceAtPath attempts to retrieve a []float64 from the map at the
+// GetSliceOfFloatsAtPath attempts to retrieve a []float64 from the map at the
 // specified path. It will return an error if the path is invalid, if the value
 // at the path is not a JsonSlice, or if any value in the slice is not a
 // float.
@@ -289,7 +289,7 @@ func (m JsonMap) GetIntSliceAtPath(path string) ([]int64, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetFloatSliceAtPath(path string) ([]float64, error) {
+func (m JsonMap) GetSliceOfFloatsAtPath(path string) ([]float64, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -297,7 +297,7 @@ func (m JsonMap) GetFloatSliceAtPath(path string) ([]float64, error) {
 	return valueToFloatSlice(value)
 }
 
-// GetBoolSliceAtPath attempts to retrieve a []bool from the map at the
+// GetSliceOfBoolsAtPath attempts to retrieve a []bool from the map at the
 // specified path. It will return an error if the path is invalid, if the value
 // at the path is not a JsonSlice, or if any value in the slice is not a
 // bool.
@@ -305,7 +305,7 @@ func (m JsonMap) GetFloatSliceAtPath(path string) ([]float64, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetBoolSliceAtPath(path string) ([]bool, error) {
+func (m JsonMap) GetSliceOfBoolsAtPath(path string) ([]bool, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -313,7 +313,7 @@ func (m JsonMap) GetBoolSliceAtPath(path string) ([]bool, error) {
 	return valueToBoolSlice(value)
 }
 
-// GetMapSliceAtPath attempts to retrieve a []JsonMap from the map at the
+// GetSliceOfMapsAtPath attempts to retrieve a []JsonMap from the map at the
 // specified path. It will return an error if the path is invalid, if the value
 // at the path is not a JsonSlice, or if any value in the slice is not a
 // map.
@@ -321,7 +321,7 @@ func (m JsonMap) GetBoolSliceAtPath(path string) ([]bool, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetMapSliceAtPath(path string) ([]JsonMap, error) {
+func (m JsonMap) GetSliceOfMapsAtPath(path string) ([]JsonMap, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err

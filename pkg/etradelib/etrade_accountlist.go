@@ -30,7 +30,7 @@ const (
 )
 
 func CreateETradeAccountList(accountListResponseMap jsonmap.JsonMap) (ETradeAccountList, error) {
-	accountsSlice, err := accountListResponseMap.GetMapSliceAtPath(accountsSliceResponsePath)
+	accountsSlice, err := accountListResponseMap.GetSliceOfMapsAtPath(accountsSliceResponsePath)
 	if err != nil {
 		return nil, err
 	}

@@ -28,7 +28,7 @@ const (
 )
 
 func CreateETradeTransactionList(transactionListResponseMap jsonmap.JsonMap) (ETradeTransactionList, error) {
-	transactionsSlice, err := transactionListResponseMap.GetMapSliceAtPath(transactionsSliceResponsePath)
+	transactionsSlice, err := transactionListResponseMap.GetSliceOfMapsAtPath(transactionsSliceResponsePath)
 	if err != nil {
 		return nil, err
 	}
