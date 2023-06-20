@@ -8,7 +8,7 @@ import (
 // GetString attempts to retrieve a string with the specified key from the map.
 // It will return an error if the key does not exist in the map or if the value
 // at the index is not a string.
-func (m JsonMap) GetString(key string) (string, error) {
+func (m *JsonMap) GetString(key string) (string, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return "", err
@@ -19,7 +19,7 @@ func (m JsonMap) GetString(key string) (string, error) {
 // GetInt attempts to retrieve an int with the specified key from the map.
 // It will return an error if the key does not exist in the map or if the value
 // at the index is not an int.
-func (m JsonMap) GetInt(key string) (int64, error) {
+func (m *JsonMap) GetInt(key string) (int64, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return 0, err
@@ -31,7 +31,7 @@ func (m JsonMap) GetInt(key string) (int64, error) {
 // It will return an error if the key does not exist in the map or if the value
 // at the index is not a float (if the value at the index is an integer, it
 // will be quietly converted to a float).
-func (m JsonMap) GetFloat(key string) (float64, error) {
+func (m *JsonMap) GetFloat(key string) (float64, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return 0, err
@@ -42,7 +42,7 @@ func (m JsonMap) GetFloat(key string) (float64, error) {
 // GetBool attempts to retrieve a bool with the specified key from the map.
 // It will return an error if the key does not exist in the map or if the value
 // at the index is not a bool.
-func (m JsonMap) GetBool(key string) (bool, error) {
+func (m *JsonMap) GetBool(key string) (bool, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return false, err
@@ -53,7 +53,7 @@ func (m JsonMap) GetBool(key string) (bool, error) {
 // GetMap attempts to retrieve a JsonMap with the specified key from the map.
 // It will return an error if the key does not exist in the map or if the value
 // at the index is not a JsonMap.
-func (m JsonMap) GetMap(key string) (JsonMap, error) {
+func (m *JsonMap) GetMap(key string) (JsonMap, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -64,7 +64,7 @@ func (m JsonMap) GetMap(key string) (JsonMap, error) {
 // GetSlice attempts to retrieve a JsonSlice with the specified key from the map.
 // It will return an error if the key does not exist in the map or if the value
 // at the index is not a JsonSlice.
-func (m JsonMap) GetSlice(key string) (JsonSlice, error) {
+func (m *JsonMap) GetSlice(key string) (JsonSlice, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (m JsonMap) GetSlice(key string) (JsonSlice, error) {
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a string.
-func (m JsonMap) GetStringSlice(key string) ([]string, error) {
+func (m *JsonMap) GetStringSlice(key string) ([]string, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -88,7 +88,7 @@ func (m JsonMap) GetStringSlice(key string) ([]string, error) {
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not an int.
-func (m JsonMap) GetIntSlice(key string) ([]int64, error) {
+func (m *JsonMap) GetIntSlice(key string) ([]int64, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -100,7 +100,7 @@ func (m JsonMap) GetIntSlice(key string) ([]int64, error) {
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a float.
-func (m JsonMap) GetFloatSlice(key string) ([]float64, error) {
+func (m *JsonMap) GetFloatSlice(key string) ([]float64, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -112,7 +112,7 @@ func (m JsonMap) GetFloatSlice(key string) ([]float64, error) {
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a bool.
-func (m JsonMap) GetBoolSlice(key string) ([]bool, error) {
+func (m *JsonMap) GetBoolSlice(key string) ([]bool, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -124,7 +124,7 @@ func (m JsonMap) GetBoolSlice(key string) ([]bool, error) {
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a map.
-func (m JsonMap) GetMapSlice(key string) ([]JsonMap, error) {
+func (m *JsonMap) GetMapSlice(key string) ([]JsonMap, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -136,7 +136,7 @@ func (m JsonMap) GetMapSlice(key string) ([]JsonMap, error) {
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a map.
-func (m JsonMap) GetSliceSlice(key string) ([]JsonSlice, error) {
+func (m *JsonMap) GetSliceSlice(key string) ([]JsonSlice, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -146,12 +146,12 @@ func (m JsonMap) GetSliceSlice(key string) ([]JsonSlice, error) {
 
 // GetValue attempts to retrieve a value of any type with the specified key
 // from the map. It will return an error if the key does not exist in the map.
-func (m JsonMap) GetValue(key string) (interface{}, error) {
+func (m *JsonMap) GetValue(key string) (interface{}, error) {
 	if key == "" {
 		return nil, errors.New("no key provided")
 	}
 
-	value, found := m[key]
+	value, found := (*m)[key]
 	if !found {
 		return nil, fmt.Errorf("key %s not found", key)
 	}
@@ -165,7 +165,7 @@ func (m JsonMap) GetValue(key string) (interface{}, error) {
 // e.g. "keyForMap.keyForString" (map with a map with a string value)
 // or "keyForStringSlice[0]" (map with a slice of string values)
 // or "keyForMap.keyForStringSlice[0]" (map with a map with a slice of string values)
-func (m JsonMap) GetStringAtPath(path string) (string, error) {
+func (m *JsonMap) GetStringAtPath(path string) (string, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return "", err
@@ -180,7 +180,7 @@ func (m JsonMap) GetStringAtPath(path string) (string, error) {
 // e.g. "keyForMap.keyForInt" (map with a map with an int value)
 // or "keyForIntSlice[0]" (map with a slice of int values)
 // or "keyForMap.keyForIntSlice[0]" (map with a map with a slice of int values)
-func (m JsonMap) GetIntAtPath(path string) (int64, error) {
+func (m *JsonMap) GetIntAtPath(path string) (int64, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return 0, err
@@ -196,7 +196,7 @@ func (m JsonMap) GetIntAtPath(path string) (int64, error) {
 // e.g. "keyForMap.keyForFloat" (map with a map with a float value)
 // or "keyForFloatSlice[0]" (map with a slice of float values)
 // or "keyForMap.keyForFloatSlice[0]" (map with a map with a slice of float values)
-func (m JsonMap) GetFloatAtPath(path string) (float64, error) {
+func (m *JsonMap) GetFloatAtPath(path string) (float64, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return 0, err
@@ -211,7 +211,7 @@ func (m JsonMap) GetFloatAtPath(path string) (float64, error) {
 // e.g. "keyForMap.keyForBool" (map with a map with a bool value)
 // or "keyForBoolSlice[0]" (map with a slice of bool values)
 // or "keyForMap.keyForBoolSlice[0]" (map with a map with a slice of bool values)
-func (m JsonMap) GetBoolAtPath(path string) (bool, error) {
+func (m *JsonMap) GetBoolAtPath(path string) (bool, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return false, err
@@ -226,7 +226,7 @@ func (m JsonMap) GetBoolAtPath(path string) (bool, error) {
 // e.g. "keyForMap.keyForMap" (map with a map with a map value)
 // or "keyForMapSlice[0]" (map with a slice of map values)
 // or "keyForMap.keyForMapSlice[0]" (map with a map with a slice of map values)
-func (m JsonMap) GetMapAtPath(path string) (JsonMap, error) {
+func (m *JsonMap) GetMapAtPath(path string) (JsonMap, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -241,7 +241,7 @@ func (m JsonMap) GetMapAtPath(path string) (JsonMap, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceAtPath(path string) (JsonSlice, error) {
+func (m *JsonMap) GetSliceAtPath(path string) (JsonSlice, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -257,7 +257,7 @@ func (m JsonMap) GetSliceAtPath(path string) (JsonSlice, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceOfStringsAtPath(path string) ([]string, error) {
+func (m *JsonMap) GetSliceOfStringsAtPath(path string) ([]string, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -273,7 +273,7 @@ func (m JsonMap) GetSliceOfStringsAtPath(path string) ([]string, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceOfIntsAtPath(path string) ([]int64, error) {
+func (m *JsonMap) GetSliceOfIntsAtPath(path string) ([]int64, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -289,7 +289,7 @@ func (m JsonMap) GetSliceOfIntsAtPath(path string) ([]int64, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceOfFloatsAtPath(path string) ([]float64, error) {
+func (m *JsonMap) GetSliceOfFloatsAtPath(path string) ([]float64, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -305,7 +305,7 @@ func (m JsonMap) GetSliceOfFloatsAtPath(path string) ([]float64, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceOfBoolsAtPath(path string) ([]bool, error) {
+func (m *JsonMap) GetSliceOfBoolsAtPath(path string) ([]bool, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -321,7 +321,7 @@ func (m JsonMap) GetSliceOfBoolsAtPath(path string) ([]bool, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceOfMapsAtPath(path string) ([]JsonMap, error) {
+func (m *JsonMap) GetSliceOfMapsAtPath(path string) ([]JsonMap, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -337,7 +337,7 @@ func (m JsonMap) GetSliceOfMapsAtPath(path string) ([]JsonMap, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m JsonMap) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
+func (m *JsonMap) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
@@ -351,6 +351,6 @@ func (m JsonMap) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
 // e.g. "keyForMap.keyForValue" (map with a map with a value)
 // or "keyForValueSlice[0]" (map with a slice of values)
 // or "keyForMap.keyForValueSlice[0]" (map with a map with a slice of values)
-func (m JsonMap) GetValueAtPath(path string) (interface{}, error) {
-	return pathGet(path, m)
+func (m *JsonMap) GetValueAtPath(path string) (interface{}, error) {
+	return pathGet(path, *m)
 }

@@ -25,7 +25,8 @@ func NewMapFromIoReader(jsonReader io.Reader) (JsonMap, error) {
 	// This nil map will recursively ensure that all map[string]interface{}
 	// values are replaced with JsonMap and all []interface{} values are
 	// replaced with JsonSlice
-	jsonMap := JsonMap(m).Map(nil, nil)
+	jsonMap := JsonMap(m)
+	jsonMap = jsonMap.Map(nil, nil)
 	return jsonMap, nil
 }
 

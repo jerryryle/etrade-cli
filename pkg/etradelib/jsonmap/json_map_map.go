@@ -14,8 +14,8 @@ type MapMapFn func(parentSliceIndex int, key string, value interface{}) (string,
 // function parameters. Either or both may be nil, but note that maps may contain
 // slices, which is why JsonMap.Map() allows you to specify mapping functions for
 // both maps and slices.
-func (m JsonMap) Map(mapMapFn MapMapFn, sliceMapFn SliceMapFn) JsonMap {
-	return mapMap(m, -1, mapMapFn, sliceMapFn)
+func (m *JsonMap) Map(mapMapFn MapMapFn, sliceMapFn SliceMapFn) JsonMap {
+	return mapMap(*m, -1, mapMapFn, sliceMapFn)
 }
 
 func mapMap(original map[string]interface{}, parentSliceIndex int, mapMapFn MapMapFn, sliceMapFn SliceMapFn) JsonMap {

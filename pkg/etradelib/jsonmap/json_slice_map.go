@@ -14,8 +14,8 @@ type SliceMapFn func(parentSliceIndex int, index int, value interface{}) interfa
 // function parameters. Either or both may be nil, but note that slices may contain
 // maps, which is why JsonSlice.Map() allows you to specify mapping functions for
 // both slices and maps.
-func (s JsonSlice) Map(mapMapFn MapMapFn, sliceMapFn SliceMapFn) JsonSlice {
-	return mapSlice(s, -1, mapMapFn, sliceMapFn)
+func (s *JsonSlice) Map(mapMapFn MapMapFn, sliceMapFn SliceMapFn) JsonSlice {
+	return mapSlice(*s, -1, mapMapFn, sliceMapFn)
 }
 
 func mapSlice(original []interface{}, parentSliceIndex int, mapMapFn MapMapFn, sliceMapFn SliceMapFn) JsonSlice {
