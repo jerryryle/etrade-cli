@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -33,7 +34,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 
 	// Add Flags
 	cmd.Flags().BoolVarP(&c.flags.totalsRequired, "totals-required", "t", true, "include totals in results")
-	cmd.Flags().BoolVarP(&c.flags.lotsRequired, "lots-required", "l", false, "include lots in results")
+	cmd.Flags().BoolVarP(&c.flags.lotsRequired, "lots-required", "l", true, "include lots in results")
 
 	// Initialize Enum Flag Values
 	c.flags.portfolioView = *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewNil)
@@ -89,15 +90,55 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *CommandAccountsPortfolio) ViewPortfolio(accountKeyId string) error {
+func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
+	// This determines how many portfolio items will be retrieved in each
+	// request. This should normally be set to the max for efficiency, but can
+	// be lowered to test the pagination logic.
+	const countPerRequest = constants.PortfolioMaxCount
+
+	account, err := GetAccountById(c.Resources.Client, accountId)
+	if err != nil {
+		return err
+	}
+
 	response, err := c.Resources.Client.ViewPortfolio(
-		accountKeyId, -1, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), "", c.flags.marketSession.Value(), true,
-		true, c.flags.portfolioView.Value(),
+		account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), "",
+		c.flags.marketSession.Value(),
+		c.flags.totalsRequired, c.flags.lotsRequired, c.flags.portfolioView.Value(),
 	)
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintln(c.Resources.OFile, string(response))
+
+	responseMap, err := etradelib.NewNormalizedJsonMap(response)
+	if err != nil {
+		return err
+	}
+	positionList, err := etradelib.CreateETradePositionList(responseMap)
+	if err != nil {
+		return err
+	}
+
+	for positionList.NextPage() != "" {
+		response, err = c.Resources.Client.ViewPortfolio(
+			account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(),
+			positionList.NextPage(),
+			c.flags.marketSession.Value(), c.flags.totalsRequired, c.flags.lotsRequired, c.flags.portfolioView.Value(),
+		)
+		if err != nil {
+			return err
+		}
+
+		responseMap, err = etradelib.NewNormalizedJsonMap(response)
+		if err != nil {
+			return err
+		}
+		err = positionList.AddPage(responseMap)
+		if err != nil {
+			return err
+		}
+	}
+	_, _ = fmt.Fprintf(c.Resources.OFile, "%#v", positionList)
 	return nil
 }
 
