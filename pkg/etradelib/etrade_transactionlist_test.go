@@ -32,7 +32,7 @@ func TestCreateETradeTransactionList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeTransactionList{
-				[]ETradeTransaction{
+				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -59,7 +59,7 @@ func TestCreateETradeTransactionList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeTransactionList{
-				[]ETradeTransaction{},
+				transactions: []ETradeTransaction{},
 			},
 		},
 		{
@@ -105,7 +105,7 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 		{
 			name: "GetAllTransactions Returns All Transactions",
 			testTransactionList: &eTradeTransactionList{
-				[]ETradeTransaction{
+				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -138,7 +138,7 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 		{
 			name: "GetAllAccounts Can Return Empty List",
 			testTransactionList: &eTradeTransactionList{
-				[]ETradeTransaction{},
+				transactions: []ETradeTransaction{},
 			},
 			expectValue: []ETradeTransaction{},
 		},
@@ -165,7 +165,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Account For Valid ID",
 			testTransactionList: &eTradeTransactionList{
-				[]ETradeTransaction{
+				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -185,7 +185,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Nil For Invalid ID",
 			testTransactionList: &eTradeTransactionList{
-				[]ETradeTransaction{
+				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{

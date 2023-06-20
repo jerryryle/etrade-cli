@@ -32,7 +32,7 @@ func TestCreateETradeOrderList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeOrderList{
-				[]ETradeOrder{
+				orders: []ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -59,7 +59,7 @@ func TestCreateETradeOrderList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeOrderList{
-				[]ETradeOrder{},
+				orders: []ETradeOrder{},
 			},
 		},
 		{
@@ -105,7 +105,7 @@ func TestETradeOrderList_GetAllOrders(t *testing.T) {
 		{
 			name: "GetAllOrders Returns All Orders",
 			testOrderList: &eTradeOrderList{
-				[]ETradeOrder{
+				orders: []ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -138,7 +138,7 @@ func TestETradeOrderList_GetAllOrders(t *testing.T) {
 		{
 			name: "GetAllAccounts Can Return Empty List",
 			testOrderList: &eTradeOrderList{
-				[]ETradeOrder{},
+				orders: []ETradeOrder{},
 			},
 			expectValue: []ETradeOrder{},
 		},
@@ -165,7 +165,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Account For Valid ID",
 			testOrderList: &eTradeOrderList{
-				[]ETradeOrder{
+				orders: []ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -185,7 +185,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Nil For Invalid ID",
 			testOrderList: &eTradeOrderList{
-				[]ETradeOrder{
+				orders: []ETradeOrder{
 					&eTradeOrder{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{

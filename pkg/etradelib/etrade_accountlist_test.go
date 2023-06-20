@@ -35,7 +35,7 @@ func TestCreateETradeAccountList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeAccountList{
-				[]ETradeAccount{
+				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
 						idKey: "Account 1 ID Key",
@@ -68,7 +68,7 @@ func TestCreateETradeAccountList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeAccountList{
-				[]ETradeAccount{},
+				accounts: []ETradeAccount{},
 			},
 		},
 		{
@@ -121,7 +121,7 @@ func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 		{
 			name: "GetAllAccounts Returns All Accounts",
 			testAccountList: &eTradeAccountList{
-				[]ETradeAccount{
+				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
 						idKey: "Account 1 ID Key",
@@ -162,7 +162,7 @@ func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 		{
 			name: "GetAllAccounts Can Return Empty List",
 			testAccountList: &eTradeAccountList{
-				[]ETradeAccount{},
+				accounts: []ETradeAccount{},
 			},
 			expectValue: []ETradeAccount{},
 		},
@@ -189,7 +189,7 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Account For Valid ID",
 			testAccountList: &eTradeAccountList{
-				[]ETradeAccount{
+				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
 						idKey: "Account 1 ID Key",
@@ -213,7 +213,7 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Nil For Invalid ID",
 			testAccountList: &eTradeAccountList{
-				[]ETradeAccount{
+				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
 						idKey: "Account 1 ID Key",

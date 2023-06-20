@@ -32,7 +32,7 @@ func TestCreateETradeAlertList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeAlertList{
-				[]ETradeAlert{
+				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -59,7 +59,7 @@ func TestCreateETradeAlertList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradeAlertList{
-				[]ETradeAlert{},
+				alerts: []ETradeAlert{},
 			},
 		},
 		{
@@ -105,7 +105,7 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 		{
 			name: "GetAllAlerts Returns All Alerts",
 			testAlertList: &eTradeAlertList{
-				[]ETradeAlert{
+				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -138,7 +138,7 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 		{
 			name: "GetAllAccounts Can Return Empty List",
 			testAlertList: &eTradeAlertList{
-				[]ETradeAlert{},
+				alerts: []ETradeAlert{},
 			},
 			expectValue: []ETradeAlert{},
 		},
@@ -165,7 +165,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Account For Valid ID",
 			testAlertList: &eTradeAlertList{
-				[]ETradeAlert{
+				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
@@ -185,7 +185,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 		{
 			name: "GetAccountById Returns Nil For Invalid ID",
 			testAlertList: &eTradeAlertList{
-				[]ETradeAlert{
+				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
 						jsonMap: jsonmap.JsonMap{
