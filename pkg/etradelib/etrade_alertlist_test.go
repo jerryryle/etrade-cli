@@ -136,7 +136,7 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllAccounts Can Return Empty List",
+			name: "GetAllAlerts Can Return Empty List",
 			testAlertList: &eTradeAlertList{
 				alerts: []ETradeAlert{},
 			},
@@ -163,7 +163,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 		expectValue   ETradeAlert
 	}{
 		{
-			name: "GetAccountById Returns Account For Valid ID",
+			name: "GetAlertById Returns Alert For Valid ID",
 			testAlertList: &eTradeAlertList{
 				alerts: []ETradeAlert{
 					&eTradeAlert{
@@ -183,7 +183,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAccountById Returns Nil For Invalid ID",
+			name: "GetAlertById Returns Nil For Invalid ID",
 			testAlertList: &eTradeAlertList{
 				alerts: []ETradeAlert{
 					&eTradeAlert{

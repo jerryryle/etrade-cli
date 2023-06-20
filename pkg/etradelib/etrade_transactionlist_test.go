@@ -136,7 +136,7 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllAccounts Can Return Empty List",
+			name: "GetAllTransactions Can Return Empty List",
 			testTransactionList: &eTradeTransactionList{
 				transactions: []ETradeTransaction{},
 			},
@@ -163,7 +163,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 		expectValue         ETradeTransaction
 	}{
 		{
-			name: "GetAccountById Returns Account For Valid ID",
+			name: "GetTransactionById Returns Transaction For Valid ID",
 			testTransactionList: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
@@ -183,7 +183,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAccountById Returns Nil For Invalid ID",
+			name: "GetTransactionById Returns Nil For Invalid ID",
 			testTransactionList: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{

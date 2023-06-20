@@ -136,7 +136,7 @@ func TestETradeOrderList_GetAllOrders(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllAccounts Can Return Empty List",
+			name: "GetAllOrders Can Return Empty List",
 			testOrderList: &eTradeOrderList{
 				orders: []ETradeOrder{},
 			},
@@ -163,7 +163,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 		expectValue   ETradeOrder
 	}{
 		{
-			name: "GetAccountById Returns Account For Valid ID",
+			name: "GetOrderById Returns Order For Valid ID",
 			testOrderList: &eTradeOrderList{
 				orders: []ETradeOrder{
 					&eTradeOrder{
@@ -183,7 +183,7 @@ func TestETradeOrderList_GetOrderById(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAccountById Returns Nil For Invalid ID",
+			name: "GetOrderById Returns Nil For Invalid ID",
 			testOrderList: &eTradeOrderList{
 				orders: []ETradeOrder{
 					&eTradeOrder{
