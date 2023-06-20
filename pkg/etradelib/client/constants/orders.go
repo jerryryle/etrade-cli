@@ -85,42 +85,6 @@ const (
 	OrderTransactionTypeMutualFundExchange
 )
 
-// OrderType specifies the type of order to retrieve place.
-// See the constants below for semantics.
-type OrderType int
-
-const (
-	// OrderTypeEquity places an equity order
-	OrderTypeEquity OrderType = iota
-
-	// OrderTypeOption places an option order
-	OrderTypeOption
-
-	// OrderTypeSpreads places a spread order
-	OrderTypeSpreads
-
-	// OrderTypeBuyWrites places a buy-write options order
-	OrderTypeBuyWrites
-
-	// OrderTypeButterfly places a butterfly options order
-	OrderTypeButterfly
-
-	// OrderTypeIronButterfly places an iron butterfly options order
-	OrderTypeIronButterfly
-
-	// OrderTypeCondor places a condor options order
-	OrderTypeCondor
-
-	// OrderTypeIronCondor places an iron condor options order
-	OrderTypeIronCondor
-
-	// OrderTypeMutualFund places a mutual fund order
-	OrderTypeMutualFund
-
-	// OrderTypeMoneyMarketFund places a money market mutual fund order
-	OrderTypeMoneyMarketFund
-)
-
 var orderStatusToString = map[OrderStatus]string{
 	OrderStatusOpen:            "OPEN",
 	OrderStatusExecuted:        "EXECUTED",
