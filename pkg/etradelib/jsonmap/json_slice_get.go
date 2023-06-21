@@ -141,7 +141,7 @@ func (s *JsonSlice) GetSliceSlice(index int) ([]JsonSlice, error) {
 	return valueToSliceSlice(value)
 }
 
-// GetValue attempts to retrieve a value of any type from the slice at the
+// GetValue attempts to retrieve an object of any type from the slice at the
 // specified index. It will return an error if the index is out of bounds for
 // the slice.
 func (s *JsonSlice) GetValue(index int) (interface{}, error) {
@@ -330,7 +330,7 @@ func (s *JsonSlice) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
 	return valueToSliceSlice(value)
 }
 
-// GetValueAtPath attempts to retrieve a value of any type from the slice at
+// GetValueAtPath attempts to retrieve an object of any type from the slice at
 // the specified path. It will return an error if the path is invalid.
 // Note that slice paths should always begin with an array index.
 // e.g. "[0].keyForValue" (slice of maps with value)
