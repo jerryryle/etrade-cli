@@ -345,7 +345,7 @@ func (m *JsonMap) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
 	return valueToSliceSlice(value)
 }
 
-// GetValueAtPath attempts to retrieve value of any type from the map at the
+// GetValueAtPath attempts to retrieve a value of any type from the map at the
 // specified path. It will return an error if the path is invalid.
 // Note that map paths should always begin with a key.
 // e.g. "keyForMap.keyForValue" (map with a map with a value)
