@@ -145,11 +145,8 @@ func (s *JsonSlice) GetSliceSlice(index int) ([]JsonSlice, error) {
 // specified index. It will return an error if the index is out of bounds for
 // the slice.
 func (s *JsonSlice) GetValue(index int) (interface{}, error) {
-	if index >= len(*s) {
-		return nil, fmt.Errorf("index %d is greater than slice len %d", index, len(*s))
-	}
-	if index < 0 {
-		return nil, fmt.Errorf("index %d is negative", index)
+	if index < 0 || index >= len(*s) {
+		return nil, fmt.Errorf("cannot set value: slice index %d out of bounds for slice of length %d", index, len(*s))
 	}
 	value := (*s)[index]
 	return value, nil
