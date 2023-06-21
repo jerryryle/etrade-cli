@@ -78,13 +78,13 @@ func TestPathParse(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				testPathElements, err := pathParse(tt.testPath)
+				actualValue, err := pathParse(tt.testPath)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectValue, testPathElements)
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}

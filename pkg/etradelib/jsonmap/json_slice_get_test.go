@@ -43,20 +43,20 @@ func TestJsonSlice_GetValue(t *testing.T) {
 				testSlice, err := NewSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
-				testResultValue, err := testSlice.GetValue(tt.testIndex)
+				actualValue, err := testSlice.GetValue(tt.testIndex)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectValue, testResultValue)
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
 }
 
 func TestJsonSlice_GetType(t *testing.T) {
-	type testFn func(s JsonSlice) (interface{}, error)
+	type testFn func(s *JsonSlice) (interface{}, error)
 
 	tests := []struct {
 		name        string
@@ -67,7 +67,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 	}{
 		{
 			name: "GetString Gets String As String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", "StringValue2"]`,
@@ -76,7 +76,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetString Gets Null As Empty String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", null]`,
@@ -85,7 +85,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetString Cannot Get Int As String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", 1234]`,
@@ -94,7 +94,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetString Cannot Get Float As String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", 1234.567]`,
@@ -103,7 +103,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetString Cannot Get Bool As String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", true]`,
@@ -112,7 +112,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetString Cannot Get Map As String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", {"foo": "bar"}]`,
@@ -121,7 +121,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetString Cannot Get Slice As String",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetString(1)
 			},
 			testJson:    `["StringValue1", ["foo", "bar"]]`,
@@ -130,7 +130,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Gets Int As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, 5678]`,
@@ -139,7 +139,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Cannot Get String As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, "5678"]`,
@@ -148,7 +148,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Cannot Get Float As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, 567.8]`,
@@ -157,7 +157,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Cannot Get Bool As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, true]`,
@@ -166,7 +166,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Cannot Get Null As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, null]`,
@@ -175,7 +175,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Cannot Get Map As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, {"foo": "bar"}]`,
@@ -184,7 +184,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetInt Cannot Get Slice As Int",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetInt(1)
 			},
 			testJson:    `[1234, ["foo", "bar"]]`,
@@ -193,7 +193,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Gets Float As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[123.4, 567.8]`,
@@ -202,7 +202,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Gets Int As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[1234, 5678]`,
@@ -211,7 +211,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Cannot Get String As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[123.4, "567.8"]`,
@@ -220,7 +220,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Cannot Get Bool As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[123.4, true]`,
@@ -229,7 +229,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Cannot Get Null As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[123.4, null]`,
@@ -238,7 +238,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Cannot Get Map As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[123.4, {"foo": "bar"}]`,
@@ -247,7 +247,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloat Cannot Get Slice As Float",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloat(1)
 			},
 			testJson:    `[123.4, ["foo", "bar"]]`,
@@ -256,7 +256,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Gets Bool As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, true]`,
@@ -265,7 +265,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Cannot Get String As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, "true"]`,
@@ -274,7 +274,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Cannot Get Int As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, 1234]`,
@@ -283,7 +283,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Cannot Get Float As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, 1234.5678]`,
@@ -292,7 +292,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Cannot Get Null As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, null]`,
@@ -301,7 +301,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Cannot Get Map As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, {"foo": "bar"}]`,
@@ -310,7 +310,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBool Cannot Get Slice As Bool",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBool(1)
 			},
 			testJson:    `[false, ["foo", "bar"]]`,
@@ -319,7 +319,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Gets Map As JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, {"boo": "far"}]`,
@@ -328,7 +328,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Gets Null As Nil JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, null]`,
@@ -337,7 +337,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Cannot Get String As JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, "moo"]`,
@@ -346,7 +346,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Cannot Get Int As JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, 1234]`,
@@ -355,7 +355,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Cannot Get Float As JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, 1234.5678]`,
@@ -364,7 +364,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Cannot Get Bool As JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, true]`,
@@ -373,7 +373,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMap Cannot Get Slice As JsonMap",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMap(1)
 			},
 			testJson:    `[{"foo": "bar"}, ["boo", "far"]]`,
@@ -382,7 +382,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Gets Slice As Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], ["boo", "far"]]`,
@@ -391,7 +391,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Gets Null As Nil Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], null]`,
@@ -400,7 +400,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Cannot Get String As Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], "moo"]`,
@@ -409,7 +409,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Cannot Get Int As Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], 1234]`,
@@ -418,7 +418,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Cannot Get Float As Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], 1234.5678]`,
@@ -427,7 +427,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Cannot Get Bool As Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], true]`,
@@ -436,7 +436,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSlice Cannot Get Map As Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSlice(1)
 			},
 			testJson:    `[["foo", "bar"], {"boo": "far"}]`,
@@ -445,7 +445,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetStringSlice Gets Slice As String Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetStringSlice(1)
 			},
 			testJson:    `[["foo", "bar"], ["boo", "far"]]`,
@@ -454,7 +454,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetStringSlice Gets Null Slice As Empty String Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetStringSlice(1)
 			},
 			testJson:    `[["foo", "bar"], null]`,
@@ -463,7 +463,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetStringSlice Cannot Get Mixed Slice As String Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetStringSlice(1)
 			},
 			testJson:    `[["foo", "bar"], ["boo", 1]]`,
@@ -472,7 +472,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetIntSlice Gets Slice As Int Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetIntSlice(1)
 			},
 			testJson:    `[[1, 2], [3, 4]]`,
@@ -481,7 +481,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetIntSlice Gets Null Slice As Empty Int Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetIntSlice(1)
 			},
 			testJson:    `[[1, 2], null]`,
@@ -490,7 +490,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetIntSlice Cannot Get Mixed Slice As Int Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetIntSlice(1)
 			},
 			testJson:    `[[1, 2], [3, "foo"]]`,
@@ -499,7 +499,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloatSlice Gets Slice As Float Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloatSlice(1)
 			},
 			testJson:    `[[1.1, 2.2], [3.3, 4.4]]`,
@@ -508,7 +508,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloatSlice Gets Null Slice As Empty Float Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloatSlice(1)
 			},
 			testJson:    `[[1.1, 2.2], null]`,
@@ -517,7 +517,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetFloatSlice Cannot Get Mixed Slice As Float Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetFloatSlice(1)
 			},
 			testJson:    `[[1.1, 2.2], [3.3, "foo"]]`,
@@ -526,7 +526,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBoolSlice Gets Slice As Bool Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBoolSlice(1)
 			},
 			testJson:    `[[false, true], [true, false]]`,
@@ -535,7 +535,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBoolSlice Gets Null Slice As Empty Bool Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBoolSlice(1)
 			},
 			testJson:    `[[false, true], null]`,
@@ -544,7 +544,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetBoolSlice Cannot Get Mixed Slice As Bool Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetBoolSlice(1)
 			},
 			testJson:    `[[false, true], [true, "foo"]]`,
@@ -553,7 +553,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMapSlice Gets Slice As Map Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMapSlice(1)
 			},
 			testJson:    `[[{"A": 1}, {"B": 2}], [{"C": 3}, {"D": 4}]]`,
@@ -562,7 +562,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMapSlice Gets Null Slice As Empty Map Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMapSlice(1)
 			},
 			testJson:    `[[{"A": 1}, {"B": 2}], null]`,
@@ -571,7 +571,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetMapSlice Cannot Get Mixed Slice As Map Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetMapSlice(1)
 			},
 			testJson:    `[[{"A": 1}, {"B": 2}], [{"C": 3}, "foo"]]`,
@@ -580,7 +580,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSliceSlice Gets Slice As Slice Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSliceSlice(1)
 			},
 			testJson:    `[ [[1], [2]], [[3], [4]] ]`,
@@ -589,7 +589,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSliceSlice Gets Null Slice As Empty Slice Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSliceSlice(1)
 			},
 			testJson:    `[ [[1], [2]], null ]`,
@@ -598,7 +598,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 		},
 		{
 			name: "GetSliceSlice Cannot Get Mixed Slice As Slice Slice",
-			testFn: func(s JsonSlice) (interface{}, error) {
+			testFn: func(s *JsonSlice) (interface{}, error) {
 				return s.GetSliceSlice(1)
 			},
 			testJson:    `[ [[1], [2]], [[3], "foo"] ]`,
@@ -613,13 +613,13 @@ func TestJsonSlice_GetType(t *testing.T) {
 				testSlice, err := NewSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
-				testResultValue, err := tt.testFn(testSlice)
+				actualValue, err := tt.testFn(&testSlice)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectValue, testResultValue)
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
@@ -703,13 +703,13 @@ func TestJsonSlice_GetValueAtPath(t *testing.T) {
 				testSlice, err := NewSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
-				testResultValue, err := testSlice.GetValueAtPath(tt.testPath)
+				actualValue, err := testSlice.GetValueAtPath(tt.testPath)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectValue, testResultValue)
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}

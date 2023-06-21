@@ -38,10 +38,10 @@ func TestJsonMap_Map(t *testing.T) {
 `
 
 	tests := []struct {
-		name      string
-		testFn    testFn
-		expectErr bool
-		expectMap JsonMap
+		name        string
+		testFn      testFn
+		expectErr   bool
+		expectValue JsonMap
 	}{
 		{
 			name: "Map Recursively Applies to Maps and Slices",
@@ -57,7 +57,7 @@ func TestJsonMap_Map(t *testing.T) {
 				return jmap, nil
 			},
 			expectErr: false,
-			expectMap: JsonMap{
+			expectValue: JsonMap{
 				"TESTMAP": JsonMap{
 					"TESTNESTEDMAP": JsonMap{
 						"TESTKEY": "TestStringValue",
@@ -106,7 +106,7 @@ func TestJsonMap_Map(t *testing.T) {
 				return jmap, nil
 			},
 			expectErr: false,
-			expectMap: JsonMap{
+			expectValue: JsonMap{
 				"TestMap": JsonMap{
 					"TestNestedMap": JsonMap{
 						"TestKey": "TestStringValue",
@@ -151,7 +151,7 @@ func TestJsonMap_Map(t *testing.T) {
 				return jmap, nil
 			},
 			expectErr: false,
-			expectMap: JsonMap{
+			expectValue: JsonMap{
 				"TestMap": JsonMap{
 					"TestNestedMap": JsonMap{
 						"TestKey": "TestStringValue",
@@ -168,13 +168,13 @@ func TestJsonMap_Map(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				testResultMap, err := tt.testFn()
+				actualValue, err := tt.testFn()
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectMap, testResultMap)
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}

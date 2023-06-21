@@ -42,26 +42,26 @@ func TestJsonMap_New(t *testing.T) {
 	}
 
 	tests := []struct {
-		name      string
-		testFn    testFn
-		expectErr bool
-		expectMap JsonMap
+		name        string
+		testFn      testFn
+		expectErr   bool
+		expectValue JsonMap
 	}{
 		{
 			name: "New Map From String",
 			testFn: func() (JsonMap, error) {
 				return NewMapFromJsonString(testValidJsonString)
 			},
-			expectErr: false,
-			expectMap: testValidJsonExpectedMap,
+			expectErr:   false,
+			expectValue: testValidJsonExpectedMap,
 		},
 		{
 			name: "New Map From Invalid String Returns Error",
 			testFn: func() (JsonMap, error) {
 				return NewMapFromJsonString(`{"TestMap": {}`)
 			},
-			expectErr: true,
-			expectMap: nil,
+			expectErr:   true,
+			expectValue: nil,
 		},
 		{
 			name: "New Map From Top-Level Slice String Returns Error",
@@ -70,16 +70,16 @@ func TestJsonMap_New(t *testing.T) {
 				// NewSliceFromJsonString() instead of NewMapFromJsonString()
 				return NewMapFromJsonString(`[{"TestKey":"TestValue"}]`)
 			},
-			expectErr: true,
-			expectMap: nil,
+			expectErr:   true,
+			expectValue: nil,
 		},
 		{
 			name: "New Map From Bytes",
 			testFn: func() (JsonMap, error) {
 				return NewMapFromJsonBytes([]byte(testValidJsonString))
 			},
-			expectErr: false,
-			expectMap: testValidJsonExpectedMap,
+			expectErr:   false,
+			expectValue: testValidJsonExpectedMap,
 		},
 	}
 
@@ -87,13 +87,13 @@ func TestJsonMap_New(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				testResultMap, err := tt.testFn()
+				actualValue, err := tt.testFn()
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectMap, testResultMap)
+				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
@@ -134,13 +134,13 @@ func TestJsonMap_ToJsonString(t *testing.T) {
 	const expectedJsonStringUgly = `{"TestMap":{"TestMap":{"TestSlice":[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue"}]}}}
 `
 
-	actualString, err := testJsonMap.ToJsonString(true)
+	actualValue, err := testJsonMap.ToJsonString(true)
 	assert.Nil(t, err)
-	assert.Equal(t, expectedJsonStringPretty, actualString)
+	assert.Equal(t, expectedJsonStringPretty, actualValue)
 
-	actualString, err = testJsonMap.ToJsonString(false)
+	actualValue, err = testJsonMap.ToJsonString(false)
 	assert.Nil(t, err)
-	assert.Equal(t, expectedJsonStringUgly, actualString)
+	assert.Equal(t, expectedJsonStringUgly, actualValue)
 }
 
 func TestJsonMap_ToJsonBytes(t *testing.T) {
@@ -178,11 +178,11 @@ func TestJsonMap_ToJsonBytes(t *testing.T) {
 	const expectedJsonStringUgly = `{"TestMap":{"TestMap":{"TestSlice":[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue"}]}}}
 `
 
-	actualBytes, err := testJsonMap.ToJsonBytes(true)
+	actualValue, err := testJsonMap.ToJsonBytes(true)
 	assert.Nil(t, err)
-	assert.Equal(t, []byte(expectedJsonStringPretty), actualBytes)
+	assert.Equal(t, []byte(expectedJsonStringPretty), actualValue)
 
-	actualBytes, err = testJsonMap.ToJsonBytes(false)
+	actualValue, err = testJsonMap.ToJsonBytes(false)
 	assert.Nil(t, err)
-	assert.Equal(t, []byte(expectedJsonStringUgly), actualBytes)
+	assert.Equal(t, []byte(expectedJsonStringUgly), actualValue)
 }
