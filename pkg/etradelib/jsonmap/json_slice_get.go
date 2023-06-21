@@ -336,5 +336,5 @@ func (s *JsonSlice) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
 // e.g. "[0].keyForValue" (slice of maps with value)
 // or "[0][0]" (slice of slices of values)
 func (s *JsonSlice) GetValueAtPath(path string) (interface{}, error) {
-	return pathGet(path, *s)
+	return pathGet(*s, path)
 }

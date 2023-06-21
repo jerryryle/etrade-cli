@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func pathGet(path string, root interface{}) (interface{}, error) {
+func pathGet(root interface{}, path string) (interface{}, error) {
 	pathElements, err := pathParse(path)
 	if err != nil {
 		return nil, err
