@@ -72,11 +72,11 @@ func (m *JsonMap) GetSlice(key string) (JsonSlice, error) {
 	return valueToSlice(value)
 }
 
-// GetStringSlice attempts to retrieve a []string with the specified key from
+// GetSliceOfStrings attempts to retrieve a []string with the specified key from
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a string.
-func (m *JsonMap) GetStringSlice(key string) ([]string, error) {
+func (m *JsonMap) GetSliceOfStrings(key string) ([]string, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -84,11 +84,11 @@ func (m *JsonMap) GetStringSlice(key string) ([]string, error) {
 	return valueToStringSlice(value)
 }
 
-// GetIntSlice attempts to retrieve a []int64 with the specified key from
+// GetSliceOfInts attempts to retrieve a []int64 with the specified key from
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not an int.
-func (m *JsonMap) GetIntSlice(key string) ([]int64, error) {
+func (m *JsonMap) GetSliceOfInts(key string) ([]int64, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -96,11 +96,11 @@ func (m *JsonMap) GetIntSlice(key string) ([]int64, error) {
 	return valueToIntSlice(value)
 }
 
-// GetFloatSlice attempts to retrieve a []float64 with the specified key from
+// GetSliceOfFloats attempts to retrieve a []float64 with the specified key from
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a float.
-func (m *JsonMap) GetFloatSlice(key string) ([]float64, error) {
+func (m *JsonMap) GetSliceOfFloats(key string) ([]float64, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -108,11 +108,11 @@ func (m *JsonMap) GetFloatSlice(key string) ([]float64, error) {
 	return valueToFloatSlice(value)
 }
 
-// GetBoolSlice attempts to retrieve a []bool64 with the specified key from
+// GetSliceOfBools attempts to retrieve a []bool64 with the specified key from
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a bool.
-func (m *JsonMap) GetBoolSlice(key string) ([]bool, error) {
+func (m *JsonMap) GetSliceOfBools(key string) ([]bool, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -132,11 +132,11 @@ func (m *JsonMap) GetMapSlice(key string) ([]JsonMap, error) {
 	return valueToMapSlice(value)
 }
 
-// GetSliceSlice attempts to retrieve a []JsonSlice with the specified key from
+// GetSliceOfSlices attempts to retrieve a []JsonSlice with the specified key from
 // the map. It will return an error if the key does not exist in the map or if
 // the value at the index is not a JsonSlice or if any value in the slice is
 // not a map.
-func (m *JsonMap) GetSliceSlice(key string) ([]JsonSlice, error) {
+func (m *JsonMap) GetSliceOfSlices(key string) ([]JsonSlice, error) {
 	value, err := m.GetValue(key)
 	if err != nil {
 		return nil, err
@@ -329,7 +329,7 @@ func (m *JsonMap) GetSliceOfMapsAtPath(path string) ([]JsonMap, error) {
 	return valueToMapSlice(value)
 }
 
-// GetSliceSliceAtPath attempts to retrieve a []JsonSlice from the map at the
+// GetSliceOfSlicesAtPath attempts to retrieve a []JsonSlice from the map at the
 // specified path. It will return an error if the path is invalid, if the value
 // at the path is not a JsonSlice, or if any value in the slice is not a
 // slice.
@@ -337,7 +337,7 @@ func (m *JsonMap) GetSliceOfMapsAtPath(path string) ([]JsonMap, error) {
 // e.g. "keyForMap.keyForSlice" (map with a map with a slice value)
 // or "keyForSliceSlice[0]" (map with a slice of slice values)
 // or "keyForMap.keyForSliceSlice[0]" (map with a map with a slice of slice values)
-func (m *JsonMap) GetSliceSliceAtPath(path string) ([]JsonSlice, error) {
+func (m *JsonMap) GetSliceOfSlicesAtPath(path string) ([]JsonSlice, error) {
 	value, err := m.GetValueAtPath(path)
 	if err != nil {
 		return nil, err
