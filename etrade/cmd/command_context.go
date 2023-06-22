@@ -82,7 +82,7 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	}
 
 	// Create an ETrade client that's authorized for the customer
-	etradeClient, err := createClientWithCredentialCache(
+	eTradeClient, err := createClientWithCredentialCache(
 		customerConfig.CustomerProduction,
 		customerConfig.CustomerConsumerKey,
 		customerConfig.CustomerConsumerSecret,
@@ -95,7 +95,7 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 
 	return &CommandContext{
 		Logger:             logger,
-		Client:             etradeClient,
+		Client:             eTradeClient,
 		OutputFile:         OutputFile,
 		OutputFormatJson:   json,
 		OutputFormatPretty: pretty,
