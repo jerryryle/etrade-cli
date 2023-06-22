@@ -49,12 +49,12 @@ func TestJsonMap_Map(t *testing.T) {
 				upperCaseKeys := func(parentSliceIndex int, key string, value interface{}) (string, interface{}) {
 					return strings.ToUpper(key), value
 				}
-				jmap, err := NewMapFromJsonString(testJsonString)
-				jmap = jmap.Map(upperCaseKeys, nil)
+				testMap, err := NewMapFromJsonString(testJsonString)
+				testMap = testMap.Map(upperCaseKeys, nil)
 				if err != nil {
 					return nil, err
 				}
-				return jmap, nil
+				return testMap, nil
 			},
 			expectErr: false,
 			expectValue: JsonMap{
@@ -98,12 +98,12 @@ func TestJsonMap_Map(t *testing.T) {
 						return key, value
 					}
 				}
-				jmap, err := NewMapFromJsonString(testJsonString)
-				jmap = jmap.Map(replaceMapStringValuesInSlice, nil)
+				testMap, err := NewMapFromJsonString(testJsonString)
+				testMap = testMap.Map(replaceMapStringValuesInSlice, nil)
 				if err != nil {
 					return nil, err
 				}
-				return jmap, nil
+				return testMap, nil
 			},
 			expectErr: false,
 			expectValue: JsonMap{
@@ -143,12 +143,12 @@ func TestJsonMap_Map(t *testing.T) {
 					// Return the original value since we're not currently in a slice.
 					return value
 				}
-				jmap, err := NewMapFromJsonString(testJsonString)
-				jmap = jmap.Map(nil, replaceChildSliceValuesWithInt)
+				testMap, err := NewMapFromJsonString(testJsonString)
+				testMap = testMap.Map(nil, replaceChildSliceValuesWithInt)
 				if err != nil {
 					return nil, err
 				}
-				return jmap, nil
+				return testMap, nil
 			},
 			expectErr: false,
 			expectValue: JsonMap{
