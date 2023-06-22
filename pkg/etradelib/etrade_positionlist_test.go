@@ -54,7 +54,7 @@ func TestCreateETradePositionList(t *testing.T) {
 						},
 					},
 				},
-				totalsJsonMap: jsonmap.JsonMap{
+				totalsMap: jsonmap.JsonMap{
 					"bogusTotal": json.Number("9999"),
 				},
 				nextPage: "2",
@@ -75,9 +75,9 @@ func TestCreateETradePositionList(t *testing.T) {
 }`,
 			expectErr: false,
 			expectValue: &eTradePositionList{
-				positions:     []ETradePosition{},
-				totalsJsonMap: nil,
-				nextPage:      "",
+				positions: []ETradePosition{},
+				totalsMap: nil,
+				nextPage:  "",
 			},
 		},
 		{
@@ -272,7 +272,7 @@ func TestETradePositionList_AddPage(t *testing.T) {
 								},
 							},
 						},
-						totalsJsonMap: jsonmap.JsonMap{
+						totalsMap: jsonmap.JsonMap{
 							"bogusTotal": json.Number("9999"),
 						},
 						nextPage: "2",
@@ -314,7 +314,7 @@ func TestETradePositionList_AddPage(t *testing.T) {
 								},
 							},
 						},
-						totalsJsonMap: jsonmap.JsonMap{
+						totalsMap: jsonmap.JsonMap{
 							// The totals come from the first page only. Totals
 							// in subsequent pages are ignored.
 							"bogusTotal": json.Number("9999"),
@@ -354,16 +354,61 @@ func TestETradePositionList_AddPage(t *testing.T) {
 
 func TestETradePositionList_NextPage(t *testing.T) {
 	testPositionList := &eTradePositionList{
-		positions:     []ETradePosition{},
-		totalsJsonMap: jsonmap.JsonMap{},
-		nextPage:      "1234",
+		positions: []ETradePosition{},
+		totalsMap: jsonmap.JsonMap{},
+		nextPage:  "1234",
 	}
 	assert.Equal(t, "1234", testPositionList.NextPage())
 
 	testPositionList = &eTradePositionList{
-		positions:     []ETradePosition{},
-		totalsJsonMap: jsonmap.JsonMap{},
-		nextPage:      "",
+		positions: []ETradePosition{},
+		totalsMap: jsonmap.JsonMap{},
+		nextPage:  "",
 	}
 	assert.Equal(t, "", testPositionList.NextPage())
+}
+
+func TestETradePositionList_AsJsonMap(t *testing.T) {
+	tests := []struct {
+		name             string
+		testPositionList ETradePositionList
+		expectValue      jsonmap.JsonMap
+	}{
+		{
+			name: "AsJsonMap Returns Map With Positions And Totals",
+			testPositionList: &eTradePositionList{
+				positions: []ETradePosition{
+					&eTradePosition{
+						id: 1234,
+						jsonMap: jsonmap.JsonMap{
+							"positionId": json.Number("1234"),
+						},
+					},
+				},
+				totalsMap: jsonmap.JsonMap{
+					"testTotal": "testValue",
+				},
+			},
+			expectValue: jsonmap.JsonMap{
+				"positions": jsonmap.JsonSlice{
+					jsonmap.JsonMap{
+						"positionId": json.Number("1234"),
+					},
+				},
+				"totals": jsonmap.JsonMap{
+					"testTotal": "testValue",
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				// Call the Method Under Test
+				actualValue := tt.testPositionList.AsJsonMap()
+				assert.Equal(t, tt.expectValue, actualValue)
+			},
+		)
+	}
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type CommandMarketLookup struct {
-	Resources *CommandResources
+	Context *CommandContext
 }
 
 func (c *CommandMarketLookup) Command() *cobra.Command {
@@ -23,10 +23,10 @@ func (c *CommandMarketLookup) Command() *cobra.Command {
 }
 
 func (c *CommandMarketLookup) Lookup(search string) error {
-	response, err := c.Resources.Client.LookupProduct(search)
+	response, err := c.Context.Client.LookupProduct(search)
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintf(c.Resources.OFile, string(response))
+	_, _ = fmt.Fprintf(c.Context.OutputFile, string(response))
 	return nil
 }

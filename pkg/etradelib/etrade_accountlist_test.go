@@ -239,3 +239,31 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 		)
 	}
 }
+
+func TestETradeAccountList_AsJsonMap(t *testing.T) {
+	testAccountList := &eTradeAccountList{
+		accounts: []ETradeAccount{
+			&eTradeAccount{
+				id:    "Account 1 ID",
+				idKey: "Account 1 ID Key",
+				jsonMap: jsonmap.JsonMap{
+					"accountId":    "Account 1 ID",
+					"accountIdKey": "Account 1 ID Key",
+				},
+			},
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"accounts": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"accountId":    "Account 1 ID",
+				"accountIdKey": "Account 1 ID Key",
+			},
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testAccountList.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
+}

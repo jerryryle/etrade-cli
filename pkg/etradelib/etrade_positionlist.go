@@ -7,13 +7,35 @@ type ETradePositionList interface {
 	GetPositionById(positionID int64) ETradePosition
 	NextPage() string
 	AddPage(positionListResponseMap jsonmap.JsonMap) error
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradePositionList struct {
-	positions     []ETradePosition
-	totalsJsonMap jsonmap.JsonMap
-	nextPage      string
+	positions []ETradePosition
+	totalsMap jsonmap.JsonMap
+	nextPage  string
 }
+
+const (
+	// The AsJsonMap() map looks like this:
+	// {
+	//   "positions": [
+	//     {
+	//       <account info>
+	//     }
+	//   ]
+	//   "totals": {
+	//     <totals info>
+	//   }
+	// }
+	//
+
+	// PositionsListPathPositions is the path to a slice of accounts.
+	PositionsListPathPositions = ".positions"
+
+	// PositionsListPathTotals is the path to a map of totals info
+	PositionsListPathTotals = ".totals"
+)
 
 const (
 	// The portfolio (position list) response JSON looks like this:
@@ -39,13 +61,13 @@ const (
 	// The "nextPageNo" key only appears if there are more pages to fetch.
 
 	// positionListTotalsMapResponsePath is the path to a map of totals
-	positionListTotalsMapResponsePath = "portfolioResponse.totals"
+	positionListTotalsMapResponsePath = ".portfolioResponse.totals"
 
 	// positionListPositionsSliceResponsePath is the path to a slice of positions.
-	positionListPositionsSliceResponsePath = "portfolioResponse.accountPortfolio[0].position"
+	positionListPositionsSliceResponsePath = ".portfolioResponse.accountPortfolio[0].position"
 
 	// positionListNextPageStringPath is the path to the next page number string
-	positionListNextPageStringPath = "portfolioResponse.accountPortfolio[0].nextPageNo"
+	positionListNextPageStringPath = ".portfolioResponse.accountPortfolio[0].nextPageNo"
 )
 
 func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePositionList, error) {
@@ -55,9 +77,9 @@ func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePo
 	// Create a new positionList with the totals and everything else
 	// initialized to its zero value.
 	positionList := eTradePositionList{
-		positions:     []ETradePosition{},
-		totalsJsonMap: totalsMap,
-		nextPage:      "",
+		positions: []ETradePosition{},
+		totalsMap: totalsMap,
+		nextPage:  "",
 	}
 	err := positionList.AddPage(positionListResponseMap)
 	if err != nil {
@@ -104,4 +126,25 @@ func (e *eTradePositionList) AddPage(positionListResponseMap jsonmap.JsonMap) er
 	e.positions = append(e.positions, allPositions...)
 	e.nextPage = nextPage
 	return nil
+}
+
+func (e *eTradePositionList) AsJsonMap() jsonmap.JsonMap {
+	positionSlice := make(jsonmap.JsonSlice, 0, len(e.positions))
+	for _, position := range e.positions {
+		positionSlice = append(positionSlice, position.GetJsonMap())
+	}
+	var positionListMap = jsonmap.JsonMap{}
+	err := positionListMap.SetSliceAtPath(PositionsListPathPositions, positionSlice)
+	if err != nil {
+		panic(err)
+	}
+
+	if e.totalsMap != nil {
+		err := positionListMap.SetMapAtPath(PositionsListPathTotals, e.totalsMap)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return positionListMap
 }

@@ -10,8 +10,8 @@ type commandAccountsBalancesFlags struct {
 }
 
 type CommandAccountsBalances struct {
-	Resources *CommandResources
-	flags     commandAccountsBalancesFlags
+	Context *CommandContext
+	flags   commandAccountsBalancesFlags
 }
 
 func (c *CommandAccountsBalances) Command() *cobra.Command {
@@ -29,10 +29,10 @@ func (c *CommandAccountsBalances) Command() *cobra.Command {
 }
 
 func (c *CommandAccountsBalances) GetAccountBalances(accountKeyId string) error {
-	response, err := c.Resources.Client.GetAccountBalances(accountKeyId, c.flags.realTimeBalance)
+	response, err := c.Context.Client.GetAccountBalances(accountKeyId, c.flags.realTimeBalance)
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintln(c.Resources.OFile, string(response))
+	_, _ = fmt.Fprintln(c.Context.OutputFile, string(response))
 	return nil
 }

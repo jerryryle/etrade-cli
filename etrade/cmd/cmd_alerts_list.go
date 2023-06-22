@@ -7,7 +7,7 @@ import (
 )
 
 type CommandAlertsList struct {
-	Resources *CommandResources
+	Context *CommandContext
 }
 
 func (c *CommandAlertsList) Command() *cobra.Command {
@@ -23,12 +23,12 @@ func (c *CommandAlertsList) Command() *cobra.Command {
 }
 
 func (c *CommandAlertsList) ListAlerts() error {
-	response, err := c.Resources.Client.ListAlerts(
+	response, err := c.Context.Client.ListAlerts(
 		-1, constants.AlertCategoryNil, constants.AlertStatusNil, constants.SortOrderNil, "",
 	)
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintln(c.Resources.OFile, string(response))
+	_, _ = fmt.Fprintln(c.Context.OutputFile, string(response))
 	return nil
 }

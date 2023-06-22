@@ -6,7 +6,7 @@ import (
 )
 
 type CommandAccountsList struct {
-	Resources *CommandResources
+	Context *CommandContext
 }
 
 func (c *CommandAccountsList) Command() *cobra.Command {
@@ -22,10 +22,10 @@ func (c *CommandAccountsList) Command() *cobra.Command {
 }
 
 func (c *CommandAccountsList) ListAccounts() error {
-	response, err := c.Resources.Client.ListAccounts()
+	response, err := c.Context.Client.ListAccounts()
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintln(c.Resources.OFile, string(response))
+	_, _ = fmt.Fprintln(c.Context.OutputFile, string(response))
 	return nil
 }

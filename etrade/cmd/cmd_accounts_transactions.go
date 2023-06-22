@@ -5,7 +5,7 @@ import (
 )
 
 type CommandAccountsTransactions struct {
-	Resources *CommandResources
+	Context *CommandContext
 }
 
 func (c *CommandAccountsTransactions) Command() *cobra.Command {
@@ -15,8 +15,8 @@ func (c *CommandAccountsTransactions) Command() *cobra.Command {
 		Long:  "Perform actions on account transactions",
 	}
 	// Add Subcommands
-	cmd.AddCommand((&CommandAccountsTransactionsList{Resources: c.Resources}).Command())
-	cmd.AddCommand((&CommandAccountsTransactionsDetails{Resources: c.Resources}).Command())
+	cmd.AddCommand((&CommandAccountsTransactionsList{Context: c.Context}).Command())
+	cmd.AddCommand((&CommandAccountsTransactionsDetails{Context: c.Context}).Command())
 
 	return cmd
 }

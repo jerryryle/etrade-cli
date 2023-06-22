@@ -6,7 +6,7 @@ import (
 
 type CommandAlerts struct {
 	GlobalFlags *GlobalFlags
-	resources   CommandResources
+	context     CommandContext
 }
 
 func (c *CommandAlerts) Command() *cobra.Command {
@@ -15,20 +15,21 @@ func (c *CommandAlerts) Command() *cobra.Command {
 		Short: "Alert actions",
 		Long:  "Perform actions on alerts",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			resources, err := NewCommandResources(
+			context, err := NewCommandContext(
 				c.GlobalFlags.customerId, c.GlobalFlags.debug, c.GlobalFlags.outputFileName,
+				c.GlobalFlags.outputFormat.Value(),
 			)
 			if err != nil {
 				return err
 			}
-			c.resources = *resources
+			c.context = *context
 			return nil
 		},
 		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
-			return CleanupCommandResources(&c.resources)
+			return CleanupCommandContext(&c.context)
 		},
 	}
 	// Add Subcommands
-	cmd.AddCommand((&CommandAlertsList{Resources: &c.resources}).Command())
+	cmd.AddCommand((&CommandAlertsList{Context: &c.context}).Command())
 	return cmd
 }

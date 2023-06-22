@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/etrade/cmd/renderers"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
@@ -17,8 +18,8 @@ type accountsPortfolioFlags struct {
 }
 
 type CommandAccountsPortfolio struct {
-	Resources *CommandResources
-	flags     accountsPortfolioFlags
+	Context *CommandContext
+	flags   accountsPortfolioFlags
 }
 
 func (c *CommandAccountsPortfolio) Command() *cobra.Command {
@@ -96,12 +97,12 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 	// be lowered to test the pagination logic.
 	const countPerRequest = constants.PortfolioMaxCount
 
-	account, err := GetAccountById(c.Resources.Client, accountId)
+	account, err := GetAccountById(c.Context.Client, accountId)
 	if err != nil {
 		return err
 	}
 
-	response, err := c.Resources.Client.ViewPortfolio(
+	response, err := c.Context.Client.ViewPortfolio(
 		account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), "",
 		c.flags.marketSession.Value(),
 		c.flags.totalsRequired, c.flags.lotsRequired, c.flags.portfolioView.Value(),
@@ -120,7 +121,7 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 	}
 
 	for positionList.NextPage() != "" {
-		response, err = c.Resources.Client.ViewPortfolio(
+		response, err = c.Context.Client.ViewPortfolio(
 			account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(),
 			positionList.NextPage(),
 			c.flags.marketSession.Value(), c.flags.totalsRequired, c.flags.lotsRequired, c.flags.portfolioView.Value(),
@@ -138,7 +139,16 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 			return err
 		}
 	}
-	_, _ = fmt.Fprintf(c.Resources.OFile, "%#v", positionList)
+
+	if c.Context.OutputFormatJson {
+		err = renderers.PositionListRenderJson(c.Context.OutputFile, positionList, c.Context.OutputFormatPretty)
+	} else {
+		err = renderers.PositionListRenderText(c.Context.OutputFile, positionList)
+	}
+	if err != nil {
+		return err
+	}
+	//_, _ = fmt.Fprintf(c.Context.OutputFile, "%#v", positionList)
 	return nil
 }
 

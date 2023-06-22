@@ -8,15 +8,19 @@ import (
 	"os"
 )
 
-type CommandResources struct {
-	Logger *slog.Logger
-	Client client.ETradeClient
-	OFile  *os.File
+type CommandContext struct {
+	Logger             *slog.Logger
+	Client             client.ETradeClient
+	OutputFile         *os.File
+	OutputFormatJson   bool
+	OutputFormatPretty bool
 
 	closeOFile bool
 }
 
-func NewCommandResources(customerId string, debug bool, outputFile string) (*CommandResources, error) {
+func NewCommandContext(customerId string, debug bool, outputFileName string, format OutputFormat) (
+	*CommandContext, error,
+) {
 	// Set the default log level, based on the verbose flag.
 	var logLevel = slog.LevelError
 	if debug {
@@ -53,14 +57,28 @@ func NewCommandResources(customerId string, debug bool, outputFile string) (*Com
 	cacheFilePath := getFileCachePathForCustomer(userHomeFolder, customerConfig.CustomerConsumerKey)
 
 	// Set the command output destination
-	oDest := os.Stdout
+	OutputFile := os.Stdout
 	closeOFile := false
-	if outputFile != "" {
-		oDest, err = os.Create(outputFile)
+	if outputFileName != "" {
+		OutputFile, err = os.Create(outputFileName)
 		if err != nil {
 			return nil, err
 		}
 		closeOFile = true
+	}
+
+	// Set up output format variables.
+	// TODO: Revisit this to see if creating an output renderer makes more sense.
+	var json, pretty bool
+	switch format {
+	case OutputFormatText:
+		json = false
+	case OutputFormatJson:
+		json = true
+		pretty = false
+	case OutputFormatJsonPretty:
+		json = true
+		pretty = true
 	}
 
 	// Create an ETrade client that's authorized for the customer
@@ -75,17 +93,19 @@ func NewCommandResources(customerId string, debug bool, outputFile string) (*Com
 		return nil, err
 	}
 
-	return &CommandResources{
-		Logger:     logger,
-		Client:     etradeClient,
-		OFile:      oDest,
-		closeOFile: closeOFile,
+	return &CommandContext{
+		Logger:             logger,
+		Client:             etradeClient,
+		OutputFile:         OutputFile,
+		OutputFormatJson:   json,
+		OutputFormatPretty: pretty,
+		closeOFile:         closeOFile,
 	}, nil
 }
 
-func CleanupCommandResources(resources *CommandResources) error {
-	if resources.closeOFile {
-		err := resources.OFile.Close()
+func CleanupCommandContext(context *CommandContext) error {
+	if context.closeOFile {
+		err := context.OutputFile.Close()
 		if err != nil {
 			return err
 		}

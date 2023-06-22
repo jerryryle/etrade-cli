@@ -7,7 +7,7 @@ import (
 )
 
 type CommandOrdersList struct {
-	Resources *CommandResources
+	Context *CommandContext
 }
 
 func (c *CommandOrdersList) Command() *cobra.Command {
@@ -24,13 +24,13 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 }
 
 func (c *CommandOrdersList) ListOrders(accountKeyId string) error {
-	response, err := c.Resources.Client.ListOrders(
+	response, err := c.Context.Client.ListOrders(
 		accountKeyId, "", -1, constants.OrderStatusNil, nil, nil, nil, constants.OrderSecurityTypeNil,
 		constants.OrderTransactionTypeNil, constants.MarketSessionNil,
 	)
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintf(c.Resources.OFile, string(response))
+	_, _ = fmt.Fprintf(c.Context.OutputFile, string(response))
 	return nil
 }

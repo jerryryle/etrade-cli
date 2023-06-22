@@ -13,5 +13,4 @@ const (
 	OutputFormatText = iota
 	OutputFormatJson
 	OutputFormatJsonPretty
-	OutputFormatCsv
 )

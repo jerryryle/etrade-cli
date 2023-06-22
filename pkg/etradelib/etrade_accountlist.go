@@ -7,6 +7,7 @@ import (
 type ETradeAccountList interface {
 	GetAllAccounts() []ETradeAccount
 	GetAccountById(accountID string) ETradeAccount
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradeAccountList struct {
@@ -15,9 +16,9 @@ type eTradeAccountList struct {
 
 const (
 	// The account list response JSON looks like this:
-	// "AccountListResponse": {
-	//   "Accounts": {
-	//     "Account": [
+	// "accountListResponse": {
+	//   "accounts": {
+	//     "account": [
 	//       {
 	//         <account info>
 	//       }
@@ -27,6 +28,18 @@ const (
 
 	// accountsSliceResponsePath is the path to a slice of accounts.
 	accountsSliceResponsePath = "accountListResponse.accounts.account"
+)
+
+const (
+	// The ToJsonMap() map looks like this:
+	// "accounts": [
+	//   {
+	//     <account info>
+	//   }
+	// ]
+
+	// accountsToJsonMapPath is the path to a slice of accounts.
+	accountsToJsonMapPath = "accounts"
 )
 
 func CreateETradeAccountList(accountListResponseMap jsonmap.JsonMap) (ETradeAccountList, error) {
@@ -56,4 +69,17 @@ func (e *eTradeAccountList) GetAccountById(accountID string) ETradeAccount {
 		}
 	}
 	return nil
+}
+
+func (e *eTradeAccountList) AsJsonMap() jsonmap.JsonMap {
+	accountSlice := make(jsonmap.JsonSlice, 0, len(e.accounts))
+	for _, account := range e.accounts {
+		accountSlice = append(accountSlice, account.GetJsonMap())
+	}
+	var accountListMap = jsonmap.JsonMap{}
+	err := accountListMap.SetSliceAtPath(accountsToJsonMapPath, accountSlice)
+	if err != nil {
+		panic(err)
+	}
+	return accountListMap
 }
