@@ -2,6 +2,8 @@
   <dictionary name="jerry">
     <words>
       <w>bools</w>
+      <w>ints</w>
+      <w>ryle</w>
     </words>
   </dictionary>
 </component>
