@@ -28,7 +28,7 @@ func NewNormalizedJsonMap(responseBytes []byte) (jsonmap.JsonMap, error) {
 
 // lowerCaseKey returns the input key with its first letter lower-cased.
 // It returns the input value untouched.
-func lowerCaseKey(_ int, key string, value interface{}) (string, interface{}) {
+func lowerCaseKey(_ []interface{}, _ int, key string, value interface{}) (string, interface{}) {
 	return lowerCaseFirstRuneInString(key), value
 }
 

@@ -56,6 +56,21 @@ func TestJsonMap_Map(t *testing.T) {
 			},
 		},
 		{
+			name: "Map Can Drop Map Keys",
+			testFn: func() JsonMap {
+				dropKey2 := func(
+					elementPath []interface{}, ancestorSliceIndex int, key string, value interface{},
+				) (string, interface{}) {
+					if key == "Key 2" {
+						return "", nil
+					}
+					return key, value
+				}
+				return testJsonMap.Map(dropKey2, nil)
+			},
+			expectValue: JsonMap{"Key 1": JsonMap{}},
+		},
+		{
 			name: "Map Can Replace Map Values",
 			testFn: func() JsonMap {
 				replaceMapStringValuesInSlice := func(

@@ -33,18 +33,43 @@ func TestJsonSlice_Map(t *testing.T) {
 			testFn: func() JsonSlice {
 				replaceChildSliceValuesWithInt := func(
 					elementPath []interface{}, ancestorSliceIndex int, index int, value interface{},
-				) interface{} {
+				) (interface{}, bool) {
+					// Only replace values within a nested slice
 					if ancestorSliceIndex >= 0 {
 						// Replace the old value with an integer based on the current index
-						return index
+						return index, true
 					}
-					// Return the original value since we're not currently in a slice.
-					return value
+					// Return the original value since we're not currently in a nested slice.
+					return value, true
 				}
 				return testJsonSlice.Map(nil, replaceChildSliceValuesWithInt)
 			},
 			expectValue: JsonSlice{
 				JsonSlice{0, 1},
+			},
+		},
+		{
+			name: "Map Can Drop Values From Slice",
+			testFn: func() JsonSlice {
+				replaceChildSliceValuesWithInt := func(
+					elementPath []interface{}, ancestorSliceIndex int, index int, value interface{},
+				) (interface{}, bool) {
+					// Drop the second element from the slice
+					if index == 1 {
+						return nil, false
+					}
+					return value, true
+				}
+				return testJsonSlice.Map(nil, replaceChildSliceValuesWithInt)
+			},
+			expectValue: JsonSlice{
+				JsonSlice{
+					JsonMap{
+						"Key 1": JsonMap{
+							"Key 2": "Value 2",
+						},
+					},
+				},
 			},
 		},
 	}
@@ -105,13 +130,13 @@ func TestJsonSlice_ElementPath(t *testing.T) {
 
 	recordSliceElementPath := func(
 		elementPath []interface{}, ancestorSliceIndex int, index int, value interface{},
-	) interface{} {
+	) (interface{}, bool) {
 		// Need to copy the element path because map will continue to update it
 		// and if we store references to it, they'll be invalid later.
 		elementPathCopy := make([]interface{}, len(elementPath))
 		copy(elementPathCopy, elementPath)
 		actualSliceElementPath = append(actualSliceElementPath, elementPathCopy)
-		return value
+		return value, true
 	}
 
 	_ = testJsonSlice.Map(recordMapElementPath, recordSliceElementPath)
