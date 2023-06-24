@@ -80,7 +80,7 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 		)
 	}
 	if customerId == "" {
-		return nil, errors.New("customer id must be specified with --customerId flag")
+		return nil, errors.New("customer id must be specified with --customer-id flag")
 	}
 	customerConfig, err := customerConfigStore.GetCustomerConfigurationById(customerId)
 	if err != nil {
