@@ -20,6 +20,8 @@ type CommandContext struct {
 func NewCommandContext(customerId string, debug bool, outputFileName string, format OutputFormat) (
 	*CommandContext, error,
 ) {
+	var err error
+
 	// Set the default log level, based on the verbose flag.
 	var logLevel = slog.LevelError
 	if debug {
@@ -32,6 +34,32 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 		Level:     logLevel,
 	}
 	logger := slog.New(slog.NewJSONHandler(os.Stderr, &logHandlerOptions))
+
+	// Set the command output destination
+	outputFile := os.Stdout
+	closeOFile := false
+	if outputFileName != "" {
+		outputFile, err = os.Create(outputFileName)
+		if err != nil {
+			return nil, err
+		}
+		closeOFile = true
+	}
+
+	// Set up output renderer
+	renderer := JsonRenderer(nil)
+	switch format {
+	case OutputFormatJson:
+		renderer = &jsonRenderer{
+			outputFile: outputFile,
+			pretty:     false,
+		}
+	case OutputFormatJsonPretty:
+		renderer = &jsonRenderer{
+			outputFile: outputFile,
+			pretty:     true,
+		}
+	}
 
 	// Load the configuration file and locate the configuration for the requested customer ID
 	userHomeFolder, err := getUserHomeFolder()
@@ -54,33 +82,6 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 		return nil, fmt.Errorf("customer id '%s' not found in config file at %s", customerId, cfgFilePath)
 	}
 	cacheFilePath := getFileCachePathForCustomer(userHomeFolder, customerConfig.CustomerConsumerKey)
-
-	// Set the command output destination
-	outputFile := os.Stdout
-	closeOFile := false
-	if outputFileName != "" {
-		outputFile, err = os.Create(outputFileName)
-		if err != nil {
-			return nil, err
-		}
-		closeOFile = true
-	}
-
-	// Set up output format variables.
-	// TODO: Revisit this to see if creating an output renderer makes more sense.
-	renderer := JsonRenderer(nil)
-	switch format {
-	case OutputFormatJson:
-		renderer = &jsonRenderer{
-			outputFile: outputFile,
-			pretty:     false,
-		}
-	case OutputFormatJsonPretty:
-		renderer = &jsonRenderer{
-			outputFile: outputFile,
-			pretty:     true,
-		}
-	}
 
 	// Create an ETrade client that's authorized for the customer
 	eTradeClient, err := createClientWithCredentialCache(
