@@ -6,6 +6,7 @@ import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/session"
 	"golang.org/x/exp/slog"
+	"os"
 	"time"
 )
 
@@ -32,10 +33,10 @@ func createClientWithCredentialCache(
 		if err != nil {
 			return nil, err
 		}
-		fmt.Printf("Visit this URL to get a validation code:\n%s\n\n", authUrl)
+		_, _ = fmt.Fprintf(os.Stderr, "Visit this URL to get a validation code:\n%s\n\n", authUrl)
 
 		var validationCode string
-		fmt.Print("Enter validation code: ")
+		_, _ = fmt.Fprintf(os.Stderr, "Enter validation code: ")
 		_, err = fmt.Scanln(&validationCode)
 		if err != nil {
 			return nil, err
