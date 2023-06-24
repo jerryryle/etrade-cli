@@ -53,11 +53,11 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 					}
 				}
 			}
-		}
-		if descriptor.SpaceAfter {
-			err := writer.Write(nil)
-			if err != nil {
-				return err
+			if descriptor.SpaceAfter {
+				err = writer.Write(nil)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}
