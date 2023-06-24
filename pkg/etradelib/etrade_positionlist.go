@@ -7,6 +7,7 @@ type ETradePositionList interface {
 	GetPositionById(positionID int64) ETradePosition
 	NextPage() string
 	AddPage(positionListResponseMap jsonmap.JsonMap) error
+	AddPageFromResponse(response []byte) error
 	AsJsonMap() jsonmap.JsonMap
 }
 
@@ -70,6 +71,14 @@ const (
 	positionListNextPageStringPath = ".portfolioResponse.accountPortfolio[0].nextPageNo"
 )
 
+func CreateETradePositionListFromResponse(response []byte) (ETradePositionList, error) {
+	responseMap, err := NewNormalizedJsonMap(response)
+	if err != nil {
+		return nil, err
+	}
+	return CreateETradePositionList(responseMap)
+}
+
 func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePositionList, error) {
 	// the totals are optional, so ignore any error and accept a possibly-nil map.
 	totalsMap, _ := positionListResponseMap.GetMapAtPath(positionListTotalsMapResponsePath)
@@ -103,6 +112,14 @@ func (e *eTradePositionList) GetPositionById(positionID int64) ETradePosition {
 
 func (e *eTradePositionList) NextPage() string {
 	return e.nextPage
+}
+
+func (e *eTradePositionList) AddPageFromResponse(response []byte) error {
+	responseMap, err := NewNormalizedJsonMap(response)
+	if err != nil {
+		return err
+	}
+	return e.AddPage(responseMap)
 }
 
 func (e *eTradePositionList) AddPage(positionListResponseMap jsonmap.JsonMap) error {

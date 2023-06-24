@@ -110,11 +110,7 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		return err
 	}
 
-	responseMap, err := etradelib.NewNormalizedJsonMap(response)
-	if err != nil {
-		return err
-	}
-	positionList, err := etradelib.CreateETradePositionList(responseMap)
+	positionList, err := etradelib.CreateETradePositionListFromResponse(response)
 	if err != nil {
 		return err
 	}
@@ -128,12 +124,7 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		if err != nil {
 			return err
 		}
-
-		responseMap, err = etradelib.NewNormalizedJsonMap(response)
-		if err != nil {
-			return err
-		}
-		err = positionList.AddPage(responseMap)
+		err = positionList.AddPageFromResponse(response)
 		if err != nil {
 			return err
 		}
@@ -187,7 +178,7 @@ var quickViewRenderDescriptor = []RenderDescriptor{
 		},
 		ValuePaths: []string{
 			".product.symbol",
-			".quick.lastTrade", ".quick.change", ".quick.changePct", ".quick.sevenDayCurrentYield",
+			".quick.lastTrade", ".quick.change", ".quick.changePct",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
 		DefaultValue: "",
