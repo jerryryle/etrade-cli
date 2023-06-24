@@ -14,6 +14,6 @@ type jsonRenderer struct {
 	pretty     bool
 }
 
-func (j *jsonRenderer) Render(jsonMap jsonmap.JsonMap) error {
+func (j *jsonRenderer) Render(jsonMap jsonmap.JsonMap, _ []RenderDescriptor) error {
 	return jsonMap.ToIoWriter(j.outputFile, j.pretty)
 }

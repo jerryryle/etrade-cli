@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/etrade/cmd/renderers"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
@@ -140,15 +139,44 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		}
 	}
 
-	if c.Context.JsonRenderer != nil {
-		err = c.Context.JsonRenderer.Render(positionList.AsJsonMap())
-	} else {
-		err = renderers.PositionListRenderText(c.Context.OutputFile, positionList)
-	}
+	err = c.Context.Renderer.Render(positionList.AsJsonMap(), quickViewRenderDescriptor)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+var quickViewRenderDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".positions",
+		ValueHeaders: []string{
+			"Symbol",
+			"Last Price $", "Change $", "Change %",
+			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		},
+		ValuePaths: []string{
+			".product.symbol",
+			".quick.lastTrade", ".quick.change", ".quick.changePct",
+			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
+		},
+		SpaceAfter: true,
+	},
+	{
+		ObjectPath: ".totals",
+		ValueHeaders: []string{
+			"Net Account Value", "Total Gain $", "Total Gain %", "Day's Gain Unrealized $", "Day's Gain Unrealized %",
+			"Cash Balance",
+		},
+		ValuePaths: []string{
+			".totalMarketValue",
+			".totalGainLoss",
+			".totalGainLossPct",
+			".todaysGainLoss",
+			".todaysGainLossPct",
+			".cashBalance",
+		},
+		SpaceAfter: false,
+	},
 }
 
 var portfolioViewMap = map[string]enumValueWithHelp[constants.PortfolioView]{

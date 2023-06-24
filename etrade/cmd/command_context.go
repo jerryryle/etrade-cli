@@ -9,10 +9,10 @@ import (
 )
 
 type CommandContext struct {
-	Logger       *slog.Logger
-	Client       client.ETradeClient
-	JsonRenderer JsonRenderer
-	OutputFile   *os.File
+	Logger     *slog.Logger
+	Client     client.ETradeClient
+	Renderer   Renderer
+	OutputFile *os.File
 
 	closeOFile bool
 }
@@ -47,7 +47,7 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	}
 
 	// Set up output renderer
-	renderer := JsonRenderer(nil)
+	renderer := Renderer(nil)
 	switch format {
 	case OutputFormatJson:
 		renderer = &jsonRenderer{
@@ -56,6 +56,11 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 		}
 	case OutputFormatJsonPretty:
 		renderer = &jsonRenderer{
+			outputFile: outputFile,
+			pretty:     true,
+		}
+	case OutputFormatText:
+		renderer = &csvRenderer{
 			outputFile: outputFile,
 			pretty:     true,
 		}
@@ -96,11 +101,11 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	}
 
 	return &CommandContext{
-		Logger:       logger,
-		Client:       eTradeClient,
-		OutputFile:   outputFile,
-		JsonRenderer: renderer,
-		closeOFile:   closeOFile,
+		Logger:     logger,
+		Client:     eTradeClient,
+		OutputFile: outputFile,
+		Renderer:   renderer,
+		closeOFile: closeOFile,
 	}, nil
 }
 
