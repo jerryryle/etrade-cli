@@ -30,12 +30,10 @@ func (c *CommandAccountsList) ListAccounts() error {
 	if err != nil {
 		return err
 	}
-
 	err = c.Context.Renderer.Render(accountList.AsJsonMap(), accountListDescriptor)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
