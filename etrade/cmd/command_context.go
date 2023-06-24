@@ -9,11 +9,10 @@ import (
 )
 
 type CommandContext struct {
-	Logger             *slog.Logger
-	Client             client.ETradeClient
-	OutputFile         *os.File
-	OutputFormatJson   bool
-	OutputFormatPretty bool
+	Logger       *slog.Logger
+	Client       client.ETradeClient
+	JsonRenderer JsonRenderer
+	OutputFile   *os.File
 
 	closeOFile bool
 }
@@ -57,10 +56,10 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	cacheFilePath := getFileCachePathForCustomer(userHomeFolder, customerConfig.CustomerConsumerKey)
 
 	// Set the command output destination
-	OutputFile := os.Stdout
+	outputFile := os.Stdout
 	closeOFile := false
 	if outputFileName != "" {
-		OutputFile, err = os.Create(outputFileName)
+		outputFile, err = os.Create(outputFileName)
 		if err != nil {
 			return nil, err
 		}
@@ -69,16 +68,18 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 
 	// Set up output format variables.
 	// TODO: Revisit this to see if creating an output renderer makes more sense.
-	var json, pretty bool
+	renderer := JsonRenderer(nil)
 	switch format {
-	case OutputFormatText:
-		json = false
 	case OutputFormatJson:
-		json = true
-		pretty = false
+		renderer = &jsonRenderer{
+			outputFile: outputFile,
+			pretty:     false,
+		}
 	case OutputFormatJsonPretty:
-		json = true
-		pretty = true
+		renderer = &jsonRenderer{
+			outputFile: outputFile,
+			pretty:     true,
+		}
 	}
 
 	// Create an ETrade client that's authorized for the customer
@@ -94,12 +95,11 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	}
 
 	return &CommandContext{
-		Logger:             logger,
-		Client:             eTradeClient,
-		OutputFile:         OutputFile,
-		OutputFormatJson:   json,
-		OutputFormatPretty: pretty,
-		closeOFile:         closeOFile,
+		Logger:       logger,
+		Client:       eTradeClient,
+		OutputFile:   outputFile,
+		JsonRenderer: renderer,
+		closeOFile:   closeOFile,
 	}, nil
 }
 

@@ -140,15 +140,14 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		}
 	}
 
-	if c.Context.OutputFormatJson {
-		err = renderers.PositionListRenderJson(c.Context.OutputFile, positionList, c.Context.OutputFormatPretty)
+	if c.Context.JsonRenderer != nil {
+		err = c.Context.JsonRenderer.Render(positionList.AsJsonMap())
 	} else {
 		err = renderers.PositionListRenderText(c.Context.OutputFile, positionList)
 	}
 	if err != nil {
 		return err
 	}
-	//_, _ = fmt.Fprintf(c.Context.OutputFile, "%#v", positionList)
 	return nil
 }
 
