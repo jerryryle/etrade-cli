@@ -163,8 +163,9 @@ var totalsRenderDescriptor = RenderDescriptor{
 		".todaysGainLossPct",
 		".cashBalance",
 	},
-	DefaultValue: "",
-	SpaceAfter:   false,
+	ValueTransformers: nil,
+	DefaultValue:      "",
+	SpaceAfter:        false,
 }
 
 // TODO: Update these descriptors to pull out more fields
@@ -181,8 +182,9 @@ var quickViewRenderDescriptor = []RenderDescriptor{
 			".quick.lastTrade", ".quick.change", ".quick.changePct",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
+		ValueTransformers: nil,
+		DefaultValue:      "",
+		SpaceAfter:        true,
 	},
 	totalsRenderDescriptor,
 }
@@ -200,8 +202,9 @@ var performanceViewRenderDescriptor = []RenderDescriptor{
 			".performance.lastTrade", ".performance.change", ".performance.changePct",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
+		ValueTransformers: nil,
+		DefaultValue:      "",
+		SpaceAfter:        true,
 	},
 	totalsRenderDescriptor,
 }
@@ -219,8 +222,9 @@ var fundamentalViewRenderDescriptor = []RenderDescriptor{
 			".quick.lastTrade", ".quick.change", ".quick.changePct",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
+		ValueTransformers: nil,
+		DefaultValue:      "",
+		SpaceAfter:        true,
 	},
 	totalsRenderDescriptor,
 }
@@ -236,8 +240,9 @@ var optionsWatchViewRenderDescriptor = []RenderDescriptor{
 			".product.symbol",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
+		ValueTransformers: nil,
+		DefaultValue:      "",
+		SpaceAfter:        true,
 	},
 	totalsRenderDescriptor,
 }
@@ -255,8 +260,9 @@ var completeViewRenderDescriptor = []RenderDescriptor{
 			".complete.lastTrade", ".complete.change", ".complete.changePct",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
+		ValueTransformers: nil,
+		DefaultValue:      "",
+		SpaceAfter:        true,
 	},
 	totalsRenderDescriptor,
 }

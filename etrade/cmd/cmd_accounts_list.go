@@ -54,7 +54,8 @@ var accountListDescriptor = []RenderDescriptor{
 			".accountId", ".accountMode", ".accountDesc", ".accountName", ".accountType", ".institutionType",
 			".accountStatus", ".closedDate",
 		},
-		DefaultValue: "",
-		SpaceAfter:   false,
+		ValueTransformers: nil,
+		DefaultValue:      "",
+		SpaceAfter:        false,
 	},
 }
