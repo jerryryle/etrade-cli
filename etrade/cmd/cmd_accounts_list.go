@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 )
 
@@ -26,6 +26,35 @@ func (c *CommandAccountsList) ListAccounts() error {
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintln(c.Context.OutputFile, string(response))
+	responseMap, err := etradelib.NewNormalizedJsonMap(response)
+	if err != nil {
+		return err
+	}
+	accountList, err := etradelib.CreateETradeAccountList(responseMap)
+	if err != nil {
+		return err
+	}
+
+	err = c.Context.Renderer.Render(accountList.AsJsonMap(), accountListDescriptor)
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+var accountListDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".accounts",
+		ValueHeaders: []string{
+			"Account ID", "Account Mode", "Account Description", "Account Nickname", "Account Type", "Institution Type",
+			"Account Status", "Account Closed Date",
+		},
+		ValuePaths: []string{
+			".accountId", ".accountMode", ".accountDesc", ".accountName", ".accountType", ".institutionType",
+			".accountStatus", ".closedDate",
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }
