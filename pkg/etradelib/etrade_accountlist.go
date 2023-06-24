@@ -42,6 +42,14 @@ const (
 	accountsToJsonMapPath = "accounts"
 )
 
+func CreateETradeAccountListFromResponse(response []byte) (ETradeAccountList, error) {
+	responseMap, err := NewNormalizedJsonMap(response)
+	if err != nil {
+		return nil, err
+	}
+	return CreateETradeAccountList(responseMap)
+}
+
 func CreateETradeAccountList(accountListResponseMap jsonmap.JsonMap) (ETradeAccountList, error) {
 	accountsSlice, err := accountListResponseMap.GetSliceOfMapsAtPath(accountsSliceResponsePath)
 	if err != nil {

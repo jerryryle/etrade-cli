@@ -11,11 +11,7 @@ func GetAccountById(client client.ETradeClient, accountId string) (etradelib.ETr
 	if err != nil {
 		return nil, err
 	}
-	responseMap, err := etradelib.NewNormalizedJsonMap(response)
-	if err != nil {
-		return nil, err
-	}
-	accountList, err := etradelib.CreateETradeAccountList(responseMap)
+	accountList, err := etradelib.CreateETradeAccountListFromResponse(response)
 	if err != nil {
 		return nil, err
 	}

@@ -26,11 +26,7 @@ func (c *CommandAccountsList) ListAccounts() error {
 	if err != nil {
 		return err
 	}
-	responseMap, err := etradelib.NewNormalizedJsonMap(response)
-	if err != nil {
-		return err
-	}
-	accountList, err := etradelib.CreateETradeAccountList(responseMap)
+	accountList, err := etradelib.CreateETradeAccountListFromResponse(response)
 	if err != nil {
 		return err
 	}
