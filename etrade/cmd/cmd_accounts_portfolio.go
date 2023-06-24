@@ -139,14 +139,83 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		}
 	}
 
-	err = c.Context.Renderer.Render(positionList.AsJsonMap(), quickViewRenderDescriptor)
+	renderDescriptor := quickViewRenderDescriptor
+	switch c.flags.portfolioView.Value() {
+	case constants.PortfolioViewPerformance:
+		renderDescriptor = performanceViewRenderDescriptor
+	case constants.PortfolioViewFundamental:
+		renderDescriptor = fundamentalViewRenderDescriptor
+	case constants.PortfolioViewOptionsWatch:
+		renderDescriptor = optionsWatchViewRenderDescriptor
+	case constants.PortfolioViewComplete:
+		renderDescriptor = completeViewRenderDescriptor
+	}
+
+	err = c.Context.Renderer.Render(positionList.AsJsonMap(), renderDescriptor)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
+var totalsRenderDescriptor = RenderDescriptor{
+	ObjectPath: ".totals",
+	ValueHeaders: []string{
+		"Net Account Value", "Total Gain $", "Total Gain %", "Day's Gain Unrealized $", "Day's Gain Unrealized %",
+		"Cash Balance",
+	},
+	ValuePaths: []string{
+		".totalMarketValue",
+		".totalGainLoss",
+		".totalGainLossPct",
+		".todaysGainLoss",
+		".todaysGainLossPct",
+		".cashBalance",
+	},
+	DefaultValue: "",
+	SpaceAfter:   false,
+}
+
+// TODO: Update these descriptors to pull out more fields
 var quickViewRenderDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".positions",
+		ValueHeaders: []string{
+			"Symbol",
+			"Last Price $", "Change $", "Change %",
+			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		},
+		ValuePaths: []string{
+			".product.symbol",
+			".quick.lastTrade", ".quick.change", ".quick.changePct", ".quick.sevenDayCurrentYield",
+			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
+		},
+		DefaultValue: "",
+		SpaceAfter:   true,
+	},
+	totalsRenderDescriptor,
+}
+
+var performanceViewRenderDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".positions",
+		ValueHeaders: []string{
+			"Symbol",
+			"Last Price $", "Change $", "Change %",
+			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		},
+		ValuePaths: []string{
+			".product.symbol",
+			".performance.lastTrade", ".performance.change", ".performance.changePct",
+			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
+		},
+		DefaultValue: "",
+		SpaceAfter:   true,
+	},
+	totalsRenderDescriptor,
+}
+
+var fundamentalViewRenderDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".positions",
 		ValueHeaders: []string{
@@ -159,24 +228,46 @@ var quickViewRenderDescriptor = []RenderDescriptor{
 			".quick.lastTrade", ".quick.change", ".quick.changePct",
 			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		SpaceAfter: true,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
+	totalsRenderDescriptor,
+}
+
+var optionsWatchViewRenderDescriptor = []RenderDescriptor{
 	{
-		ObjectPath: ".totals",
+		ObjectPath: ".positions",
 		ValueHeaders: []string{
-			"Net Account Value", "Total Gain $", "Total Gain %", "Day's Gain Unrealized $", "Day's Gain Unrealized %",
-			"Cash Balance",
+			"Symbol",
+			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
 		},
 		ValuePaths: []string{
-			".totalMarketValue",
-			".totalGainLoss",
-			".totalGainLossPct",
-			".todaysGainLoss",
-			".todaysGainLossPct",
-			".cashBalance",
+			".product.symbol",
+			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
 		},
-		SpaceAfter: false,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
+	totalsRenderDescriptor,
+}
+
+var completeViewRenderDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".positions",
+		ValueHeaders: []string{
+			"Symbol",
+			"Last Price $", "Change $", "Change %",
+			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		},
+		ValuePaths: []string{
+			".product.symbol",
+			".complete.lastTrade", ".complete.change", ".complete.changePct",
+			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
+		},
+		DefaultValue: "",
+		SpaceAfter:   true,
+	},
+	totalsRenderDescriptor,
 }
 
 var portfolioViewMap = map[string]enumValueWithHelp[constants.PortfolioView]{

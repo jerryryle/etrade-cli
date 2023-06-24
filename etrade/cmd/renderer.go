@@ -10,5 +10,6 @@ type RenderDescriptor struct {
 	ObjectPath   string
 	ValueHeaders []string
 	ValuePaths   []string
+	DefaultValue string
 	SpaceAfter   bool
 }

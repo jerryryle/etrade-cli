@@ -29,7 +29,7 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 			err := writer.Write(descriptor.ValueHeaders)
 			switch o := object.(type) {
 			case jsonmap.JsonMap:
-				err = writer.Write(getValuesForPaths(o, descriptor.ValuePaths))
+				err = writer.Write(getValuesForPaths(o, descriptor.ValuePaths, descriptor.DefaultValue))
 				if err != nil {
 					return err
 				}
@@ -39,7 +39,7 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 					if err != nil {
 						return err
 					}
-					err = writer.Write(getValuesForPaths(element, descriptor.ValuePaths))
+					err = writer.Write(getValuesForPaths(element, descriptor.ValuePaths, descriptor.DefaultValue))
 					if err != nil {
 						return err
 					}
@@ -56,10 +56,10 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 	return nil
 }
 
-func getValuesForPaths(jsonMap jsonmap.JsonMap, paths []string) []string {
+func getValuesForPaths(jsonMap jsonmap.JsonMap, paths []string, defaultValue string) []string {
 	values := make([]string, 0, len(paths))
 	for _, path := range paths {
-		value := jsonMap.GetValueAtPathWithDefault(path, "")
+		value := jsonMap.GetValueAtPathWithDefault(path, defaultValue)
 		values = append(values, fmt.Sprintf("%v", value))
 	}
 	return values
