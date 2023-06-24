@@ -71,7 +71,7 @@ func TestETradePortfolioPosition_GetId(t *testing.T) {
 	assert.Equal(t, expectedValue, actualValue)
 }
 
-func TestETradePortfolioPosition_GetJsonMap(t *testing.T) {
+func TestETradePortfolioPosition_AsJsonMap(t *testing.T) {
 	testPortfolioPosition := &eTradePosition{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
@@ -82,6 +82,6 @@ func TestETradePortfolioPosition_GetJsonMap(t *testing.T) {
 		"positionId": json.Number("1234"),
 	}
 
-	actualValue := testPortfolioPosition.GetJsonMap()
+	actualValue := testPortfolioPosition.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

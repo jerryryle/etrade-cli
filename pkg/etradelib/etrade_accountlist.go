@@ -31,7 +31,7 @@ const (
 )
 
 const (
-	// The ToJsonMap() map looks like this:
+	// The AsJsonMap() map looks like this:
 	// "accounts": [
 	//   {
 	//     <account info>
@@ -74,7 +74,7 @@ func (e *eTradeAccountList) GetAccountById(accountID string) ETradeAccount {
 func (e *eTradeAccountList) AsJsonMap() jsonmap.JsonMap {
 	accountSlice := make(jsonmap.JsonSlice, 0, len(e.accounts))
 	for _, account := range e.accounts {
-		accountSlice = append(accountSlice, account.GetJsonMap())
+		accountSlice = append(accountSlice, account.AsJsonMap())
 	}
 	var accountListMap = jsonmap.JsonMap{}
 	err := accountListMap.SetSliceAtPath(accountsToJsonMapPath, accountSlice)

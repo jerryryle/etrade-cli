@@ -6,7 +6,7 @@ import (
 
 type ETradeAlert interface {
 	GetId() int64
-	GetJsonMap() jsonmap.JsonMap
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradeAlert struct {
@@ -41,6 +41,6 @@ func (e *eTradeAlert) GetId() int64 {
 	return e.id
 }
 
-func (e *eTradeAlert) GetJsonMap() jsonmap.JsonMap {
+func (e *eTradeAlert) AsJsonMap() jsonmap.JsonMap {
 	return e.jsonMap
 }

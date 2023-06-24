@@ -4,7 +4,7 @@ import "github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 
 type ETradePosition interface {
 	GetId() int64
-	GetJsonMap() jsonmap.JsonMap
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradePosition struct {
@@ -39,6 +39,6 @@ func (e *eTradePosition) GetId() int64 {
 	return e.id
 }
 
-func (e *eTradePosition) GetJsonMap() jsonmap.JsonMap {
+func (e *eTradePosition) AsJsonMap() jsonmap.JsonMap {
 	return e.jsonMap
 }

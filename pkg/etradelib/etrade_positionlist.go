@@ -148,7 +148,7 @@ func (e *eTradePositionList) AddPage(positionListResponseMap jsonmap.JsonMap) er
 func (e *eTradePositionList) AsJsonMap() jsonmap.JsonMap {
 	positionSlice := make(jsonmap.JsonSlice, 0, len(e.positions))
 	for _, position := range e.positions {
-		positionSlice = append(positionSlice, position.GetJsonMap())
+		positionSlice = append(positionSlice, position.AsJsonMap())
 	}
 	var positionListMap = jsonmap.JsonMap{}
 	err := positionListMap.SetSliceAtPath(PositionsListPathPositions, positionSlice)

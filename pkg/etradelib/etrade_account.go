@@ -7,7 +7,7 @@ import (
 type ETradeAccount interface {
 	GetId() string
 	GetIdKey() string
-	GetJsonMap() jsonmap.JsonMap
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradeAccount struct {
@@ -56,6 +56,6 @@ func (e *eTradeAccount) GetIdKey() string {
 	return e.idKey
 }
 
-func (e *eTradeAccount) GetJsonMap() jsonmap.JsonMap {
+func (e *eTradeAccount) AsJsonMap() jsonmap.JsonMap {
 	return e.jsonMap
 }

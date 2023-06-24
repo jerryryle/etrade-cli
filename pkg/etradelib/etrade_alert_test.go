@@ -71,7 +71,7 @@ func TestETradeAlert_GetId(t *testing.T) {
 	assert.Equal(t, expectedValue, actualValue)
 }
 
-func TestETradeAlert_GetJsonMap(t *testing.T) {
+func TestETradeAlert_AsJsonMap(t *testing.T) {
 	testAlert := &eTradeAlert{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
@@ -82,6 +82,6 @@ func TestETradeAlert_GetJsonMap(t *testing.T) {
 		"id": json.Number("1234"),
 	}
 
-	actualValue := testAlert.GetJsonMap()
+	actualValue := testAlert.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }
