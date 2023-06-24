@@ -151,40 +151,36 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 
 var totalsRenderDescriptor = RenderDescriptor{
 	ObjectPath: ".totals",
-	ValueHeaders: []string{
-		"Net Account Value", "Total Gain $", "Total Gain %", "Day's Gain Unrealized $", "Day's Gain Unrealized %",
-		"Cash Balance",
+	Values: []RenderValue{
+		{Header: "Net Account Value", Path: ".totalMarketValue"},
+		{Header: "Total Gain $", Path: ".totalGainLoss"},
+		{Header: "Total Gain %", Path: ".totalGainLossPct"},
+		{Header: "Day's Gain Unrealized $", Path: ".todaysGainLoss"},
+		{Header: "Day's Gain Unrealized %", Path: ".todaysGainLossPct"},
+		{Header: "Cash Balance", Path: ".cashBalance"},
 	},
-	ValuePaths: []string{
-		".totalMarketValue",
-		".totalGainLoss",
-		".totalGainLossPct",
-		".todaysGainLoss",
-		".todaysGainLossPct",
-		".cashBalance",
-	},
-	ValueTransformers: nil,
-	DefaultValue:      "",
-	SpaceAfter:        false,
+	DefaultValue: "",
+	SpaceAfter:   false,
 }
 
 // TODO: Update these descriptors to pull out more fields
 var quickViewRenderDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".positions",
-		ValueHeaders: []string{
-			"Symbol",
-			"Last Price $", "Change $", "Change %",
-			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		Values: []RenderValue{
+			{Header: "Symbol", Path: ".product.symbol"},
+			{Header: "Last Price $", Path: ".quick.lastTrade"},
+			{Header: "Change $", Path: ".quick.change"},
+			{Header: "Change %", Path: ".quick.changePct"},
+			{Header: "Quantity", Path: ".quantity"},
+			{Header: "Price Paid $", Path: ".pricePaid"},
+			{Header: "Day's Gain $", Path: ".daysGain"},
+			{Header: "Total Gain $", Path: ".totalGain"},
+			{Header: "Total Gain %", Path: ".totalGainPct"},
+			{Header: "Value $", Path: ".marketValue"},
 		},
-		ValuePaths: []string{
-			".product.symbol",
-			".quick.lastTrade", ".quick.change", ".quick.changePct",
-			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
-		},
-		ValueTransformers: nil,
-		DefaultValue:      "",
-		SpaceAfter:        true,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
 	totalsRenderDescriptor,
 }
@@ -192,19 +188,20 @@ var quickViewRenderDescriptor = []RenderDescriptor{
 var performanceViewRenderDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".positions",
-		ValueHeaders: []string{
-			"Symbol",
-			"Last Price $", "Change $", "Change %",
-			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		Values: []RenderValue{
+			{Header: "Symbol", Path: ".product.symbol"},
+			{Header: "Last Price $", Path: ".performance.lastTrade"},
+			{Header: "Change $", Path: ".performance.change"},
+			{Header: "Change %", Path: ".performance.changePct"},
+			{Header: "Quantity", Path: ".quantity"},
+			{Header: "Price Paid $", Path: ".pricePaid"},
+			{Header: "Day's Gain $", Path: ".daysGain"},
+			{Header: "Total Gain $", Path: ".totalGain"},
+			{Header: "Total Gain %", Path: ".totalGainPct"},
+			{Header: "Value $", Path: ".marketValue"},
 		},
-		ValuePaths: []string{
-			".product.symbol",
-			".performance.lastTrade", ".performance.change", ".performance.changePct",
-			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
-		},
-		ValueTransformers: nil,
-		DefaultValue:      "",
-		SpaceAfter:        true,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
 	totalsRenderDescriptor,
 }
@@ -212,19 +209,20 @@ var performanceViewRenderDescriptor = []RenderDescriptor{
 var fundamentalViewRenderDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".positions",
-		ValueHeaders: []string{
-			"Symbol",
-			"Last Price $", "Change $", "Change %",
-			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		Values: []RenderValue{
+			{Header: "Symbol", Path: ".product.symbol"},
+			{Header: "Last Price $", Path: ".fundamental.lastTrade"},
+			{Header: "Change $", Path: ".fundamental.change"},
+			{Header: "Change %", Path: ".fundamental.changePct"},
+			{Header: "Quantity", Path: ".quantity"},
+			{Header: "Price Paid $", Path: ".pricePaid"},
+			{Header: "Day's Gain $", Path: ".daysGain"},
+			{Header: "Total Gain $", Path: ".totalGain"},
+			{Header: "Total Gain %", Path: ".totalGainPct"},
+			{Header: "Value $", Path: ".marketValue"},
 		},
-		ValuePaths: []string{
-			".product.symbol",
-			".quick.lastTrade", ".quick.change", ".quick.changePct",
-			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
-		},
-		ValueTransformers: nil,
-		DefaultValue:      "",
-		SpaceAfter:        true,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
 	totalsRenderDescriptor,
 }
@@ -232,17 +230,17 @@ var fundamentalViewRenderDescriptor = []RenderDescriptor{
 var optionsWatchViewRenderDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".positions",
-		ValueHeaders: []string{
-			"Symbol",
-			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		Values: []RenderValue{
+			{Header: "Symbol", Path: ".product.symbol"},
+			{Header: "Quantity", Path: ".quantity"},
+			{Header: "Price Paid $", Path: ".pricePaid"},
+			{Header: "Day's Gain $", Path: ".daysGain"},
+			{Header: "Total Gain $", Path: ".totalGain"},
+			{Header: "Total Gain %", Path: ".totalGainPct"},
+			{Header: "Value $", Path: ".marketValue"},
 		},
-		ValuePaths: []string{
-			".product.symbol",
-			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
-		},
-		ValueTransformers: nil,
-		DefaultValue:      "",
-		SpaceAfter:        true,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
 	totalsRenderDescriptor,
 }
@@ -250,19 +248,20 @@ var optionsWatchViewRenderDescriptor = []RenderDescriptor{
 var completeViewRenderDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".positions",
-		ValueHeaders: []string{
-			"Symbol",
-			"Last Price $", "Change $", "Change %",
-			"Quantity", "Price Paid $", "Day's Gain $", "Total Gain $", "Total Gain %", "Value $",
+		Values: []RenderValue{
+			{Header: "Symbol", Path: ".product.symbol"},
+			{Header: "Last Price $", Path: ".complete.lastTrade"},
+			{Header: "Change $", Path: ".complete.change"},
+			{Header: "Change %", Path: ".complete.changePct"},
+			{Header: "Quantity", Path: ".quantity"},
+			{Header: "Price Paid $", Path: ".pricePaid"},
+			{Header: "Day's Gain $", Path: ".daysGain"},
+			{Header: "Total Gain $", Path: ".totalGain"},
+			{Header: "Total Gain %", Path: ".totalGainPct"},
+			{Header: "Value $", Path: ".marketValue"},
 		},
-		ValuePaths: []string{
-			".product.symbol",
-			".complete.lastTrade", ".complete.change", ".complete.changePct",
-			".quantity", ".pricePaid", ".daysGain", ".totalGain", ".totalGainPct", ".marketValue",
-		},
-		ValueTransformers: nil,
-		DefaultValue:      "",
-		SpaceAfter:        true,
+		DefaultValue: "",
+		SpaceAfter:   true,
 	},
 	totalsRenderDescriptor,
 }

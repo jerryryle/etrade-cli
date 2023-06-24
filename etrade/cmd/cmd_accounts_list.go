@@ -46,16 +46,17 @@ func (c *CommandAccountsList) ListAccounts() error {
 var accountListDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".accounts",
-		ValueHeaders: []string{
-			"Account ID", "Account Mode", "Account Description", "Account Nickname", "Account Type", "Institution Type",
-			"Account Status", "Account Closed Date",
+		Values: []RenderValue{
+			{Header: "Account ID", Path: ".accountId"},
+			{Header: "Account Mode", Path: ".accountMode"},
+			{Header: "Account Description", Path: ".accountDesc"},
+			{Header: "Account Nickname", Path: ".accountName"},
+			{Header: "Account Type", Path: ".accountType"},
+			{Header: "Institution Type", Path: ".institutionType"},
+			{Header: "Account Status", Path: ".accountStatus"},
+			{Header: "Account Closed Date", Path: ".closedDate"},
 		},
-		ValuePaths: []string{
-			".accountId", ".accountMode", ".accountDesc", ".accountName", ".accountType", ".institutionType",
-			".accountStatus", ".closedDate",
-		},
-		ValueTransformers: nil,
-		DefaultValue:      "",
-		SpaceAfter:        false,
+		DefaultValue: "",
+		SpaceAfter:   false,
 	},
 }

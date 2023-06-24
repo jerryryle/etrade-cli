@@ -9,10 +9,14 @@ type Renderer interface {
 type TransformerFn func(value interface{}) interface{}
 
 type RenderDescriptor struct {
-	ObjectPath        string
-	ValueHeaders      []string
-	ValuePaths        []string
-	ValueTransformers []TransformerFn
-	DefaultValue      string
-	SpaceAfter        bool
+	ObjectPath   string
+	Values       []RenderValue
+	DefaultValue string
+	SpaceAfter   bool
+}
+
+type RenderValue struct {
+	Header      string
+	Path        string
+	Transformer TransformerFn
 }

@@ -26,13 +26,11 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 			object = jsonMap.GetValueAtPathWithDefault(descriptor.ObjectPath, nil)
 		}
 		if object != nil {
-			err := writer.Write(descriptor.ValueHeaders)
+			err := writer.Write(getHeadersForRenderValues(descriptor.Values))
 			switch o := object.(type) {
 			case jsonmap.JsonMap:
 				err = writer.Write(
-					getValuesForPaths(
-						o, descriptor.ValuePaths, descriptor.ValueTransformers, descriptor.DefaultValue,
-					),
+					getValuesForRenderValues(o, descriptor.Values, descriptor.DefaultValue),
 				)
 				if err != nil {
 					return err
@@ -44,9 +42,7 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 						return err
 					}
 					err = writer.Write(
-						getValuesForPaths(
-							element, descriptor.ValuePaths, descriptor.ValueTransformers, descriptor.DefaultValue,
-						),
+						getValuesForRenderValues(element, descriptor.Values, descriptor.DefaultValue),
 					)
 					if err != nil {
 						return err
@@ -64,16 +60,24 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 	return nil
 }
 
-func getValuesForPaths(
-	jsonMap jsonmap.JsonMap, paths []string, valueTransformers []TransformerFn, defaultValue string,
+func getValuesForRenderValues(
+	jsonMap jsonmap.JsonMap, renderValues []RenderValue, defaultValue string,
 ) []string {
-	values := make([]string, 0, len(paths))
-	for i, path := range paths {
-		value := jsonMap.GetValueAtPathWithDefault(path, defaultValue)
-		if len(valueTransformers) > i && valueTransformers[i] != nil {
-			value = valueTransformers[i](value)
+	values := make([]string, 0, len(renderValues))
+	for _, renderValue := range renderValues {
+		value := jsonMap.GetValueAtPathWithDefault(renderValue.Path, defaultValue)
+		if renderValue.Transformer != nil {
+			value = renderValue.Transformer(value)
 		}
 		values = append(values, fmt.Sprintf("%v", value))
 	}
 	return values
+}
+
+func getHeadersForRenderValues(renderValues []RenderValue) []string {
+	headers := make([]string, 0, len(renderValues))
+	for _, value := range renderValues {
+		headers = append(headers, value.Header)
+	}
+	return headers
 }
