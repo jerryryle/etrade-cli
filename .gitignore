@@ -1,3 +1,6 @@
+# Binary produced by "make build"
+etrade/etrade
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -16,4 +19,3 @@
 
 # Go workspace file
 go.work
-
