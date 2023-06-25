@@ -3,12 +3,12 @@ package etradelib
 import "github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 
 type ETradeTransaction interface {
-	GetId() int64
-	GetJsonMap() jsonmap.JsonMap
+	GetId() string
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradeTransaction struct {
-	id      int64
+	id      string
 	jsonMap jsonmap.JsonMap
 }
 
@@ -24,7 +24,7 @@ const (
 )
 
 func CreateETradeTransaction(transactionJsonMap jsonmap.JsonMap) (ETradeTransaction, error) {
-	transactionId, err := transactionJsonMap.GetInt(transactionIdResponseKey)
+	transactionId, err := transactionJsonMap.GetString(transactionIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
@@ -35,10 +35,10 @@ func CreateETradeTransaction(transactionJsonMap jsonmap.JsonMap) (ETradeTransact
 	}, nil
 }
 
-func (e *eTradeTransaction) GetId() int64 {
+func (e *eTradeTransaction) GetId() string {
 	return e.id
 }
 
-func (e *eTradeTransaction) GetJsonMap() jsonmap.JsonMap {
+func (e *eTradeTransaction) AsJsonMap() jsonmap.JsonMap {
 	return e.jsonMap
 }

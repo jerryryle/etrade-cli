@@ -1,7 +1,6 @@
 package etradelib
 
 import (
-	"encoding/json"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,10 +21,10 @@ func TestCreateETradeTransactionList(t *testing.T) {
   "TransactionListResponse": {
     "Transaction": [
       {
-        "transactionId": 1234
+        "transactionId": "1234"
       },
       {
-        "transactionId": 5678
+        "transactionId": "5678"
       }
     ]
   }
@@ -34,15 +33,15 @@ func TestCreateETradeTransactionList(t *testing.T) {
 			expectValue: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
-						id: 1234,
+						id: "1234",
 						jsonMap: jsonmap.JsonMap{
-							"transactionId": json.Number("1234"),
+							"transactionId": "1234",
 						},
 					},
 					&eTradeTransaction{
-						id: 5678,
+						id: "5678",
 						jsonMap: jsonmap.JsonMap{
-							"transactionId": json.Number("5678"),
+							"transactionId": "5678",
 						},
 					},
 				},
@@ -107,30 +106,30 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 			testTransactionList: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
-						id: 1234,
+						id: "1234",
 						jsonMap: jsonmap.JsonMap{
-							"transactionId": json.Number("1234"),
+							"transactionId": "1234",
 						},
 					},
 					&eTradeTransaction{
-						id: 5678,
+						id: "5678",
 						jsonMap: jsonmap.JsonMap{
-							"transactionId": json.Number("5678"),
+							"transactionId": "5678",
 						},
 					},
 				},
 			},
 			expectValue: []ETradeTransaction{
 				&eTradeTransaction{
-					id: 1234,
+					id: "1234",
 					jsonMap: jsonmap.JsonMap{
-						"transactionId": json.Number("1234"),
+						"transactionId": "1234",
 					},
 				},
 				&eTradeTransaction{
-					id: 5678,
+					id: "5678",
 					jsonMap: jsonmap.JsonMap{
-						"transactionId": json.Number("5678"),
+						"transactionId": "5678",
 					},
 				},
 			},
@@ -159,7 +158,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 	tests := []struct {
 		name                string
 		testTransactionList ETradeTransactionList
-		testTransactionID   int64
+		testTransactionID   string
 		expectValue         ETradeTransaction
 	}{
 		{
@@ -167,18 +166,18 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 			testTransactionList: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
-						id: 1234,
+						id: "1234",
 						jsonMap: jsonmap.JsonMap{
-							"transactionId": json.Number("1234"),
+							"transactionId": "1234",
 						},
 					},
 				},
 			},
-			testTransactionID: 1234,
+			testTransactionID: "1234",
 			expectValue: &eTradeTransaction{
-				id: 1234,
+				id: "1234",
 				jsonMap: jsonmap.JsonMap{
-					"transactionId": json.Number("1234"),
+					"transactionId": "1234",
 				},
 			},
 		},
@@ -187,14 +186,14 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 			testTransactionList: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
-						id: 1234,
+						id: "1234",
 						jsonMap: jsonmap.JsonMap{
-							"transactionId": json.Number("1234"),
+							"transactionId": "1234",
 						},
 					},
 				},
 			},
-			testTransactionID: 5678,
+			testTransactionID: "5678",
 			expectValue:       nil,
 		},
 	}
@@ -208,4 +207,118 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 			},
 		)
 	}
+}
+
+func TestETradeTransactionList_AddPage(t *testing.T) {
+	type pageTest struct {
+		testJson    string
+		expectErr   bool
+		expectValue ETradeTransactionList
+	}
+	tests := []struct {
+		name      string
+		pageTests []pageTest
+	}{
+		{
+			name: "AddPage Can Add Pages",
+			pageTests: []pageTest{
+				{
+					testJson: `
+{
+  "TransactionListResponse": {
+    "marker": "2",
+    "Transaction": [
+      {
+        "transactionId": "1234"
+      }
+    ]
+  }
+}`,
+					expectErr: false,
+					expectValue: &eTradeTransactionList{
+						transactions: []ETradeTransaction{
+							&eTradeTransaction{
+								id: "1234",
+								jsonMap: jsonmap.JsonMap{
+									"transactionId": "1234",
+								},
+							},
+						},
+						nextPage: "2",
+					},
+				},
+				{
+					testJson: `
+{
+  "TransactionListResponse": {
+    "Transaction": [
+      {
+        "transactionId": "5678"
+      }
+    ]
+  }
+}`,
+					expectErr: false,
+					expectValue: &eTradeTransactionList{
+						transactions: []ETradeTransaction{
+							&eTradeTransaction{
+								id: "1234",
+								jsonMap: jsonmap.JsonMap{
+									"transactionId": "1234",
+								},
+							},
+							// Transactions in subsequent pages are appended to
+							// the transaction list.
+							&eTradeTransaction{
+								id: "5678",
+								jsonMap: jsonmap.JsonMap{
+									"transactionId": "5678",
+								},
+							},
+						},
+						nextPage: "",
+					},
+				},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				var transactionList ETradeTransactionList
+				for testIndex, pt := range tt.pageTests {
+					responseMap, err := NewNormalizedJsonMap([]byte(pt.testJson))
+					require.Nil(t, err)
+
+					if testIndex == 0 {
+						transactionList, err = CreateETradeTransactionList(responseMap)
+					} else {
+						// Call the Method Under Test
+						err = transactionList.AddPage(responseMap)
+					}
+					if pt.expectErr {
+						assert.Error(t, err)
+					} else {
+						assert.Nil(t, err)
+					}
+					assert.Equal(t, pt.expectValue, transactionList)
+				}
+			},
+		)
+	}
+}
+
+func TestETradeTransactionList_NextPage(t *testing.T) {
+	testTransactionList := &eTradeTransactionList{
+		transactions: []ETradeTransaction{},
+		nextPage:     "1234",
+	}
+	assert.Equal(t, "1234", testTransactionList.NextPage())
+
+	testTransactionList = &eTradeTransactionList{
+		transactions: []ETradeTransaction{},
+		nextPage:     "",
+	}
+	assert.Equal(t, "", testTransactionList.NextPage())
 }

@@ -33,5 +33,6 @@ func (c *CommandAccounts) Command() *cobra.Command {
 	cmd.AddCommand((&CommandAccountsList{Context: &c.context}).Command())
 	cmd.AddCommand((&CommandAccountsBalances{Context: &c.context}).Command())
 	cmd.AddCommand((&CommandAccountsPortfolio{Context: &c.context}).Command())
+	cmd.AddCommand((&CommandAccountsTransactions{Context: &c.context}).Command())
 	return cmd
 }

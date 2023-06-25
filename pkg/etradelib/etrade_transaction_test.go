@@ -1,7 +1,6 @@
 package etradelib
 
 import (
-	"encoding/json"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,13 +18,13 @@ func TestCreateETradeTransaction(t *testing.T) {
 			name: "CreateETradeTransaction Creates Transaction With Valid Response",
 			testJson: `
 {
-  "transactionId": 1234
+  "transactionId": "1234"
 }`,
 			expectErr: false,
 			expectValue: &eTradeTransaction{
-				id: 1234,
+				id: "1234",
 				jsonMap: jsonmap.JsonMap{
-					"transactionId": json.Number("1234"),
+					"transactionId": "1234",
 				},
 			},
 		},
@@ -60,28 +59,28 @@ func TestCreateETradeTransaction(t *testing.T) {
 
 func TestETradeTransaction_GetId(t *testing.T) {
 	testTransaction := &eTradeTransaction{
-		id: 1234,
+		id: "1234",
 		jsonMap: jsonmap.JsonMap{
-			"transactionId": json.Number("1234"),
+			"transactionId": "1234",
 		},
 	}
-	expectedValue := int64(1234)
+	expectedValue := "1234"
 
 	actualValue := testTransaction.GetId()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
-func TestETradeTransaction_GetJsonMap(t *testing.T) {
+func TestETradeTransaction_AsJsonMap(t *testing.T) {
 	testTransaction := &eTradeTransaction{
-		id: 1234,
+		id: "1234",
 		jsonMap: jsonmap.JsonMap{
-			"transactionId": json.Number("1234"),
+			"transactionId": "1234",
 		},
 	}
 	expectedValue := jsonmap.JsonMap{
-		"transactionId": json.Number("1234"),
+		"transactionId": "1234",
 	}
 
-	actualValue := testTransaction.GetJsonMap()
+	actualValue := testTransaction.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }
