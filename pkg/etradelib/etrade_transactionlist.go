@@ -59,24 +59,16 @@ func CreateETradeTransactionListFromResponse(response []byte) (
 }
 
 func CreateETradeTransactionList(transactionListResponseMap jsonmap.JsonMap) (ETradeTransactionList, error) {
-	transactionsSlice, err := transactionListResponseMap.GetSliceOfMapsAtPath(transactionsListSliceResponsePath)
+	// Create a new orderList with everything initialized to its zero value.
+	transactionList := eTradeTransactionList{
+		transactions: []ETradeTransaction{},
+		nextPage:     "",
+	}
+	err := transactionList.AddPage(transactionListResponseMap)
 	if err != nil {
 		return nil, err
 	}
-
-	// the marker key only appears if there are more pages, so ignore any
-	// error and accept a possibly-zero int.
-	nextPage, _ := transactionListResponseMap.GetStringAtPath(transactionsListMarkerStringPath)
-
-	allTransactions := make([]ETradeTransaction, 0, len(transactionsSlice))
-	for _, transactionJsonMap := range transactionsSlice {
-		transaction, err := CreateETradeTransaction(transactionJsonMap)
-		if err != nil {
-			return nil, err
-		}
-		allTransactions = append(allTransactions, transaction)
-	}
-	return &eTradeTransactionList{transactions: allTransactions, nextPage: nextPage}, nil
+	return &transactionList, nil
 }
 
 func (e *eTradeTransactionList) GetAllTransactions() []ETradeTransaction {
@@ -110,7 +102,7 @@ func (e *eTradeTransactionList) AddPage(transactionListResponseMap jsonmap.JsonM
 		return err
 	}
 
-	// the nextPage key only appears if there are more pages, so ignore any
+	// the marker key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
 	nextPage, _ := transactionListResponseMap.GetStringAtPath(transactionsListMarkerStringPath)
 
