@@ -149,20 +149,18 @@ func (e *eTradeOptionChainPairList) GetAllOptionChainPairs() []ETradeOptionChain
 func (e *eTradeOptionChainPairList) AsJsonMap() jsonmap.JsonMap {
 	var optionChainPairListMap = jsonmap.JsonMap{}
 
-	if len(e.optionChainPairs) > 0 {
-		optionChainPairsSlice := make(jsonmap.JsonSlice, 0, len(e.optionChainPairs))
-		for _, optionChainPair := range e.optionChainPairs {
-			optionChainPairsSlice = append(optionChainPairsSlice, optionChainPair.AsJsonMap())
-		}
-		err := optionChainPairListMap.SetSliceAtPath(
-			OptionChainPairListOptionChainPairsSliceJsonMapPath, optionChainPairsSlice,
-		)
-		if err != nil {
-			panic(err)
-		}
+	optionChainPairsSlice := make(jsonmap.JsonSlice, 0, len(e.optionChainPairs))
+	for _, optionChainPair := range e.optionChainPairs {
+		optionChainPairsSlice = append(optionChainPairsSlice, optionChainPair.AsJsonMap())
+	}
+	err := optionChainPairListMap.SetSliceAtPath(
+		OptionChainPairListOptionChainPairsSliceJsonMapPath, optionChainPairsSlice,
+	)
+	if err != nil {
+		panic(err)
 	}
 
-	err := optionChainPairListMap.SetIntAtPath(OptionChainPairTimeStampJsonMapPath, e.timeStamp)
+	err = optionChainPairListMap.SetIntAtPath(OptionChainPairTimeStampJsonMapPath, e.timeStamp)
 	if err != nil {
 		panic(err)
 	}
