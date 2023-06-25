@@ -20,7 +20,7 @@ const (
 	// The account response JSON looks like this:
 	// {
 	//   "accountId": "12345678",
-	//   "accountIdKey": "abcdefghijklmnop",
+	//   "accountIdKey": "account id key",
 	//   <other account keys/values>
 	// }
 

@@ -11,12 +11,12 @@ type marketOptionExpireFlags struct {
 	expiryType enumFlagValue[constants.OptionExpiryType]
 }
 
-type CommandMarketOptionexpire struct {
+type CommandMarketOptionExpire struct {
 	Context *CommandContext
 	flags   marketOptionExpireFlags
 }
 
-func (c *CommandMarketOptionexpire) Command() *cobra.Command {
+func (c *CommandMarketOptionExpire) Command() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "optionexpire [symbol]",
 		Short: "Get option expire dates",
@@ -45,7 +45,7 @@ func (c *CommandMarketOptionexpire) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *CommandMarketOptionexpire) GetOptionExpireDates(symbol string) error {
+func (c *CommandMarketOptionExpire) GetOptionExpireDates(symbol string) error {
 	response, err := c.Context.Client.GetOptionExpireDates(symbol, c.flags.expiryType.Value())
 	if err != nil {
 		return err

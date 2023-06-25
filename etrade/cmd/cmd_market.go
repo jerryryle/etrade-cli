@@ -32,7 +32,7 @@ func (c *CommandMarket) Command() *cobra.Command {
 	// Add Subcommands
 	cmd.AddCommand((&CommandMarketLookup{Context: &c.context}).Command())
 	cmd.AddCommand((&CommandMarketQuote{Context: &c.context}).Command())
-	cmd.AddCommand((&CommandMarketOptionchains{Context: &c.context}).Command())
-	cmd.AddCommand((&CommandMarketOptionexpire{Context: &c.context}).Command())
+	cmd.AddCommand((&CommandMarketOptionChains{Context: &c.context}).Command())
+	cmd.AddCommand((&CommandMarketOptionExpire{Context: &c.context}).Command())
 	return cmd
 }

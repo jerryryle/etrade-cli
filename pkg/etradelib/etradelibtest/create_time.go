@@ -7,7 +7,7 @@ import "time"
 // a known memory location. For example, it might exist solely in a register for the return call. But creating a local
 // variable and returning its address will ensure that the time.Time object is created on the heap. These helper
 // functions do just that. They're also useful for non-pointer struct initialization since the result can be
-// dereferenced for assignment to a non-pointer struct member.
+// de-referenced for assignment to a non-pointer struct member.
 
 func CreateTime(year int, month time.Month, day, hour, min, sec, nsec int, loc *time.Location) *time.Time {
 	theTime := time.Date(year, month, day, hour, min, sec, nsec, loc)
