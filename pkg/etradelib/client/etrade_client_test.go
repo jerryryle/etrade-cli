@@ -361,7 +361,7 @@ func TestETradeClient(t *testing.T) {
 					constants.MarketSessionRegular,
 				)
 			},
-			expectUrl:      "https://api.etrade.com/v1/accounts/1234/orders?count=5&fromDate=01012023&marker=TestMarker&marketSession=REGULAR&securityType=EQ&status=OPEN&symbols=A%2CB&toDate=01022023&transactionType=BUY",
+			expectUrl:      "https://api.etrade.com/v1/accounts/1234/orders?count=5&fromDate=01012023&marker=TestMarker&marketSession=REGULAR&securityType=EQ&status=OPEN&symbol=A%2CB&toDate=01022023&transactionType=BUY",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
 		},

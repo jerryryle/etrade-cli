@@ -357,7 +357,7 @@ func (c *eTradeClient) ListOrders(
 				"%d symbols provided, which exceeds the limit of %d", len(symbols), constants.ListOrdersMaxSymbols,
 			)
 		}
-		queryValues.Add("symbols", strings.Join(symbols, ","))
+		queryValues.Add("symbol", strings.Join(symbols, ","))
 	}
 	if securityType != constants.OrderSecurityTypeNil {
 		queryValues.Add("securityType", securityType.String())

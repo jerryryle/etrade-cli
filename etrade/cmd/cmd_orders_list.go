@@ -1,29 +1,116 @@
 package cmd
 
 import (
+	"errors"
+	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
+	"time"
 )
+
+type ordersListFlags struct {
+	fromDate        string
+	toDate          string
+	status          enumFlagValue[constants.OrderStatus]
+	securityType    enumFlagValue[constants.OrderSecurityType]
+	transactionType enumFlagValue[constants.OrderTransactionType]
+	marketSession   enumFlagValue[constants.MarketSession]
+	symbols         string
+}
 
 type CommandOrdersList struct {
 	Context *CommandContext
+	flags   ordersListFlags
 }
 
 func (c *CommandOrdersList) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list [account ID]",
+		Use:   "list [account ID] <symbol> ...",
 		Short: "List orders",
-		Long:  "List orders",
-		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
+		Long:  "List orders (with optional list of symbols to filter on)",
+		Args:  cobra.MatchAll(cobra.RangeArgs(1, 26)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.ListOrders(args[0])
+			var fromDate, toDate *time.Time = nil, nil
+			var err error
+			if c.flags.fromDate != "" {
+				*fromDate, err = time.Parse("01022006", c.flags.fromDate)
+				if err != nil {
+					return errors.New("from date must be in format MMDDYYYY")
+				}
+			}
+			if c.flags.toDate != "" {
+				*toDate, err = time.Parse("01022006", c.flags.toDate)
+				if err != nil {
+					return errors.New("to date must be in format MMDDYYYY")
+				}
+			}
+
+			return c.ListOrders(args[0], fromDate, toDate, args[1:])
 		},
 	}
+
+	// Add Flags
+	cmd.Flags().StringVarP(&c.flags.fromDate, "from-date", "f", "", "from date (MMDDYYYY)")
+	cmd.Flags().StringVarP(&c.flags.toDate, "to-date", "t", "", "to date (MMDDYYYY)")
+
+	// Initialize Enum Flag Values
+	c.flags.status = *newEnumFlagValue(orderStatusMap, constants.OrderStatusNil)
+	c.flags.securityType = *newEnumFlagValue(orderSecurityTypeMap, constants.OrderSecurityTypeNil)
+	c.flags.transactionType = *newEnumFlagValue(orderTransactionTypeMap, constants.OrderTransactionTypeNil)
+	c.flags.marketSession = *newEnumFlagValue(marketSessionMap, constants.MarketSessionNil)
+
+	// Add Enum Flags
+	cmd.Flags().VarP(
+		&c.flags.status, "status", "s",
+		fmt.Sprintf("order status (%s)", c.flags.status.JoinAllowedValues(", ")),
+	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"status",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.status.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
+	cmd.Flags().VarP(
+		&c.flags.status, "security-type", "c",
+		fmt.Sprintf("security type (%s)", c.flags.securityType.JoinAllowedValues(", ")),
+	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"security-type",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.securityType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
+	cmd.Flags().VarP(
+		&c.flags.status, "transaction-type", "y",
+		fmt.Sprintf("transaction type (%s)", c.flags.transactionType.JoinAllowedValues(", ")),
+	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"transaction-type",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.transactionType.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
+	cmd.Flags().VarP(
+		&c.flags.status, "market-session", "m",
+		fmt.Sprintf("market session (%s)", c.flags.marketSession.JoinAllowedValues(", ")),
+	)
+	_ = cmd.RegisterFlagCompletionFunc(
+		"market-session",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.marketSession.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
+
 	return cmd
 }
 
-func (c *CommandOrdersList) ListOrders(accountId string) error {
+func (c *CommandOrdersList) ListOrders(
+	accountId string, fromDate *time.Time, toDate *time.Time, symbols []string,
+) error {
 	// This determines how many order items will be retrieved in each request.
 	// This should normally be set to the max for efficiency, but can be
 	// lowered to test the pagination logic.
@@ -35,9 +122,8 @@ func (c *CommandOrdersList) ListOrders(accountId string) error {
 	}
 
 	response, err := c.Context.Client.ListOrders(
-		account.GetIdKey(), "", countPerRequest, constants.OrderStatusNil, nil, nil, nil,
-		constants.OrderSecurityTypeNil,
-		constants.OrderTransactionTypeNil, constants.MarketSessionNil,
+		account.GetIdKey(), "", countPerRequest, constants.OrderStatusNil, fromDate, toDate, symbols,
+		c.flags.securityType.Value(), c.flags.transactionType.Value(), c.flags.marketSession.Value(),
 	)
 	if err != nil {
 		return err
@@ -50,9 +136,8 @@ func (c *CommandOrdersList) ListOrders(accountId string) error {
 
 	for orderList.NextPage() != "" {
 		response, err = c.Context.Client.ListOrders(
-			account.GetIdKey(), orderList.NextPage(), countPerRequest, constants.OrderStatusNil, nil, nil, nil,
-			constants.OrderSecurityTypeNil,
-			constants.OrderTransactionTypeNil, constants.MarketSessionNil,
+			account.GetIdKey(), orderList.NextPage(), countPerRequest, constants.OrderStatusNil, fromDate, toDate,
+			symbols, c.flags.securityType.Value(), c.flags.transactionType.Value(), c.flags.marketSession.Value(),
 		)
 		if err != nil {
 			return err
@@ -160,4 +245,30 @@ var orderListDescriptor = []RenderDescriptor{
 		DefaultValue: "",
 		SpaceAfter:   false,
 	},
+}
+
+var orderStatusMap = map[string]enumValueWithHelp[constants.OrderStatus]{
+	"open":            {constants.OrderStatusOpen, "only open orders"},
+	"executed":        {constants.OrderStatusExecuted, "only executed orders"},
+	"canceled":        {constants.OrderStatusCanceled, "only canceled orders"},
+	"individualFills": {constants.OrderStatusIndividualFills, "only orders with individual fills"},
+	"cancelRequested": {constants.OrderStatusCancelRequested, "only cancel requested orders"},
+	"expired":         {constants.OrderStatusExpired, "only expired orders"},
+	"rejected":        {constants.OrderStatusRejected, "only rejected orders"},
+}
+
+var orderSecurityTypeMap = map[string]enumValueWithHelp[constants.OrderSecurityType]{
+	"equity":          {constants.OrderSecurityTypeEquity, "only equity orders"},
+	"option":          {constants.OrderSecurityTypeOption, "only option orders"},
+	"mutualFund":      {constants.OrderSecurityTypeMutualFund, "only mutual fund orders"},
+	"moneyMarketFund": {constants.OrderSecurityTypeMoneyMarketFund, "only money market fund orders"},
+}
+
+var orderTransactionTypeMap = map[string]enumValueWithHelp[constants.OrderTransactionType]{
+	"extendedHours":      {constants.OrderTransactionTypeExtendedHours, "only extended hours orders"},
+	"buy":                {constants.OrderTransactionTypeBuy, "only buy orders"},
+	"sell":               {constants.OrderTransactionTypeSell, "only sell orders"},
+	"short":              {constants.OrderTransactionTypeShort, "only short orders"},
+	"buyToCover":         {constants.OrderTransactionTypeBuyToCover, "only buy to cover orders"},
+	"mutualFundExchange": {constants.OrderTransactionTypeMutualFundExchange, "only mutual fund exchange orders"},
 }
