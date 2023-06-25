@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 )
 
@@ -27,6 +27,26 @@ func (c *CommandMarketLookup) Lookup(search string) error {
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintf(c.Context.OutputFile, string(response))
+	lookupResultsList, err := etradelib.CreateETradeLookupResultListFromResponse(response)
+	if err != nil {
+		return err
+	}
+	err = c.Context.Renderer.Render(lookupResultsList.AsJsonMap(), resultListDescriptor)
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+var resultListDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".results",
+		Values: []RenderValue{
+			{Header: "Symbol", Path: ".symbol"},
+			{Header: "Description", Path: ".description"},
+			{Header: "Type", Path: ".type"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }
