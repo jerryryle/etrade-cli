@@ -54,7 +54,7 @@ const (
 	// quoteListQuotesSliceResponsePath is the path to a slice of quotes.
 	quoteListQuotesSliceResponsePath = ".quoteResponse.quoteData"
 
-	// quoteListQuotesSliceResponsePath is the path to a slice of messages.
+	// quoteListMessagesSliceResponsePath is the path to a slice of messages.
 	quoteListMessagesSliceResponsePath = ".quoteResponse.messages.message"
 )
 
