@@ -23,7 +23,7 @@ func (c *RootCommand) Command() *cobra.Command {
 	)
 
 	// Initialize Global Enum Flag Values
-	c.globalFlags.outputFormat = *newEnumFlagValue(outputFormatMap, OutputFormatText)
+	c.globalFlags.outputFormat = *newEnumFlagValue(outputFormatMap, OutputFormatCsv)
 
 	// Add Global Enum Flags
 	cmd.PersistentFlags().Var(
@@ -48,7 +48,7 @@ func (c *RootCommand) Command() *cobra.Command {
 }
 
 var outputFormatMap = map[string]enumValueWithHelp[OutputFormat]{
-	"text":       {OutputFormatText, "text output"},
+	"csv":        {OutputFormatCsv, "CSV output"},
 	"json":       {OutputFormatJson, "raw JSON output"},
 	"jsonPretty": {OutputFormatJsonPretty, "formatted JSON output"},
 }

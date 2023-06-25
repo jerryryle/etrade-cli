@@ -10,7 +10,7 @@ type GlobalFlags struct {
 type OutputFormat int
 
 const (
-	OutputFormatText = iota
+	OutputFormatCsv = iota
 	OutputFormatJson
 	OutputFormatJsonPretty
 )

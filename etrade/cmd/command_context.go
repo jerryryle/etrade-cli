@@ -54,7 +54,7 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 			outputFile: outputFile,
 			pretty:     true,
 		}
-	case OutputFormatText:
+	case OutputFormatCsv:
 		renderer = &csvRenderer{
 			outputFile: outputFile,
 			pretty:     true,
