@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -92,8 +93,14 @@ func (c *CommandMarketOptionchains) GetOptionChains(symbol string) error {
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintf(c.Context.OutputFile, string(response))
-
+	optionChains, err := etradelib.CreateETradeOptionChainPairListFromResponse(response)
+	if err != nil {
+		return err
+	}
+	err = c.Context.Renderer.Render(optionChains.AsJsonMap(), optionChainsDescriptor)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -112,4 +119,77 @@ var chainTypeMap = map[string]enumValueWithHelp[constants.OptionChainType]{
 var priceTypeMap = map[string]enumValueWithHelp[constants.OptionPriceType]{
 	"extendedHours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
 	"all":           {constants.OptionPriceTypeAll, "all price types"},
+}
+
+var optionChainsDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: "",
+		Values: []RenderValue{
+			{Header: "Timestamp", Path: ".timeStamp", Transformer: dateTimeTransformer},
+			{Header: "Quote Type", Path: ".quoteType"},
+			{Header: "Near Price", Path: ".nearPrice"},
+			{Header: "Selected Month", Path: ".selected.month"},
+			{Header: "Selected Year", Path: ".selected.year"},
+			{Header: "Selected Day", Path: ".selected.day"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   true,
+	},
+	{
+		ObjectPath: ".optionChainPairs",
+		Values: []RenderValue{
+			{Header: "Call Option Category", Path: ".call.optionCategory"},
+			{Header: "Call Option Root Symbol", Path: ".call.optionRootSymbol"},
+			{Header: "Call Time Stamp", Path: ".call.timeStamp", Transformer: dateTimeTransformer},
+			{Header: "Call Adjusted", Path: ".call.adjustedFlag"},
+			{Header: "Call Display Symbol", Path: ".call.displaySymbol"},
+			{Header: "Call Option Type", Path: ".call.optionType"},
+			{Header: "Call Strike Price", Path: ".call.strikePrice"},
+			{Header: "Call Symbol", Path: ".call.symbol"},
+			{Header: "Call Bid", Path: ".call.bid"},
+			{Header: "Call Ask", Path: ".call.ask"},
+			{Header: "Call Bid Size", Path: ".call.bidSize"},
+			{Header: "Call Ask Size", Path: ".call.askSize"},
+			{Header: "Call In The Money", Path: ".call.inTheMoney"},
+			{Header: "Call Volume", Path: ".call.volume"},
+			{Header: "Call Open Interest", Path: ".call.openInterest"},
+			{Header: "Call Net Change", Path: ".call.netChange"},
+			{Header: "Call Last Price", Path: ".call.lastPrice"},
+			{Header: "Call Options Symbology Initiative Key", Path: ".call.osiKey"},
+			{Header: "Call Rho", Path: ".call.optionGreeks.rho"},
+			{Header: "Call Vega", Path: ".call.optionGreeks.vega"},
+			{Header: "Call Theta", Path: ".call.optionGreeks.theta"},
+			{Header: "Call Delta", Path: ".call.optionGreeks.delta"},
+			{Header: "Call Gamma", Path: ".call.optionGreeks.gamma"},
+			{Header: "Call Implied Volatility", Path: ".call.optionGreeks.iv"},
+			{Header: "Call Current Value", Path: ".call.optionGreeks.currentValue"},
+			{Header: "Put Option Category", Path: ".put.optionCategory"},
+			{Header: "Put Option Root Symbol", Path: ".put.optionRootSymbol"},
+			{Header: "Put Time Stamp", Path: ".put.timeStamp", Transformer: dateTimeTransformer},
+			{Header: "Put Adjusted", Path: ".put.adjustedFlag"},
+			{Header: "Put Display Symbol", Path: ".put.displaySymbol"},
+			{Header: "Put Option Type", Path: ".put.optionType"},
+			{Header: "Put Strike Price", Path: ".put.strikePrice"},
+			{Header: "Put Symbol", Path: ".put.symbol"},
+			{Header: "Put Bid", Path: ".put.bid"},
+			{Header: "Put Ask", Path: ".put.ask"},
+			{Header: "Put Bid Size", Path: ".put.bidSize"},
+			{Header: "Put Ask Size", Path: ".put.askSize"},
+			{Header: "Put In The Money", Path: ".put.inTheMoney"},
+			{Header: "Put Volume", Path: ".put.volume"},
+			{Header: "Put Open Interest", Path: ".put.openInterest"},
+			{Header: "Put Net Change", Path: ".put.netChange"},
+			{Header: "Put Last Price", Path: ".put.lastPrice"},
+			{Header: "Put Options Symbology Initiative Key", Path: ".put.osiKey"},
+			{Header: "Put Rho", Path: ".put.optionGreeks.rho"},
+			{Header: "Put Vega", Path: ".put.optionGreeks.vega"},
+			{Header: "Put Theta", Path: ".put.optionGreeks.theta"},
+			{Header: "Put Delta", Path: ".put.optionGreeks.delta"},
+			{Header: "Put Gamma", Path: ".put.optionGreeks.gamma"},
+			{Header: "Put Implied Volatility", Path: ".put.optionGreeks.iv"},
+			{Header: "Put Current Value", Path: ".put.optionGreeks.currentValue"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }
