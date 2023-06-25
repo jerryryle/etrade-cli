@@ -1,5 +1,9 @@
 package constants
 
+// AlertsMaxCount is the maximum count that can be included in a List Alerts
+// request.
+const AlertsMaxCount = 300
+
 // AlertCategory specifies the category of an alert for alert queries.
 // See the constants below for semantics.
 type AlertCategory int

@@ -5,11 +5,24 @@ import "github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 type ETradeAlertList interface {
 	GetAllAlerts() []ETradeAlert
 	GetAlertById(alertID int64) ETradeAlert
+	AsJsonMap() jsonmap.JsonMap
 }
 
 type eTradeAlertList struct {
 	alerts []ETradeAlert
 }
+
+const (
+	// The AsJsonMap() map looks like this:
+	// "alerts": [
+	//   {
+	//     <alert info>
+	//   }
+	// ]
+
+	// AlertsListAlertsJsonMapPath is the path to a slice of accounts.
+	AlertsListAlertsJsonMapPath = ".alerts"
+)
 
 const (
 	// The alert list response JSON looks like this:
@@ -23,12 +36,20 @@ const (
 	//   }
 	// }
 
-	// alertsSliceResponsePath is the path to a slice of alerts.
-	alertsSliceResponsePath = "alertsResponse.alert"
+	// alertsListAlertsSliceResponsePath is the path to a slice of alerts.
+	alertsListAlertsSliceResponsePath = ".alertsResponse.alert"
 )
 
+func CreateETradeAlertListFromResponse(response []byte) (ETradeAlertList, error) {
+	responseMap, err := NewNormalizedJsonMap(response)
+	if err != nil {
+		return nil, err
+	}
+	return CreateETradeAlertList(responseMap)
+}
+
 func CreateETradeAlertList(alertListResponseMap jsonmap.JsonMap) (ETradeAlertList, error) {
-	alertsSlice, err := alertListResponseMap.GetSliceOfMapsAtPath(alertsSliceResponsePath)
+	alertsSlice, err := alertListResponseMap.GetSliceOfMapsAtPath(alertsListAlertsSliceResponsePath)
 	if err != nil {
 		return nil, err
 	}
@@ -54,4 +75,17 @@ func (e *eTradeAlertList) GetAlertById(alertID int64) ETradeAlert {
 		}
 	}
 	return nil
+}
+
+func (e *eTradeAlertList) AsJsonMap() jsonmap.JsonMap {
+	alertsSlice := make(jsonmap.JsonSlice, 0, len(e.alerts))
+	for _, alert := range e.alerts {
+		alertsSlice = append(alertsSlice, alert.AsJsonMap())
+	}
+	var alertListMap = jsonmap.JsonMap{}
+	err := alertListMap.SetSliceAtPath(AlertsListAlertsJsonMapPath, alertsSlice)
+	if err != nil {
+		panic(err)
+	}
+	return alertListMap
 }
