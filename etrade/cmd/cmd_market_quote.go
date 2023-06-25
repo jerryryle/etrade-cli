@@ -96,6 +96,17 @@ var detailMap = map[string]enumValueWithHelp[constants.QuoteDetailFlag]{
 	"mutualFund":  {constants.QuoteDetailMutualFund, "get mutual fund details"},
 }
 
+var quoteListMessagesDescriptor = RenderDescriptor{
+	ObjectPath: ".messages",
+	Values: []RenderValue{
+		{Header: "Description", Path: ".description", Transformer: dateTimeTransformer},
+		{Header: "Code", Path: ".code"},
+		{Header: "Type", Path: ".type"},
+	},
+	DefaultValue: "",
+	SpaceAfter:   false,
+}
+
 var quoteListAllDescriptor = []RenderDescriptor{
 	{
 		ObjectPath: ".quotes",
@@ -162,8 +173,9 @@ var quoteListAllDescriptor = []RenderDescriptor{
 			{Header: "Average Volume", Path: ".all.averageVolume"},
 		},
 		DefaultValue: "",
-		SpaceAfter:   false,
+		SpaceAfter:   true,
 	},
+	quoteListMessagesDescriptor,
 }
 
 var quoteListFundamentalDescriptor = []RenderDescriptor{
@@ -185,8 +197,9 @@ var quoteListFundamentalDescriptor = []RenderDescriptor{
 			{Header: "Symbol Description", Path: ".fundamental.symbolDescription"},
 		},
 		DefaultValue: "",
-		SpaceAfter:   false,
+		SpaceAfter:   true,
 	},
+	quoteListMessagesDescriptor,
 }
 
 var quoteListIntradayDescriptor = []RenderDescriptor{
@@ -210,8 +223,9 @@ var quoteListIntradayDescriptor = []RenderDescriptor{
 			{Header: "Total Volume", Path: ".intraday.totalVolume"},
 		},
 		DefaultValue: "",
-		SpaceAfter:   false,
+		SpaceAfter:   true,
 	},
+	quoteListMessagesDescriptor,
 }
 
 var quoteListOptionDescriptor = []RenderDescriptor{
@@ -249,8 +263,9 @@ var quoteListOptionDescriptor = []RenderDescriptor{
 			{Header: "Current Value", Path: ".option.optionGreeks.currentValue"},
 		},
 		DefaultValue: "",
-		SpaceAfter:   false,
+		SpaceAfter:   true,
 	},
+	quoteListMessagesDescriptor,
 }
 
 var quoteListWeek52Descriptor = []RenderDescriptor{
@@ -273,8 +288,9 @@ var quoteListWeek52Descriptor = []RenderDescriptor{
 			{Header: "Total Volume", Path: ".week52.totalVolume"},
 		},
 		DefaultValue: "",
-		SpaceAfter:   false,
+		SpaceAfter:   true,
 	},
+	quoteListMessagesDescriptor,
 }
 
 var quoteListMutualFundDescriptor = []RenderDescriptor{
@@ -346,6 +362,7 @@ var quoteListMutualFundDescriptor = []RenderDescriptor{
 			{Header: "Exchange Code", Path: ".mutualFund.exchangeCode"},
 		},
 		DefaultValue: "",
-		SpaceAfter:   false,
+		SpaceAfter:   true,
 	},
+	quoteListMessagesDescriptor,
 }
