@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestCreateETradeLookup(t *testing.T) {
+func TestCreateETradeLookupResult(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -47,8 +47,8 @@ func TestCreateETradeLookup(t *testing.T) {
 	}
 }
 
-func TestETradeLookup_AsJsonMap(t *testing.T) {
-	testLookup := &eTradeLookupResult{
+func TestETradeLookupResult_AsJsonMap(t *testing.T) {
+	testResult := &eTradeLookupResult{
 		jsonMap: jsonmap.JsonMap{
 			"key": "value",
 		},
@@ -57,6 +57,6 @@ func TestETradeLookup_AsJsonMap(t *testing.T) {
 		"key": "value",
 	}
 
-	actualValue := testLookup.AsJsonMap()
+	actualValue := testResult.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }
