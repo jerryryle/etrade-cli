@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -49,7 +50,14 @@ func (c *CommandMarketOptionexpire) GetOptionExpireDates(symbol string) error {
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintf(c.Context.OutputFile, string(response))
+	optionExpireDates, err := etradelib.CreateETradeOptionExpireDateListFromResponse(response)
+	if err != nil {
+		return err
+	}
+	err = c.Context.Renderer.Render(optionExpireDates.AsJsonMap(), optionExpireDatesDescriptor)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -62,4 +70,18 @@ var expiryTypeMap = map[string]enumValueWithHelp[constants.OptionExpiryType]{
 	"vix":         {constants.OptionExpiryTypeVix, "VIX expiry type"},
 	"all":         {constants.OptionExpiryTypeAll, "all expiry types"},
 	"monthEnd":    {constants.OptionExpiryTypeMonthEnd, "month-end expiry type"},
+}
+
+var optionExpireDatesDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".optionExpireDates",
+		Values: []RenderValue{
+			{Header: "Expiry Year", Path: ".year"},
+			{Header: "Expiry Month", Path: ".month"},
+			{Header: "Expiry Day", Path: ".day"},
+			{Header: "Expiry Type", Path: ".expiryType"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }
