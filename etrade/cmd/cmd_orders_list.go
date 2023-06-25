@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -23,14 +23,61 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 	return cmd
 }
 
-func (c *CommandOrdersList) ListOrders(accountKeyId string) error {
+func (c *CommandOrdersList) ListOrders(accountId string) error {
+	// This determines how many order items will be retrieved in each request.
+	// This should normally be set to the max for efficiency, but can be
+	// lowered to test the pagination logic.
+	const countPerRequest = constants.OrdersMaxCount
+
+	account, err := GetAccountById(c.Context.Client, accountId)
+	if err != nil {
+		return err
+	}
+
 	response, err := c.Context.Client.ListOrders(
-		accountKeyId, "", -1, constants.OrderStatusNil, nil, nil, nil, constants.OrderSecurityTypeNil,
+		account.GetIdKey(), "", countPerRequest, constants.OrderStatusNil, nil, nil, nil,
+		constants.OrderSecurityTypeNil,
 		constants.OrderTransactionTypeNil, constants.MarketSessionNil,
 	)
 	if err != nil {
 		return err
 	}
-	_, _ = fmt.Fprintf(c.Context.OutputFile, string(response))
+
+	orderList, err := etradelib.CreateETradeOrderListFromResponse(response)
+	if err != nil {
+		return err
+	}
+
+	for orderList.NextPage() != "" {
+		response, err = c.Context.Client.ListOrders(
+			account.GetIdKey(), orderList.NextPage(), countPerRequest, constants.OrderStatusNil, nil, nil, nil,
+			constants.OrderSecurityTypeNil,
+			constants.OrderTransactionTypeNil, constants.MarketSessionNil,
+		)
+		if err != nil {
+			return err
+		}
+		err = orderList.AddPageFromResponse(response)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = c.Context.Renderer.Render(orderList.AsJsonMap(), orderListDescriptor)
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+var orderListDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".orders",
+		Values: []RenderValue{
+			{Header: "Order Id", Path: ".orderId"},
+			{Header: "Order Type", Path: ".orderType"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }

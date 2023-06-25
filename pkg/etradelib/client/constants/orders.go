@@ -1,5 +1,9 @@
 package constants
 
+// OrdersMaxCount is the maximum count that can be included in a List Orders
+// request.
+const OrdersMaxCount = 100
+
 // ListOrdersMaxSymbols is the maximum number of symbols that can be included
 // in a List Orders request
 const ListOrdersMaxSymbols = 25
