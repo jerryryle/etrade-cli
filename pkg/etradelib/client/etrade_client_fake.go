@@ -25,6 +25,8 @@ type ListAlertsFn func(
 	count int, category constants.AlertCategory, status constants.AlertStatus, sort constants.SortOrder, search string,
 ) ([]byte, error)
 
+type ListAlertDetailsFn func(alertId string, htmlTags bool) ([]byte, error)
+
 type GetQuotesFn func(
 	symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 ) ([]byte, error)
@@ -52,6 +54,7 @@ type ETradeClientFake struct {
 	ListTransactionDetailsFn ListTransactionDetailsFn
 	ViewPortfolioFn          ViewPortfolioFn
 	ListAlertsFn             ListAlertsFn
+	ListAlertDetailsFn       ListAlertDetailsFn
 	GetQuotesFn              GetQuotesFn
 	LookupProductFn          LookupProductFn
 	GetOptionChainsFn        GetOptionChainsFn
@@ -120,6 +123,14 @@ func (c *ETradeClientFake) ListAlerts(
 ) ([]byte, error) {
 	if c.ListAlertsFn != nil {
 		return c.ListAlertsFn(count, category, status, sort, search)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
+}
+
+func (c *ETradeClientFake) ListAlertDetails(alertId string, htmlTags bool) ([]byte, error) {
+	if c.ListAlertDetailsFn != nil {
+		return c.ListAlertDetailsFn(alertId, htmlTags)
 	} else {
 		return c.defaultJson, c.defaultErr
 	}

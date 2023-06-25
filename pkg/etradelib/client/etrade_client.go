@@ -35,6 +35,8 @@ type ETradeClient interface {
 		search string,
 	) ([]byte, error)
 
+	ListAlertDetails(alertId string, htmlTags bool) ([]byte, error)
+
 	GetQuotes(
 		symbols []string, detailFlag constants.QuoteDetailFlag, requireEarningsDate bool, skipMiniOptionsCheck bool,
 	) ([]byte, error)
@@ -206,6 +208,17 @@ func (c *eTradeClient) ListAlerts(
 	}
 
 	response, err := c.doRequest("GET", c.urls.ListAlertsUrl(), queryValues)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *eTradeClient) ListAlertDetails(alertId string, htmlTags bool) ([]byte, error) {
+	queryValues := url.Values{}
+	queryValues.Add("htmlTags", fmt.Sprintf("%t", htmlTags))
+
+	response, err := c.doRequest("GET", c.urls.ListAlertDetailsUrl(alertId), queryValues)
 	if err != nil {
 		return nil, err
 	}

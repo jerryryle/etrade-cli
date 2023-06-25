@@ -194,6 +194,15 @@ func TestETradeClient(t *testing.T) {
 			expectErr:      false,
 		},
 		{
+			name: "List Alert Details",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListAlertDetails("1234", true)
+			},
+			expectUrl:      "https://api.etrade.com/v1/user/alerts/1234?htmlTags=true",
+			expectResponse: []byte(testResponseData),
+			expectErr:      false,
+		},
+		{
 			name: "Get Quotes With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetQuotes([]string{"GOOG"}, constants.QuoteDetailAll, true, false)
