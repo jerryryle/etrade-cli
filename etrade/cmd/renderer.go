@@ -12,6 +12,7 @@ type TransformerFn func(value interface{}) interface{}
 type RenderDescriptor struct {
 	ObjectPath   string
 	Values       []RenderValue
+	SubObjects   []RenderDescriptor
 	DefaultValue string
 	SpaceAfter   bool
 }
