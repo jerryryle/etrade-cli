@@ -5,10 +5,6 @@ import (
 	"os"
 )
 
-type JsonRenderer interface {
-	Render(jsonMap jsonmap.JsonMap) error
-}
-
 type jsonRenderer struct {
 	outputFile *os.File
 	pretty     bool
@@ -16,4 +12,8 @@ type jsonRenderer struct {
 
 func (j *jsonRenderer) Render(jsonMap jsonmap.JsonMap, _ []RenderDescriptor) error {
 	return jsonMap.ToIoWriter(j.outputFile, j.pretty)
+}
+
+func (j *jsonRenderer) Close() error {
+	return j.outputFile.Close()
 }

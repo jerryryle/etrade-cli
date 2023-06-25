@@ -4,6 +4,7 @@ import "github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 
 type Renderer interface {
 	Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescriptor) error
+	Close() error
 }
 
 type TransformerFn func(value interface{}) interface{}

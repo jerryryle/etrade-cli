@@ -7,10 +7,6 @@ import (
 	"os"
 )
 
-type CsvRenderer interface {
-	Render(jsonMap jsonmap.JsonMap) error
-}
-
 type csvRenderer struct {
 	outputFile *os.File
 	pretty     bool
@@ -58,6 +54,10 @@ func (c *csvRenderer) Render(jsonMap jsonmap.JsonMap, descriptors []RenderDescri
 		}
 	}
 	return nil
+}
+
+func (c *csvRenderer) Close() error {
+	return c.outputFile.Close()
 }
 
 func getValuesForRenderValues(

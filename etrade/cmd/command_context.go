@@ -9,12 +9,9 @@ import (
 )
 
 type CommandContext struct {
-	Logger     *slog.Logger
-	Client     client.ETradeClient
-	Renderer   Renderer
-	OutputFile *os.File
-
-	closeOFile bool
+	Logger   *slog.Logger
+	Client   client.ETradeClient
+	Renderer Renderer
 }
 
 func NewCommandContext(customerId string, debug bool, outputFileName string, format OutputFormat) (
@@ -37,13 +34,11 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 
 	// Set the command output destination
 	outputFile := os.Stdout
-	closeOFile := false
 	if outputFileName != "" {
 		outputFile, err = os.Create(outputFileName)
 		if err != nil {
 			return nil, err
 		}
-		closeOFile = true
 	}
 
 	// Set up output renderer
@@ -101,20 +96,16 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	}
 
 	return &CommandContext{
-		Logger:     logger,
-		Client:     eTradeClient,
-		OutputFile: outputFile,
-		Renderer:   renderer,
-		closeOFile: closeOFile,
+		Logger:   logger,
+		Client:   eTradeClient,
+		Renderer: renderer,
 	}, nil
 }
 
 func CleanupCommandContext(context *CommandContext) error {
-	if context.closeOFile {
-		err := context.OutputFile.Close()
-		if err != nil {
-			return err
-		}
+	err := context.Renderer.Close()
+	if err != nil {
+		return err
 	}
 	return nil
 }
