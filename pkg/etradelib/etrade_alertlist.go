@@ -20,7 +20,7 @@ const (
 	//   }
 	// ]
 
-	// AlertsListAlertsJsonMapPath is the path to a slice of accounts.
+	// AlertsListAlertsJsonMapPath is the path to a slice of alerts.
 	AlertsListAlertsJsonMapPath = ".alerts"
 )
 
