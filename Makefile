@@ -14,3 +14,4 @@ install:
 
 clean:
 	go clean
+	rm -f ./etrade/etrade
