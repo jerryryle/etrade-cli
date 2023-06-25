@@ -9,8 +9,24 @@ import (
 	"time"
 )
 
+func dateTimeTransformerMs(value interface{}) interface{} {
+	if timeValue, err := getValueAsTime(value, true); err == nil {
+		return timeValue.Format(time.DateTime)
+	} else {
+		return value
+	}
+}
+
+func dateTransformerMs(value interface{}) interface{} {
+	if timeValue, err := getValueAsTime(value, true); err == nil {
+		return timeValue.Format(time.DateOnly)
+	} else {
+		return value
+	}
+}
+
 func dateTimeTransformer(value interface{}) interface{} {
-	if timeValue, err := getValueAsTime(value); err == nil {
+	if timeValue, err := getValueAsTime(value, false); err == nil {
 		return timeValue.Format(time.DateTime)
 	} else {
 		return value
@@ -18,14 +34,14 @@ func dateTimeTransformer(value interface{}) interface{} {
 }
 
 func dateTransformer(value interface{}) interface{} {
-	if timeValue, err := getValueAsTime(value); err == nil {
+	if timeValue, err := getValueAsTime(value, false); err == nil {
 		return timeValue.Format(time.DateOnly)
 	} else {
 		return value
 	}
 }
 
-func getValueAsTime(value interface{}) (*time.Time, error) {
+func getValueAsTime(value interface{}, valueIsMs bool) (*time.Time, error) {
 	var timeValue time.Time
 
 	switch t := value.(type) {
@@ -34,11 +50,19 @@ func getValueAsTime(value interface{}) (*time.Time, error) {
 		if err != nil {
 			return nil, err
 		}
-		if unixTimeInMs, err := t.Int64(); err == nil {
-			timeValue = time.Unix(unixTimeInMs/1000, 0).In(location)
+		if unixTimeInt, err := t.Int64(); err == nil {
+			// If the time is zero, return an error so the value is just
+			// passed along without trying to format it as a date/time string.
+			if unixTimeInt == 0 {
+				return nil, fmt.Errorf("timestamp is zero")
+			}
+			if valueIsMs {
+				unixTimeInt /= 1000
+			}
+			timeValue = time.Unix(unixTimeInt, 0).In(location)
 		}
 	case string:
-		if unixTime, err := parseETradeTimeString(t); err == nil {
+		if unixTime, err := parseETradeTimeString(t, valueIsMs); err == nil {
 			timeValue = *unixTime
 		} else {
 			return nil, err
@@ -49,15 +73,23 @@ func getValueAsTime(value interface{}) (*time.Time, error) {
 	return &timeValue, nil
 }
 
-func parseETradeTimeString(timeString string) (*time.Time, error) {
+func parseETradeTimeString(timeString string, valueIsMs bool) (*time.Time, error) {
 	location, err := time.LoadLocation("America/New_York")
 	if err != nil {
 		return nil, err
 	}
 
 	// Try parsing as Unix timestamp first
-	if unixTimeInMs, err := strconv.ParseInt(timeString, 10, 64); err == nil {
-		unixTime := time.Unix(unixTimeInMs/1000, 0).In(location)
+	if unixTimeInt, err := strconv.ParseInt(timeString, 10, 64); err == nil {
+		// If the time is zero, return an error so the value is just
+		// passed along without trying to format it as a date/time string.
+		if unixTimeInt == 0 {
+			return nil, fmt.Errorf("timestamp is zero")
+		}
+		if valueIsMs {
+			unixTimeInt /= 1000
+		}
+		unixTime := time.Unix(unixTimeInt, 0).In(location)
 		return &unixTime, nil
 	}
 

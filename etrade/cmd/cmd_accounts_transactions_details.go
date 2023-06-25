@@ -45,8 +45,8 @@ var transactionDetailsDescriptor = []RenderDescriptor{
 		Values: []RenderValue{
 			{Header: "Transaction ID", Path: ".transactionId"},
 			{Header: "Account ID", Path: ".accountId"},
-			{Header: "Transaction Date", Path: ".transactionDate", Transformer: dateTransformer},
-			{Header: "Post Date", Path: ".postDate", Transformer: dateTransformer},
+			{Header: "Transaction Date", Path: ".transactionDate", Transformer: dateTransformerMs},
+			{Header: "Post Date", Path: ".postDate", Transformer: dateTransformerMs},
 			{Header: "Amount", Path: ".amount"},
 			{Header: "Description", Path: ".description"},
 		},
