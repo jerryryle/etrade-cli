@@ -19,8 +19,8 @@ const (
 	// }
 	//
 
-	// balanceMapResponsePath is the path to the map of balance info
-	balanceMapResponsePath = ".balanceResponse"
+	// balancesBalanceResponsePath is the path to the map of balance info
+	balancesBalanceResponsePath = ".balanceResponse"
 )
 
 func CreateETradeBalancesFromResponse(response []byte) (ETradeBalances, error) {
@@ -32,7 +32,7 @@ func CreateETradeBalancesFromResponse(response []byte) (ETradeBalances, error) {
 }
 
 func CreateETradeBalances(positionListResponseMap jsonmap.JsonMap) (ETradeBalances, error) {
-	balancesMap, err := positionListResponseMap.GetMapAtPath(balanceMapResponsePath)
+	balancesMap, err := positionListResponseMap.GetMapAtPath(balancesBalanceResponsePath)
 	if err != nil {
 		return nil, err
 	}

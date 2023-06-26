@@ -24,9 +24,9 @@ const (
 	//   }
 	// ]
 
-	// OrderListOrdersSliceJsonMapPath is the path to a slice of
+	// OrderListOrdersPath is the path to a slice of
 	// orders.
-	OrderListOrdersSliceJsonMapPath = ".orders"
+	OrderListOrdersPath = ".orders"
 )
 
 const (
@@ -42,11 +42,11 @@ const (
 	//   }
 	// }
 
-	// orderListOrdersSliceResponsePath is the path to a slice of orders.
-	orderListOrdersSliceResponsePath = "ordersResponse.order"
+	// orderListOrdersResponsePath is the path to a slice of orders.
+	orderListOrdersResponsePath = "ordersResponse.order"
 
-	// orderListMarkerStringPath is the path to the next page marker string
-	orderListMarkerStringPath = "ordersResponse.marker"
+	// orderListMarkerResponsePath is the path to the next page marker string
+	orderListMarkerResponsePath = "ordersResponse.marker"
 )
 
 func CreateETradeOrderListFromResponse(response []byte) (
@@ -98,14 +98,14 @@ func (e *eTradeOrderList) AddPageFromResponse(response []byte) error {
 }
 
 func (e *eTradeOrderList) AddPage(orderListResponseMap jsonmap.JsonMap) error {
-	ordersSlice, err := orderListResponseMap.GetSliceOfMapsAtPath(orderListOrdersSliceResponsePath)
+	ordersSlice, err := orderListResponseMap.GetSliceOfMapsAtPath(orderListOrdersResponsePath)
 	if err != nil {
 		return err
 	}
 
 	// the marker key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
-	nextPage, _ := orderListResponseMap.GetStringAtPath(orderListMarkerStringPath)
+	nextPage, _ := orderListResponseMap.GetStringAtPath(orderListMarkerResponsePath)
 
 	allOrders := make([]ETradeOrder, 0, len(ordersSlice))
 	for _, orderJsonMap := range ordersSlice {
@@ -126,7 +126,7 @@ func (e *eTradeOrderList) AsJsonMap() jsonmap.JsonMap {
 		ordersSlice = append(ordersSlice, order.AsJsonMap())
 	}
 	var ordersListMap = jsonmap.JsonMap{}
-	err := ordersListMap.SetSliceAtPath(OrderListOrdersSliceJsonMapPath, ordersSlice)
+	err := ordersListMap.SetSliceAtPath(OrderListOrdersPath, ordersSlice)
 	if err != nil {
 		panic(err)
 	}

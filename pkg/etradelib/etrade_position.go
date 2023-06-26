@@ -19,12 +19,12 @@ const (
 	//   <other alert keys/values>
 	// }
 
-	// positionIdResponseKey is the key for the position ID
-	positionIdResponseKey = "positionId"
+	// positionPositionIdResponseKey is the key for the position ID
+	positionPositionIdResponseKey = "positionId"
 )
 
 func CreateETradePosition(positionJsonMap jsonmap.JsonMap) (ETradePosition, error) {
-	positionId, err := positionJsonMap.GetInt(positionIdResponseKey)
+	positionId, err := positionJsonMap.GetInt(positionPositionIdResponseKey)
 	if err != nil {
 		return nil, err
 	}

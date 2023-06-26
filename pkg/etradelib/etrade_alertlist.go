@@ -20,8 +20,8 @@ const (
 	//   }
 	// ]
 
-	// AlertsListAlertsJsonMapPath is the path to a slice of alerts.
-	AlertsListAlertsJsonMapPath = ".alerts"
+	// AlertListAlertsPath is the path to a slice of alerts.
+	AlertListAlertsPath = ".alerts"
 )
 
 const (
@@ -36,8 +36,8 @@ const (
 	//   }
 	// }
 
-	// alertsListAlertsSliceResponsePath is the path to a slice of alerts.
-	alertsListAlertsSliceResponsePath = ".alertsResponse.alert"
+	// alertListAlertsResponsePath is the path to a slice of alerts.
+	alertListAlertsResponsePath = ".alertsResponse.alert"
 )
 
 func CreateETradeAlertListFromResponse(response []byte) (ETradeAlertList, error) {
@@ -49,7 +49,7 @@ func CreateETradeAlertListFromResponse(response []byte) (ETradeAlertList, error)
 }
 
 func CreateETradeAlertList(alertListResponseMap jsonmap.JsonMap) (ETradeAlertList, error) {
-	alertsSlice, err := alertListResponseMap.GetSliceOfMapsAtPath(alertsListAlertsSliceResponsePath)
+	alertsSlice, err := alertListResponseMap.GetSliceOfMapsAtPath(alertListAlertsResponsePath)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (e *eTradeAlertList) AsJsonMap() jsonmap.JsonMap {
 		alertsSlice = append(alertsSlice, alert.AsJsonMap())
 	}
 	var alertListMap = jsonmap.JsonMap{}
-	err := alertListMap.SetSliceAtPath(AlertsListAlertsJsonMapPath, alertsSlice)
+	err := alertListMap.SetSliceAtPath(AlertListAlertsPath, alertsSlice)
 	if err != nil {
 		panic(err)
 	}

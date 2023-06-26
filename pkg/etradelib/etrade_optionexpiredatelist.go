@@ -19,8 +19,8 @@ const (
 	//   }
 	// ]
 
-	// OptionExpireDateListOptionExpireDatesSliceJsonMapPath is the path to a slice of optionExpireDates.
-	OptionExpireDateListOptionExpireDatesSliceJsonMapPath = ".optionExpireDates"
+	// OptionExpireDateListOptionExpireDatesPath is the path to a slice of optionExpireDates.
+	OptionExpireDateListOptionExpireDatesPath = ".optionExpireDates"
 )
 
 const (
@@ -35,8 +35,8 @@ const (
 	//   }
 	// }
 
-	// optionExpireDateListOptionExpireDatesSliceResponsePath is the path to a slice of optionExpireDates.
-	optionExpireDateListOptionExpireDatesSliceResponsePath = ".optionExpireDateResponse.expirationDate"
+	// optionExpireDateListOptionExpireDatesResponsePath is the path to a slice of optionExpireDates.
+	optionExpireDateListOptionExpireDatesResponsePath = ".optionExpireDateResponse.expirationDate"
 )
 
 func CreateETradeOptionExpireDateListFromResponse(response []byte) (ETradeOptionExpireDateList, error) {
@@ -49,7 +49,7 @@ func CreateETradeOptionExpireDateListFromResponse(response []byte) (ETradeOption
 
 func CreateETradeOptionExpireDateList(lookupListResponseMap jsonmap.JsonMap) (ETradeOptionExpireDateList, error) {
 	optionExpireDatesSlice, err := lookupListResponseMap.GetSliceOfMapsAtPathWithDefault(
-		optionExpireDateListOptionExpireDatesSliceResponsePath, nil,
+		optionExpireDateListOptionExpireDatesResponsePath, nil,
 	)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (e *eTradeOptionExpireDateList) AsJsonMap() jsonmap.JsonMap {
 		optionExpireDatesSlice = append(optionExpireDatesSlice, optionExpireDate.AsJsonMap())
 	}
 	err := optionExpireDateListMap.SetSliceAtPath(
-		OptionExpireDateListOptionExpireDatesSliceJsonMapPath, optionExpireDatesSlice,
+		OptionExpireDateListOptionExpireDatesPath, optionExpireDatesSlice,
 	)
 	if err != nil {
 		panic(err)

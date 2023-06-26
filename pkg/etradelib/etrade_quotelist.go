@@ -25,11 +25,11 @@ const (
 	//   }
 	// ]
 
-	// QuoteListQuotesSliceJsonMapPath is the path to a slice of quotes.
-	QuoteListQuotesSliceJsonMapPath = ".quotes"
+	// QuoteListQuotesPath is the path to a slice of quotes.
+	QuoteListQuotesPath = ".quotes"
 
-	// QuoteListMessagesSliceJsonMapPath is the path to a slice of messages.
-	QuoteListMessagesSliceJsonMapPath = ".messages"
+	// QuoteListMessagesPath is the path to a slice of messages.
+	QuoteListMessagesPath = ".messages"
 )
 
 const (
@@ -51,11 +51,11 @@ const (
 	//   }
 	// }
 
-	// quoteListQuotesSliceResponsePath is the path to a slice of quotes.
-	quoteListQuotesSliceResponsePath = ".quoteResponse.quoteData"
+	// quoteListQuotesResponsePath is the path to a slice of quotes.
+	quoteListQuotesResponsePath = ".quoteResponse.quoteData"
 
-	// quoteListMessagesSliceResponsePath is the path to a slice of messages.
-	quoteListMessagesSliceResponsePath = ".quoteResponse.messages.message"
+	// quoteListMessagesResponsePath is the path to a slice of messages.
+	quoteListMessagesResponsePath = ".quoteResponse.messages.message"
 )
 
 func CreateETradeQuoteListFromResponse(response []byte) (ETradeQuoteList, error) {
@@ -67,7 +67,7 @@ func CreateETradeQuoteListFromResponse(response []byte) (ETradeQuoteList, error)
 }
 
 func CreateETradeQuoteList(lookupListResponseMap jsonmap.JsonMap) (ETradeQuoteList, error) {
-	quotesSlice, err := lookupListResponseMap.GetSliceOfMapsAtPathWithDefault(quoteListQuotesSliceResponsePath, nil)
+	quotesSlice, err := lookupListResponseMap.GetSliceOfMapsAtPathWithDefault(quoteListQuotesResponsePath, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func CreateETradeQuoteList(lookupListResponseMap jsonmap.JsonMap) (ETradeQuoteLi
 		allQuotes = append(allQuotes, quote)
 	}
 
-	messagesSlice, err := lookupListResponseMap.GetSliceAtPathWithDefault(quoteListMessagesSliceResponsePath, nil)
+	messagesSlice, err := lookupListResponseMap.GetSliceAtPathWithDefault(quoteListMessagesResponsePath, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -100,13 +100,13 @@ func (e *eTradeQuoteList) AsJsonMap() jsonmap.JsonMap {
 		for _, quote := range e.quotes {
 			quotesSlice = append(quotesSlice, quote.AsJsonMap())
 		}
-		err := quoteListMap.SetSliceAtPath(QuoteListQuotesSliceJsonMapPath, quotesSlice)
+		err := quoteListMap.SetSliceAtPath(QuoteListQuotesPath, quotesSlice)
 		if err != nil {
 			panic(err)
 		}
 	}
 	if e.messages != nil {
-		err := quoteListMap.SetSliceAtPath(QuoteListMessagesSliceJsonMapPath, e.messages)
+		err := quoteListMap.SetSliceAtPath(QuoteListMessagesPath, e.messages)
 		if err != nil {
 			panic(err)
 		}

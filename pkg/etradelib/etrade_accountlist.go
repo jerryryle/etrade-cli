@@ -22,8 +22,8 @@ const (
 	//   }
 	// ]
 
-	// AccountsListAccountsJsonMapPath is the path to a slice of accounts.
-	AccountsListAccountsJsonMapPath = "accounts"
+	// AccountsListAccountsPath is the path to a slice of accounts.
+	AccountsListAccountsPath = "accounts"
 )
 
 const (
@@ -38,9 +38,8 @@ const (
 	//   }
 	// }
 
-	// accountsListAccountsSliceResponsePath is the path to a slice of
-	// accounts.
-	accountsListAccountsSliceResponsePath = "accountListResponse.accounts.account"
+	// accountsListAccountsResponsePath is the path to a slice of accounts.
+	accountsListAccountsResponsePath = "accountListResponse.accounts.account"
 )
 
 func CreateETradeAccountListFromResponse(response []byte) (ETradeAccountList, error) {
@@ -52,7 +51,7 @@ func CreateETradeAccountListFromResponse(response []byte) (ETradeAccountList, er
 }
 
 func CreateETradeAccountList(accountListResponseMap jsonmap.JsonMap) (ETradeAccountList, error) {
-	accountsSlice, err := accountListResponseMap.GetSliceOfMapsAtPath(accountsListAccountsSliceResponsePath)
+	accountsSlice, err := accountListResponseMap.GetSliceOfMapsAtPath(accountsListAccountsResponsePath)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +85,7 @@ func (e *eTradeAccountList) AsJsonMap() jsonmap.JsonMap {
 		accountSlice = append(accountSlice, account.AsJsonMap())
 	}
 	var accountListMap = jsonmap.JsonMap{}
-	err := accountListMap.SetSliceAtPath(AccountsListAccountsJsonMapPath, accountSlice)
+	err := accountListMap.SetSliceAtPath(AccountsListAccountsPath, accountSlice)
 	if err != nil {
 		panic(err)
 	}

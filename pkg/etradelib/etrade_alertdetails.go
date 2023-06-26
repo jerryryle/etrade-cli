@@ -20,12 +20,10 @@ const (
 	//   }
 	// }
 
-	// alertDetailsAlertDetailsResponseKey is the key for the
-	// alert details map
+	// alertDetailsAlertDetailsResponseKey is the key for the alert details map
 	alertDetailsAlertDetailsResponseKey = "alertDetailsResponse"
 
-	// alertDetailsAlertIdResponseKey is the key for the
-	// alert ID
+	// alertDetailsAlertIdResponseKey is the key for the alert ID
 	alertDetailsAlertIdResponseKey = "id"
 )
 

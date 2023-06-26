@@ -24,9 +24,8 @@ const (
 	//   }
 	// ]
 
-	// TransactionListTransactionsToJsonMapPath is the path to a slice of
-	// transactions.
-	TransactionListTransactionsToJsonMapPath = ".transactions"
+	// TransactionListTransactionsPath is the path to a slice of transactions.
+	TransactionListTransactionsPath = ".transactions"
 )
 
 const (
@@ -41,11 +40,11 @@ const (
 	//   }
 	// }
 
-	// transactionsListSliceResponsePath is the path to a slice of transactions.
-	transactionsListSliceResponsePath = ".transactionListResponse.transaction"
+	// transactionsListTransactionsResponsePath is the path to a slice of transactions.
+	transactionsListTransactionsResponsePath = ".transactionListResponse.transaction"
 
-	// positionListMarkerStringPath is the path to the next page number string
-	transactionsListMarkerStringPath = ".transactionListResponse.marker"
+	// transactionsListMarkerResponsePath is the path to the next page number string
+	transactionsListMarkerResponsePath = ".transactionListResponse.marker"
 )
 
 func CreateETradeTransactionListFromResponse(response []byte) (
@@ -97,14 +96,14 @@ func (e *eTradeTransactionList) AddPageFromResponse(response []byte) error {
 }
 
 func (e *eTradeTransactionList) AddPage(transactionListResponseMap jsonmap.JsonMap) error {
-	transactionsSlice, err := transactionListResponseMap.GetSliceOfMapsAtPath(transactionsListSliceResponsePath)
+	transactionsSlice, err := transactionListResponseMap.GetSliceOfMapsAtPath(transactionsListTransactionsResponsePath)
 	if err != nil {
 		return err
 	}
 
 	// the marker key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
-	nextPage, _ := transactionListResponseMap.GetStringAtPath(transactionsListMarkerStringPath)
+	nextPage, _ := transactionListResponseMap.GetStringAtPath(transactionsListMarkerResponsePath)
 
 	allTransactions := make([]ETradeTransaction, 0, len(transactionsSlice))
 	for _, transactionJsonMap := range transactionsSlice {
@@ -125,7 +124,7 @@ func (e *eTradeTransactionList) AsJsonMap() jsonmap.JsonMap {
 		transactionSlice = append(transactionSlice, transaction.AsJsonMap())
 	}
 	var transactionListMap = jsonmap.JsonMap{}
-	err := transactionListMap.SetSliceAtPath(TransactionListTransactionsToJsonMapPath, transactionSlice)
+	err := transactionListMap.SetSliceAtPath(TransactionListTransactionsPath, transactionSlice)
 	if err != nil {
 		panic(err)
 	}

@@ -19,12 +19,12 @@ const (
 	//   <other alert keys/values>
 	// }
 
-	// transactionIdResponseKey is the key for the transaction ID
-	transactionIdResponseKey = "transactionId"
+	// transactionTransactionIdResponseKey is the key for the transaction ID
+	transactionTransactionIdResponseKey = "transactionId"
 )
 
 func CreateETradeTransaction(transactionJsonMap jsonmap.JsonMap) (ETradeTransaction, error) {
-	transactionId, err := transactionJsonMap.GetString(transactionIdResponseKey)
+	transactionId, err := transactionJsonMap.GetString(transactionTransactionIdResponseKey)
 	if err != nil {
 		return nil, err
 	}

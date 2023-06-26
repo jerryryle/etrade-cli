@@ -21,12 +21,12 @@ const (
 	//   <other alert keys/values>
 	// }
 
-	// alertIdResponseKey is the key for the alert ID
-	alertIdResponseKey = "id"
+	// alertAlertIdResponseKey is the key for the alert ID
+	alertAlertIdResponseKey = "id"
 )
 
 func CreateETradeAlert(alertJsonMap jsonmap.JsonMap) (ETradeAlert, error) {
-	alertId, err := alertJsonMap.GetInt(alertIdResponseKey)
+	alertId, err := alertJsonMap.GetInt(alertAlertIdResponseKey)
 	if err != nil {
 		return nil, err
 	}

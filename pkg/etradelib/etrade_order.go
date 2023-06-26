@@ -19,12 +19,12 @@ const (
 	//   <other order keys/values>
 	// }
 
-	// orderIdResponseKey is the key for the order ID
-	orderIdResponseKey = "orderId"
+	// orderOrderIdResponseKey is the key for the order ID
+	orderOrderIdResponseKey = "orderId"
 )
 
 func CreateETradeOrder(orderJsonMap jsonmap.JsonMap) (ETradeOrder, error) {
-	orderId, err := orderJsonMap.GetInt(orderIdResponseKey)
+	orderId, err := orderJsonMap.GetInt(orderOrderIdResponseKey)
 	if err != nil {
 		return nil, err
 	}

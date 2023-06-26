@@ -22,7 +22,7 @@ const (
 	// {
 	//   "positions": [
 	//     {
-	//       <account info>
+	//       <position info>
 	//     }
 	//   ]
 	//   "totals": {
@@ -31,11 +31,11 @@ const (
 	// }
 	//
 
-	// PositionsListPathPositions is the path to a slice of accounts.
-	PositionsListPathPositions = ".positions"
+	// PositionsListPositionsPath is the path to a slice of positions.
+	PositionsListPositionsPath = ".positions"
 
-	// PositionsListPathTotals is the path to a map of totals info
-	PositionsListPathTotals = ".totals"
+	// PositionsListTotalsPath is the path to a map of totals info
+	PositionsListTotalsPath = ".totals"
 )
 
 const (
@@ -61,14 +61,14 @@ const (
 	// The "Totals" key is optional and only appears if explicitly requested.
 	// The "nextPageNo" key only appears if there are more pages to fetch.
 
-	// positionListTotalsMapResponsePath is the path to a map of totals
-	positionListTotalsMapResponsePath = ".portfolioResponse.totals"
+	// positionListTotalsResponsePath is the path to a map of totals
+	positionListTotalsResponsePath = ".portfolioResponse.totals"
 
-	// positionListPositionsSliceResponsePath is the path to a slice of positions.
-	positionListPositionsSliceResponsePath = ".portfolioResponse.accountPortfolio[0].position"
+	// positionListPositionsResponsePath is the path to a slice of positions.
+	positionListPositionsResponsePath = ".portfolioResponse.accountPortfolio[0].position"
 
-	// positionListNextPageStringPath is the path to the next page number string
-	positionListNextPageStringPath = ".portfolioResponse.accountPortfolio[0].nextPageNo"
+	// positionListNextPagePath is the path to the next page number string
+	positionListNextPagePath = ".portfolioResponse.accountPortfolio[0].nextPageNo"
 )
 
 func CreateETradePositionListFromResponse(response []byte) (ETradePositionList, error) {
@@ -81,7 +81,7 @@ func CreateETradePositionListFromResponse(response []byte) (ETradePositionList, 
 
 func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePositionList, error) {
 	// the totals are optional, so ignore any error and accept a possibly-nil map.
-	totalsMap, _ := positionListResponseMap.GetMapAtPath(positionListTotalsMapResponsePath)
+	totalsMap, _ := positionListResponseMap.GetMapAtPath(positionListTotalsResponsePath)
 
 	// Create a new positionList with the totals and everything else
 	// initialized to its zero value.
@@ -123,14 +123,14 @@ func (e *eTradePositionList) AddPageFromResponse(response []byte) error {
 }
 
 func (e *eTradePositionList) AddPage(positionListResponseMap jsonmap.JsonMap) error {
-	positionsSlice, err := positionListResponseMap.GetSliceOfMapsAtPath(positionListPositionsSliceResponsePath)
+	positionsSlice, err := positionListResponseMap.GetSliceOfMapsAtPath(positionListPositionsResponsePath)
 	if err != nil {
 		return err
 	}
 
 	// the nextPage key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
-	nextPage, _ := positionListResponseMap.GetStringAtPath(positionListNextPageStringPath)
+	nextPage, _ := positionListResponseMap.GetStringAtPath(positionListNextPagePath)
 
 	allPositions := make([]ETradePosition, 0, len(positionsSlice))
 	for _, positionJsonMap := range positionsSlice {
@@ -151,13 +151,13 @@ func (e *eTradePositionList) AsJsonMap() jsonmap.JsonMap {
 		positionSlice = append(positionSlice, position.AsJsonMap())
 	}
 	var positionListMap = jsonmap.JsonMap{}
-	err := positionListMap.SetSliceAtPath(PositionsListPathPositions, positionSlice)
+	err := positionListMap.SetSliceAtPath(PositionsListPositionsPath, positionSlice)
 	if err != nil {
 		panic(err)
 	}
 
 	if e.totalsMap != nil {
-		err := positionListMap.SetMapAtPath(PositionsListPathTotals, e.totalsMap)
+		err := positionListMap.SetMapAtPath(PositionsListTotalsPath, e.totalsMap)
 		if err != nil {
 			panic(err)
 		}

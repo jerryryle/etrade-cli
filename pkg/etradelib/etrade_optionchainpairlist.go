@@ -31,20 +31,20 @@ const (
 	//     <selected info>
 	// }
 
-	// OptionChainPairListOptionChainPairsSliceJsonMapPath is the path to a slice of optionChainPairs.
-	OptionChainPairListOptionChainPairsSliceJsonMapPath = ".optionChainPairs"
+	// OptionChainPairListOptionChainPairsPath is the path to a slice of optionChainPairs.
+	OptionChainPairListOptionChainPairsPath = ".optionChainPairs"
 
-	// OptionChainPairTimeStampJsonMapPath is the path to timestamp.
-	OptionChainPairTimeStampJsonMapPath = ".timeStamp"
+	// OptionChainPairListTimeStampPath is the path to timestamp.
+	OptionChainPairListTimeStampPath = ".timeStamp"
 
-	// OptionChainPairQuoteTypeJsonMapPath is the path to quote type.
-	OptionChainPairQuoteTypeJsonMapPath = ".quoteType"
+	// OptionChainPairListQuoteTypePath is the path to quote type.
+	OptionChainPairListQuoteTypePath = ".quoteType"
 
-	// OptionChainPairNearPriceJsonMapPath is the path to near price.
-	OptionChainPairNearPriceJsonMapPath = ".nearPrice"
+	// OptionChainPairListNearPricePath is the path to near price.
+	OptionChainPairListNearPricePath = ".nearPrice"
 
-	// OptionChainPairSelectedJsonMapPath is the path to selected map.
-	OptionChainPairSelectedJsonMapPath = ".selected"
+	// OptionChainPairListSelectedPath is the path to selected map.
+	OptionChainPairListSelectedPath = ".selected"
 )
 
 const (
@@ -65,8 +65,8 @@ const (
 	//   }
 	// }
 
-	// optionChainPairListOptionChainPairsSliceResponsePath is the path to a slice of OptionChainPairs.
-	optionChainPairListOptionChainPairsSliceResponsePath = ".optionChainResponse.optionPair"
+	// optionChainPairListOptionChainPairsResponsePath is the path to a slice of OptionChainPairs.
+	optionChainPairListOptionChainPairsResponsePath = ".optionChainResponse.optionPair"
 
 	// optionChainPairListTimeStampResponsePath is the path to timestamp.
 	optionChainPairListTimeStampResponsePath = ".optionChainResponse.timeStamp"
@@ -77,8 +77,8 @@ const (
 	// optionChainPairListNearPriceResponsePath is the path to near price.
 	optionChainPairListNearPriceResponsePath = ".optionChainResponse.nearPrice"
 
-	// optionChainPairListSelectedMapResponsePath is the path to selected map
-	optionChainPairListSelectedMapResponsePath = ".optionChainResponse.selectedED"
+	// optionChainPairListSelectedResponsePath is the path to selected map
+	optionChainPairListSelectedResponsePath = ".optionChainResponse.selectedED"
 )
 
 func CreateETradeOptionChainPairListFromResponse(response []byte) (ETradeOptionChainPairList, error) {
@@ -91,7 +91,7 @@ func CreateETradeOptionChainPairListFromResponse(response []byte) (ETradeOptionC
 
 func CreateETradeOptionChainPairList(lookupListResponseMap jsonmap.JsonMap) (ETradeOptionChainPairList, error) {
 	optionChainPairsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPathWithDefault(
-		optionChainPairListOptionChainPairsSliceResponsePath, nil,
+		optionChainPairListOptionChainPairsResponsePath, nil,
 	)
 	if err != nil {
 		return nil, err
@@ -127,7 +127,7 @@ func CreateETradeOptionChainPairList(lookupListResponseMap jsonmap.JsonMap) (ETr
 	}
 
 	selected, err := lookupListResponseMap.GetMapAtPathWithDefault(
-		optionChainPairListSelectedMapResponsePath, nil,
+		optionChainPairListSelectedResponsePath, nil,
 	)
 	if err != nil {
 		return nil, err
@@ -154,28 +154,28 @@ func (e *eTradeOptionChainPairList) AsJsonMap() jsonmap.JsonMap {
 		optionChainPairsSlice = append(optionChainPairsSlice, optionChainPair.AsJsonMap())
 	}
 	err := optionChainPairListMap.SetSliceAtPath(
-		OptionChainPairListOptionChainPairsSliceJsonMapPath, optionChainPairsSlice,
+		OptionChainPairListOptionChainPairsPath, optionChainPairsSlice,
 	)
 	if err != nil {
 		panic(err)
 	}
 
-	err = optionChainPairListMap.SetIntAtPath(OptionChainPairTimeStampJsonMapPath, e.timeStamp)
+	err = optionChainPairListMap.SetIntAtPath(OptionChainPairListTimeStampPath, e.timeStamp)
 	if err != nil {
 		panic(err)
 	}
 
-	err = optionChainPairListMap.SetStringAtPath(OptionChainPairQuoteTypeJsonMapPath, e.quoteType)
+	err = optionChainPairListMap.SetStringAtPath(OptionChainPairListQuoteTypePath, e.quoteType)
 	if err != nil {
 		panic(err)
 	}
 
-	err = optionChainPairListMap.SetFloatAtPath(OptionChainPairNearPriceJsonMapPath, e.nearPrice)
+	err = optionChainPairListMap.SetFloatAtPath(OptionChainPairListNearPricePath, e.nearPrice)
 	if err != nil {
 		panic(err)
 	}
 
-	err = optionChainPairListMap.SetMapAtPath(OptionChainPairSelectedJsonMapPath, e.selected)
+	err = optionChainPairListMap.SetMapAtPath(OptionChainPairListSelectedPath, e.selected)
 	if err != nil {
 		panic(err)
 	}

@@ -19,8 +19,8 @@ const (
 	//   }
 	// ]
 
-	// LookupResultListLookupsJsonMapPath is the path to a slice of lookup results.
-	LookupResultListLookupsJsonMapPath = ".results"
+	// LookupResultListResultsPath is the path to a slice of lookup results.
+	LookupResultListResultsPath = ".results"
 )
 
 const (
@@ -35,8 +35,8 @@ const (
 	//   }
 	// }
 
-	// lookupResultListLookupSliceResponsePath is the path to a slice of results.
-	lookupResultListLookupSliceResponsePath = ".lookupResponse.data"
+	// lookupResultListResultsResponsePath is the path to a slice of results.
+	lookupResultListResultsResponsePath = ".lookupResponse.data"
 )
 
 func CreateETradeLookupResultListFromResponse(response []byte) (ETradeLookupResultList, error) {
@@ -48,7 +48,7 @@ func CreateETradeLookupResultListFromResponse(response []byte) (ETradeLookupResu
 }
 
 func CreateETradeLookupResultList(lookupListResponseMap jsonmap.JsonMap) (ETradeLookupResultList, error) {
-	resultsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPath(lookupResultListLookupSliceResponsePath)
+	resultsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPath(lookupResultListResultsResponsePath)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +73,7 @@ func (e *eTradeLookupResultList) AsJsonMap() jsonmap.JsonMap {
 		resultsSlice = append(resultsSlice, result.AsJsonMap())
 	}
 	var lookupResultListMap = jsonmap.JsonMap{}
-	err := lookupResultListMap.SetSliceAtPath(LookupResultListLookupsJsonMapPath, resultsSlice)
+	err := lookupResultListMap.SetSliceAtPath(LookupResultListResultsPath, resultsSlice)
 	if err != nil {
 		panic(err)
 	}

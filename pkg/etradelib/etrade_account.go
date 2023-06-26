@@ -24,19 +24,19 @@ const (
 	//   <other account keys/values>
 	// }
 
-	// accountIdResponseKey is the key for the account ID
-	accountIdResponseKey = "accountId"
+	// accountAccountIdResponseKey is the key for the account ID
+	accountAccountIdResponseKey = "accountId"
 
-	// accountIdResponseKey is the key for the account ID Key
-	accountIdKeyResponseKey = "accountIdKey"
+	// accountAccountIdResponseKey is the key for the account ID Key
+	accountAccountIdKeyResponseKey = "accountIdKey"
 )
 
 func CreateETradeAccount(accountJsonMap jsonmap.JsonMap) (ETradeAccount, error) {
-	accountId, err := accountJsonMap.GetString(accountIdResponseKey)
+	accountId, err := accountJsonMap.GetString(accountAccountIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
-	accountIdKey, err := accountJsonMap.GetString(accountIdKeyResponseKey)
+	accountIdKey, err := accountJsonMap.GetString(accountAccountIdKeyResponseKey)
 	if err != nil {
 		return nil, err
 	}
