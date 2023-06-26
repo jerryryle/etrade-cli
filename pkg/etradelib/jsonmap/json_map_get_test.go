@@ -22,7 +22,7 @@ func TestJsonMap_GetValue(t *testing.T) {
 			expectValue: "TestValue",
 		},
 		{
-			name:        "GetValue Returns Error If Key Empty",
+			name:        "GetValue Fails If Key Empty",
 			testJson:    `{"TestKey": "TestValue"}`,
 			testKey:     "",
 			expectErr:   true,
@@ -77,6 +77,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectValue: "",
 		},
 		{
+			name: "GetString Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetString("MISSING")
+			},
+			testJson:    `{"TestKey": "StringValue"}`,
+			expectErr:   true,
+			expectValue: "",
+		},
+		{
 			name: "GetString Fails On Non-String",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetString("TestKey")
@@ -93,6 +102,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			testJson:    `{"TestKey": 1234}`,
 			expectErr:   false,
 			expectValue: int64(1234),
+		},
+		{
+			name: "GetInt Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetInt("MISSING")
+			},
+			testJson:    `{"TestKey": 1234}`,
+			expectErr:   true,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetInt Fails On Non-Int",
@@ -122,6 +140,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectValue: float64(1234),
 		},
 		{
+			name: "GetFloat Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetFloat("MISSING")
+			},
+			testJson:    `{"TestKey": 1234.5678}`,
+			expectErr:   true,
+			expectValue: float64(0),
+		},
+		{
 			name: "GetFloat Fails On Non-Float",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetFloat("TestKey")
@@ -138,6 +165,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			testJson:    `{"TestKey": true}`,
 			expectErr:   false,
 			expectValue: true,
+		},
+		{
+			name: "GetBool Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetBool("MISSING")
+			},
+			testJson:    `{"TestKey": true}`,
+			expectErr:   true,
+			expectValue: false,
 		},
 		{
 			name: "GetBool Fails On Non-Bool",
@@ -164,6 +200,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			},
 			testJson:    `{"TestKey": null}`,
 			expectErr:   false,
+			expectValue: JsonMap(nil),
+		},
+		{
+			name: "GetMap Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetMap("MISSING")
+			},
+			testJson:    `{"TestKey": {"foo": "bar"}}`,
+			expectErr:   true,
 			expectValue: JsonMap(nil),
 		},
 		{
@@ -194,6 +239,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectValue: JsonSlice(nil),
 		},
 		{
+			name: "GetSlice Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSlice("MISSING")
+			},
+			testJson:    `{"TestKey": ["foo", "bar"]}`,
+			expectErr:   true,
+			expectValue: JsonSlice(nil),
+		},
+		{
 			name: "GetSlice Fails On Non-Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSlice("TestKey")
@@ -219,6 +273,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			testJson:    `{"TestKey": null}`,
 			expectErr:   false,
 			expectValue: []string{},
+		},
+		{
+			name: "GetSliceOfStrings Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfStrings("MISSING")
+			},
+			testJson:    `{"TestKey": ["foo", "bar"]}`,
+			expectErr:   true,
+			expectValue: []string(nil),
 		},
 		{
 			name: "GetSliceOfStrings Fails On Mixed Slice",
@@ -248,6 +311,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectValue: []int64{},
 		},
 		{
+			name: "GetSliceOfInts Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfInts("MISSING")
+			},
+			testJson:    `{"TestKey": [1, 2]}`,
+			expectErr:   true,
+			expectValue: []int64(nil),
+		},
+		{
 			name: "GetSliceOfInts Fails On Mixed Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfInts("TestKey")
@@ -273,6 +345,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			testJson:    `{"TestKey": null}`,
 			expectErr:   false,
 			expectValue: []float64{},
+		},
+		{
+			name: "GetSliceOfFloats Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfFloats("MISSING")
+			},
+			testJson:    `{"TestKey": [1.1, 2.2]}`,
+			expectErr:   true,
+			expectValue: []float64(nil),
 		},
 		{
 			name: "GetSliceOfFloats Fails On Mixed Slice",
@@ -302,6 +383,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectValue: []bool{},
 		},
 		{
+			name: "GetSliceOfBools Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfBools("MISSING")
+			},
+			testJson:    `{"TestKey": [true, false]}`,
+			expectErr:   true,
+			expectValue: []bool(nil),
+		},
+		{
 			name: "GetSliceOfBools Fails On Mixed Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfBools("TestKey")
@@ -329,6 +419,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			expectValue: []JsonMap{},
 		},
 		{
+			name: "GetSliceOfMaps Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfMaps("MISSING")
+			},
+			testJson:    `{"TestKey": [{"A": 1}, {"B": 2}]}`,
+			expectErr:   true,
+			expectValue: []JsonMap(nil),
+		},
+		{
 			name: "GetSliceOfMaps Fails On Mixed Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfMaps("TestKey")
@@ -354,6 +453,15 @@ func TestJsonMap_GetType(t *testing.T) {
 			testJson:    `{"TestKey": null}`,
 			expectErr:   false,
 			expectValue: []JsonSlice{},
+		},
+		{
+			name: "GetSliceOfSlices Fails On Missing Key",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfSlices("MISSING")
+			},
+			testJson:    `{"TestKey": [[1], [2]]}`,
+			expectErr:   true,
+			expectValue: []JsonSlice(nil),
 		},
 		{
 			name: "GetSliceOfSlices Fails On Mixed Slice",
@@ -826,14 +934,21 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 			expectValue: "TestStringValue1",
 		},
 		{
-			name:        "GetValueAtPath Returns Error If Slice Index Too Big",
+			name:        "GetValueAtPath Fails If Slice Index Too Big",
 			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
 			testPath:    "TestLevel1KeyWithMapValue.TestLevel2KeyWithSliceValue[1].TestString",
 			expectErr:   true,
 			expectValue: nil,
 		},
 		{
-			name:        "GetValueAtPath Returns Error If Slice Index Negative",
+			name:        "GetValueAtPath Fails With Non-Numeric Slice Index",
+			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
+			testPath:    "TestLevel1KeyWithMapValue.TestLevel2KeyWithSliceValue[A].TestString",
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name:        "GetValueAtPath Fails If Slice Index Negative",
 			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
 			testPath:    "TestLevel1KeyWithMapValue.TestLevel2KeyWithSliceValue[-1].TestString",
 			expectErr:   true,
@@ -847,14 +962,14 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 			expectValue: "TestStringValue1",
 		},
 		{
-			name:        "GetValueAtPath Returns Error For Slice Indexing on Non-Slice",
+			name:        "GetValueAtPath Fails For Slice Indexing on Non-Slice",
 			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
 			testPath:    "TestLevel1KeyWithMapValue[0]",
 			expectErr:   true,
 			expectValue: nil,
 		},
 		{
-			name:        "GetValueAtPath Returns Error For Map Indexing on Non-Map",
+			name:        "GetValueAtPath Fails For Map Indexing on Non-Map",
 			testJson:    `{"TestLevel1KeyWithMapValue": {"TestLevel2KeyWithSliceValue": [{"TestString": "TestStringValue1"}]}}`,
 			testPath:    "TestLevel1KeyWithMapValue.TestLevel2KeyWithSliceValue.TestString",
 			expectErr:   true,
@@ -900,6 +1015,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			expectValue: "StringValue",
 		},
 		{
+			name: "GetStringAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetStringAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": "StringValue"}`,
+			expectErr:   true,
+			expectValue: "",
+		},
+		{
 			name: "GetIntAtPath Gets Int",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetIntAtPath(".TestKey")
@@ -907,6 +1031,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			testJson:    `{"TestKey": 1234}`,
 			expectErr:   false,
 			expectValue: int64(1234),
+		},
+		{
+			name: "GetIntAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetIntAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": 1234}`,
+			expectErr:   true,
+			expectValue: int64(0),
 		},
 		{
 			name: "GetFloatAtPath Gets Float",
@@ -918,6 +1051,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			expectValue: 1234.5678,
 		},
 		{
+			name: "GetFloatAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetFloatAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": 1234.5678}`,
+			expectErr:   true,
+			expectValue: float64(0),
+		},
+		{
 			name: "GetBoolAtPath Gets Bool",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetBoolAtPath(".TestKey")
@@ -925,6 +1067,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			testJson:    `{"TestKey": true}`,
 			expectErr:   false,
 			expectValue: true,
+		},
+		{
+			name: "GetBoolAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetBoolAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": true}`,
+			expectErr:   true,
+			expectValue: false,
 		},
 		{
 			name: "GetMapAtPath Gets Map",
@@ -936,6 +1087,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			expectValue: JsonMap{"foo": "bar"},
 		},
 		{
+			name: "GetMapAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetMapAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": {"foo": "bar"}}`,
+			expectErr:   true,
+			expectValue: JsonMap(nil),
+		},
+		{
 			name: "GetSliceAtPath Gets Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceAtPath(".TestKey")
@@ -943,6 +1103,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			testJson:    `{"TestKey": ["foo", "bar"]}`,
 			expectErr:   false,
 			expectValue: JsonSlice{"foo", "bar"},
+		},
+		{
+			name: "GetSliceAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": ["foo", "bar"]}`,
+			expectErr:   true,
+			expectValue: JsonSlice(nil),
 		},
 		{
 			name: "GetSliceOfStringsAtPath Gets String Slice",
@@ -954,6 +1123,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			expectValue: []string{"foo", "bar"},
 		},
 		{
+			name: "GetSliceOfStringsAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfStringsAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": ["foo", "bar"]}`,
+			expectErr:   true,
+			expectValue: []string(nil),
+		},
+		{
 			name: "GetSliceOfIntsAtPath Gets Int Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfIntsAtPath(".TestKey")
@@ -961,6 +1139,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			testJson:    `{"TestKey": [1, 2]}`,
 			expectErr:   false,
 			expectValue: []int64{1, 2},
+		},
+		{
+			name: "GetSliceOfIntsAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfIntsAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": [1, 2]}`,
+			expectErr:   true,
+			expectValue: []int64(nil),
 		},
 		{
 			name: "GetSliceOfFloatsAtPath Gets Float Slice",
@@ -972,6 +1159,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			expectValue: []float64{1.1, 2.2},
 		},
 		{
+			name: "GetSliceOfFloatsAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfFloatsAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": [1.1, 2.2]}`,
+			expectErr:   true,
+			expectValue: []float64(nil),
+		},
+		{
 			name: "GetSliceOfBoolsAtPath Gets Bool Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfBoolsAtPath(".TestKey")
@@ -979,6 +1175,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			testJson:    `{"TestKey": [true, false]}`,
 			expectErr:   false,
 			expectValue: []bool{true, false},
+		},
+		{
+			name: "GetSliceOfBoolsAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfBoolsAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": [true, false]}`,
+			expectErr:   true,
+			expectValue: []bool(nil),
 		},
 		{
 			name: "GetSliceOfMapsAtPath Gets Map Slice",
@@ -990,6 +1195,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			expectValue: []JsonMap{{"A": json.Number("1")}, {"B": json.Number("2")}},
 		},
 		{
+			name: "GetSliceOfMapsAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfMapsAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": [{"A": 1}, {"B": 2}]}`,
+			expectErr:   true,
+			expectValue: []JsonMap(nil),
+		},
+		{
 			name: "GetSliceOfSlicesAtPath Gets Slice Slice",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfSlicesAtPath(".TestKey")
@@ -997,6 +1211,15 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 			testJson:    `{"TestKey": [[1], [2]]}`,
 			expectErr:   false,
 			expectValue: []JsonSlice{{json.Number("1")}, {json.Number("2")}},
+		},
+		{
+			name: "GetSliceOfSlicesAtPath Fails With Missing Path Element",
+			testFn: func(m *JsonMap) (interface{}, error) {
+				return m.GetSliceOfSlicesAtPath(".MISSING")
+			},
+			testJson:    `{"TestKey": [[1], [2]]}`,
+			expectErr:   true,
+			expectValue: []JsonSlice(nil),
 		},
 	}
 
@@ -1147,7 +1370,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: "DefaultValue",
 		},
 		{
-			name: "GetStringAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetStringAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetStringAtPathWithDefault(".TestKey", "DefaultValue")
 			},
@@ -1174,7 +1397,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: int64(1),
 		},
 		{
-			name: "GetIntAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetIntAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetIntAtPathWithDefault(".TestKey", 1)
 			},
@@ -1201,7 +1424,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: 1.1,
 		},
 		{
-			name: "GetFloatAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetFloatAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetFloatAtPathWithDefault(".TestKey", 1.1)
 			},
@@ -1228,7 +1451,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: false,
 		},
 		{
-			name: "GetBoolAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetBoolAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetBoolAtPathWithDefault(".TestKey", false)
 			},
@@ -1255,7 +1478,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: JsonMap{"DefaultKey": "DefaultValue"},
 		},
 		{
-			name: "GetMapAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetMapAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetMapAtPathWithDefault(".TestKey", JsonMap{"DefaultKey": "DefaultValue"})
 			},
@@ -1282,7 +1505,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: JsonSlice{"DefaultValue"},
 		},
 		{
-			name: "GetSliceAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceAtPathWithDefault(".TestKey", JsonSlice{"DefaultValue"})
 			},
@@ -1309,7 +1532,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: []string{"DefaultValue"},
 		},
 		{
-			name: "GetSliceOfStringsAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceOfStringsAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfStringsAtPathWithDefault(".TestKey", []string{"DefaultValue"})
 			},
@@ -1336,7 +1559,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: []int64{0},
 		},
 		{
-			name: "GetSliceOfIntsAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceOfIntsAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfIntsAtPathWithDefault(".TestKey", []int64{0})
 			},
@@ -1363,7 +1586,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: []float64{0.0},
 		},
 		{
-			name: "GetSliceOfFloatsAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceOfFloatsAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfFloatsAtPathWithDefault(".TestKey", []float64{0.0})
 			},
@@ -1390,7 +1613,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: []bool{false},
 		},
 		{
-			name: "GetSliceOfBoolsAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceOfBoolsAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfBoolsAtPathWithDefault(".TestKey", []bool{false})
 			},
@@ -1417,7 +1640,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: []JsonMap{{"DefaultKey": "DefaultValue"}},
 		},
 		{
-			name: "GetSliceOfMapsAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceOfMapsAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfMapsAtPathWithDefault(".TestKey", []JsonMap{{"DefaultKey": "DefaultValue"}})
 			},
@@ -1444,7 +1667,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 			expectValue: []JsonSlice{{"DefaultValue"}},
 		},
 		{
-			name: "GetSliceOfSlicesAtPathWithDefault Returns Error For Valid Path But Wrong Type",
+			name: "GetSliceOfSlicesAtPathWithDefault Fails For Valid Path But Wrong Type",
 			testFn: func(m *JsonMap) (interface{}, error) {
 				return m.GetSliceOfSlicesAtPathWithDefault(".TestKey", []JsonSlice{{"DefaultValue"}})
 			},

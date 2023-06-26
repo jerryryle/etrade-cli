@@ -161,6 +161,30 @@ func TestETradeClient(t *testing.T) {
 			expectErr:      false,
 		},
 		{
+			name: "List Position Lots Details",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListPositionLotsDetails(
+					"1234", 5678,
+				)
+			},
+			expectMethod:   "GET",
+			expectUrl:      "https://api.etrade.com/v1/accounts/1234/portfolio/5678",
+			expectResponse: []byte(testResponseData),
+			expectErr:      false,
+		},
+		{
+			name: "List Position Lots Details Fails With Empty Account Key",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListPositionLotsDetails(
+					"", 5678,
+				)
+			},
+			expectMethod:   "",
+			expectUrl:      "",
+			expectResponse: nil,
+			expectErr:      true,
+		},
+		{
 			name: "View Portfolio Fails Without Account ID Key",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ViewPortfolio(
@@ -431,6 +455,22 @@ func TestETradeClient(t *testing.T) {
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/orders",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
+		},
+		{
+			name: "List Orders Fails With Too Many Symbols",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListOrders(
+					"1234", "", -1, constants.OrderStatusNil, nil, nil, []string{
+						"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17",
+						"18", "19", "20", "21", "22", "23", "24", "25", "26",
+					}, constants.OrderSecurityTypeNil,
+					constants.OrderTransactionTypeNil, constants.MarketSessionNil,
+				)
+			},
+			expectMethod:   "",
+			expectUrl:      "",
+			expectResponse: nil,
+			expectErr:      true,
 		},
 		{
 			name: "List Orders Fails Without Account ID Key",

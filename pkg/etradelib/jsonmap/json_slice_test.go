@@ -56,7 +56,7 @@ func TestJsonSlice_New(t *testing.T) {
 			expectValue: testValidJsonExpectedSlice,
 		},
 		{
-			name: "New Slice From Invalid String Returns Error",
+			name: "New Slice From Invalid String Fails",
 			testFn: func() (JsonSlice, error) {
 				return NewSliceFromJsonString(`[{"TestString": TestStringValue1]`)
 			},
@@ -64,7 +64,7 @@ func TestJsonSlice_New(t *testing.T) {
 			expectValue: nil,
 		},
 		{
-			name: "New Slice From Top-Level Map String Returns Error",
+			name: "New Slice From Top-Level Map String Fails",
 			testFn: func() (JsonSlice, error) {
 				// This string represents a top-level map, so it would need
 				// NewMapFromJsonString() instead of NewSliceFromJsonString()

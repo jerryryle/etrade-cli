@@ -16,7 +16,7 @@ func TestCreateETradePortfolioPosition(t *testing.T) {
 		expectValue ETradePosition
 	}{
 		{
-			name: "CreateETradePosition Creates PortfolioPosition With Valid Response",
+			name: "Creates PortfolioPosition",
 			testJson: `
 {
   "positionId": 1234
@@ -30,10 +30,10 @@ func TestCreateETradePortfolioPosition(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradePosition Fails If Missing PortfolioPosition ID",
+			name: "Fails If Missing positionId",
 			testJson: `
 {
-  "someOtherKey": "test"
+  "MISSING": 1234
 }`,
 			expectErr:   true,
 			expectValue: nil,
@@ -59,7 +59,7 @@ func TestCreateETradePortfolioPosition(t *testing.T) {
 }
 
 func TestETradePortfolioPosition_GetId(t *testing.T) {
-	testPortfolioPosition := &eTradePosition{
+	testObject := &eTradePosition{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"positionId": json.Number("1234"),
@@ -67,12 +67,98 @@ func TestETradePortfolioPosition_GetId(t *testing.T) {
 	}
 	expectedValue := int64(1234)
 
-	actualValue := testPortfolioPosition.GetId()
+	actualValue := testObject.GetId()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
+func TestETradePortfolioPosition_AddLotsFromResponse(t *testing.T) {
+	startingObject := &eTradePosition{
+		id: 1234,
+		jsonMap: jsonmap.JsonMap{
+			"positionId": json.Number("1234"),
+		},
+	}
+
+	tests := []struct {
+		name        string
+		startValue  ETradePosition
+		testJson    string
+		expectErr   bool
+		expectValue ETradePosition
+	}{
+		{
+			name:       "Can Add Lots",
+			startValue: startingObject,
+			testJson: `
+{
+  "PositionLotsResponse": {
+    "PositionLot": [
+      {
+        "Key": "Value"
+      }
+    ]
+  }
+}`,
+			expectErr: false,
+			expectValue: &eTradePosition{
+				id: 1234,
+				jsonMap: jsonmap.JsonMap{
+					"positionId": json.Number("1234"),
+					"lots": jsonmap.JsonSlice{
+						jsonmap.JsonMap{
+							"key": "Value",
+						},
+					},
+				},
+			},
+		},
+		{
+			name:       "Fails With Invalid JSON",
+			startValue: startingObject,
+			testJson: `
+{
+  "PositionLotsResponse": {
+}`,
+			expectErr:   true,
+			expectValue: startingObject,
+		},
+		{
+			name:       "Fails With Missing PositionLot",
+			startValue: startingObject,
+			testJson: `
+{
+  "PositionLotsResponse": {
+    "MISSING": [
+      {
+        "Key": "Value"
+      }
+    ]
+  }
+}`,
+			expectErr:   true,
+			expectValue: startingObject,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				var position = tt.startValue
+				// Call the Method Under Test
+				err := position.AddLotsFromResponse([]byte(tt.testJson))
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expectValue, position)
+			},
+		)
+	}
+}
+
 func TestETradePortfolioPosition_AsJsonMap(t *testing.T) {
-	testPortfolioPosition := &eTradePosition{
+	testObject := &eTradePosition{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"positionId": json.Number("1234"),
@@ -82,6 +168,6 @@ func TestETradePortfolioPosition_AsJsonMap(t *testing.T) {
 		"positionId": json.Number("1234"),
 	}
 
-	actualValue := testPortfolioPosition.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

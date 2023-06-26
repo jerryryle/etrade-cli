@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeTransactionDetails(t *testing.T) {
+func TestCreateETradeTransactionDetailsFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -16,7 +15,7 @@ func TestCreateETradeTransactionDetails(t *testing.T) {
 		expectValue ETradeTransactionDetails
 	}{
 		{
-			name: "CreateETradeTransactionDetails Creates Transaction With Valid Response",
+			name: "Creates Transaction Details",
 			testJson: `
 {
   "TransactionDetailsResponse": {
@@ -32,11 +31,20 @@ func TestCreateETradeTransactionDetails(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeTransactionDetails Fails If Missing Transaction ID",
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "TransactionDetailsResponse": {
-    "someOtherKey": "test"
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing Transaction ID",
+			testJson: `
+{
+  "TransactionDetailsResponse": {
+    "MISSING": 1234
   }
 }`,
 			expectErr:   true,
@@ -47,10 +55,8 @@ func TestCreateETradeTransactionDetails(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeTransactionDetails(responseMap)
+				actualValue, err := CreateETradeTransactionDetailsFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -63,7 +69,7 @@ func TestCreateETradeTransactionDetails(t *testing.T) {
 }
 
 func TestETradeTransactionDetails_GetId(t *testing.T) {
-	testTransactionDetails := &eTradeTransactionDetails{
+	testObject := &eTradeTransactionDetails{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"transactionId": json.Number("1234"),
@@ -71,12 +77,12 @@ func TestETradeTransactionDetails_GetId(t *testing.T) {
 	}
 	expectedValue := int64(1234)
 
-	actualValue := testTransactionDetails.GetId()
+	actualValue := testObject.GetId()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
 func TestETradeTransactionDetails_AsJsonMap(t *testing.T) {
-	testTransactionDetails := &eTradeTransactionDetails{
+	testObject := &eTradeTransactionDetails{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"transactionId": json.Number("1234"),
@@ -86,6 +92,6 @@ func TestETradeTransactionDetails_AsJsonMap(t *testing.T) {
 		"transactionId": json.Number("1234"),
 	}
 
-	actualValue := testTransactionDetails.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

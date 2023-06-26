@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradePositionList(t *testing.T) {
+func TestCreateETradePositionListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -16,7 +15,7 @@ func TestCreateETradePositionList(t *testing.T) {
 		expectValue ETradePositionList
 	}{
 		{
-			name: "CreateETradePositionList Creates List With Valid Response",
+			name: "Creates List",
 			testJson: `
 {
   "PortfolioResponse": {
@@ -29,9 +28,6 @@ func TestCreateETradePositionList(t *testing.T) {
         "Position": [
           {
             "positionId": 1234
-          },
-          {
-            "positionId": 5678
           }
         ]
       }
@@ -47,12 +43,6 @@ func TestCreateETradePositionList(t *testing.T) {
 							"positionId": json.Number("1234"),
 						},
 					},
-					&eTradePosition{
-						id: 5678,
-						jsonMap: jsonmap.JsonMap{
-							"positionId": json.Number("5678"),
-						},
-					},
 				},
 				totalsMap: jsonmap.JsonMap{
 					"bogusTotal": json.Number("9999"),
@@ -61,7 +51,7 @@ func TestCreateETradePositionList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradePositionList Can Create Empty List and Nil Totals Map",
+			name: "Can Create Empty List and Nil Totals Map",
 			testJson: `
 {
   "PortfolioResponse": {
@@ -81,16 +71,55 @@ func TestCreateETradePositionList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradePositionList Fails With Invalid Response",
-			// The "AccountPortfolio" key holds a map value instead of a slice
-			// value in the following string
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "PortfolioResponse": {
-    "AccountPortfolio": {
-      "Position": [
-      ]
-    }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing AccountPortfolio",
+			testJson: `
+{
+  "PortfolioResponse": {
+    "Totals": {
+      "bogusTotal": 9999
+    },
+    "MISSING": [
+      {
+        "nextPageNo": "2",
+        "Position": [
+          {
+            "positionId": 1234
+          }
+        ]
+      }
+    ]
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing positionId",
+			testJson: `
+{
+  "PortfolioResponse": {
+    "Totals": {
+      "bogusTotal": 9999
+    },
+    "AccountPortfolio": [
+      {
+        "nextPageNo": "2",
+        "Position": [
+          {
+            "MISSING": 1234
+          }
+        ]
+      }
+    ]
   }
 }`,
 			expectErr:   true,
@@ -101,10 +130,8 @@ func TestCreateETradePositionList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradePositionList(responseMap)
+				actualValue, err := CreateETradePositionListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -118,13 +145,13 @@ func TestCreateETradePositionList(t *testing.T) {
 
 func TestETradePositionList_GetAllPositions(t *testing.T) {
 	tests := []struct {
-		name             string
-		testPositionList ETradePositionList
-		expectValue      []ETradePosition
+		name        string
+		testObject  ETradePositionList
+		expectValue []ETradePosition
 	}{
 		{
-			name: "GetAllPositions Returns All Positions",
-			testPositionList: &eTradePositionList{
+			name: "Returns All Positions",
+			testObject: &eTradePositionList{
 				positions: []ETradePosition{
 					&eTradePosition{
 						id: 1234,
@@ -156,8 +183,8 @@ func TestETradePositionList_GetAllPositions(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllPositions Can Return Empty List",
-			testPositionList: &eTradePositionList{
+			name: "Can Return Empty List",
+			testObject: &eTradePositionList{
 				positions: []ETradePosition{},
 			},
 			expectValue: []ETradePosition{},
@@ -168,7 +195,7 @@ func TestETradePositionList_GetAllPositions(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testPositionList.GetAllPositions()
+				actualValue := tt.testObject.GetAllPositions()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
@@ -177,14 +204,14 @@ func TestETradePositionList_GetAllPositions(t *testing.T) {
 
 func TestETradePositionList_GetPositionById(t *testing.T) {
 	tests := []struct {
-		name             string
-		testPositionList ETradePositionList
-		testPositionID   int64
-		expectValue      ETradePosition
+		name        string
+		testObject  ETradePositionList
+		testId      int64
+		expectValue ETradePosition
 	}{
 		{
-			name: "GetPositionById Returns Account For Valid ID",
-			testPositionList: &eTradePositionList{
+			name: "Returns Account For Valid ID",
+			testObject: &eTradePositionList{
 				positions: []ETradePosition{
 					&eTradePosition{
 						id: 1234,
@@ -194,7 +221,7 @@ func TestETradePositionList_GetPositionById(t *testing.T) {
 					},
 				},
 			},
-			testPositionID: 1234,
+			testId: 1234,
 			expectValue: &eTradePosition{
 				id: 1234,
 				jsonMap: jsonmap.JsonMap{
@@ -203,8 +230,8 @@ func TestETradePositionList_GetPositionById(t *testing.T) {
 			},
 		},
 		{
-			name: "GetPositionById Returns Nil For Invalid ID",
-			testPositionList: &eTradePositionList{
+			name: "Returns Nil For Invalid ID",
+			testObject: &eTradePositionList{
 				positions: []ETradePosition{
 					&eTradePosition{
 						id: 1234,
@@ -214,8 +241,8 @@ func TestETradePositionList_GetPositionById(t *testing.T) {
 					},
 				},
 			},
-			testPositionID: 5678,
-			expectValue:    nil,
+			testId:      5678,
+			expectValue: nil,
 		},
 	}
 
@@ -223,63 +250,40 @@ func TestETradePositionList_GetPositionById(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testPositionList.GetPositionById(tt.testPositionID)
+				actualValue := tt.testObject.GetPositionById(tt.testId)
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
 }
 
-func TestETradePositionList_AddPage(t *testing.T) {
-	type pageTest struct {
+func TestETradePositionList_AddPageFromResponse(t *testing.T) {
+	startingObject := &eTradePositionList{
+		positions: []ETradePosition{
+			&eTradePosition{
+				id: 1234,
+				jsonMap: jsonmap.JsonMap{
+					"positionId": json.Number("1234"),
+				},
+			},
+		},
+		totalsMap: jsonmap.JsonMap{
+			"bogusTotal": json.Number("9999"),
+		},
+		nextPage: "2",
+	}
+
+	tests := []struct {
+		name        string
+		startValue  ETradePositionList
 		testJson    string
 		expectErr   bool
 		expectValue ETradePositionList
-	}
-	tests := []struct {
-		name      string
-		pageTests []pageTest
 	}{
 		{
-			name: "AddPage Can Add Pages",
-			pageTests: []pageTest{
-				{
-					testJson: `
-{
-  "PortfolioResponse": {
-    "Totals": {
-      "bogusTotal": 9999
-    },
-    "AccountPortfolio": [
-      {
-        "nextPageNo": "2",
-        "Position": [
-          {
-            "positionId": 1234
-          }
-        ]
-      }
-    ]
-  }
-}`,
-					expectErr: false,
-					expectValue: &eTradePositionList{
-						positions: []ETradePosition{
-							&eTradePosition{
-								id: 1234,
-								jsonMap: jsonmap.JsonMap{
-									"positionId": json.Number("1234"),
-								},
-							},
-						},
-						totalsMap: jsonmap.JsonMap{
-							"bogusTotal": json.Number("9999"),
-						},
-						nextPage: "2",
-					},
-				},
-				{
-					testJson: `
+			name:       "Can Add Pages",
+			startValue: startingObject,
+			testJson: `
 {
   "PortfolioResponse": {
     "Totals": {
@@ -296,87 +300,8 @@ func TestETradePositionList_AddPage(t *testing.T) {
     ]
   }
 }`,
-					expectErr: false,
-					expectValue: &eTradePositionList{
-						positions: []ETradePosition{
-							&eTradePosition{
-								id: 1234,
-								jsonMap: jsonmap.JsonMap{
-									"positionId": json.Number("1234"),
-								},
-							},
-							// Positions in subsequent pages are appended to
-							// the position list.
-							&eTradePosition{
-								id: 5678,
-								jsonMap: jsonmap.JsonMap{
-									"positionId": json.Number("5678"),
-								},
-							},
-						},
-						totalsMap: jsonmap.JsonMap{
-							// The totals come from the first page only. Totals
-							// in subsequent pages are ignored.
-							"bogusTotal": json.Number("9999"),
-						},
-						nextPage: "",
-					},
-				},
-			},
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(
-			tt.name, func(t *testing.T) {
-				var positionList ETradePositionList
-				for testIndex, pt := range tt.pageTests {
-					responseMap, err := NewNormalizedJsonMap([]byte(pt.testJson))
-					require.Nil(t, err)
-
-					if testIndex == 0 {
-						positionList, err = CreateETradePositionList(responseMap)
-					} else {
-						// Call the Method Under Test
-						err = positionList.AddPage(responseMap)
-					}
-					if pt.expectErr {
-						assert.Error(t, err)
-					} else {
-						assert.Nil(t, err)
-					}
-					assert.Equal(t, pt.expectValue, positionList)
-				}
-			},
-		)
-	}
-}
-
-func TestETradePositionList_NextPage(t *testing.T) {
-	testPositionList := &eTradePositionList{
-		positions: []ETradePosition{},
-		totalsMap: jsonmap.JsonMap{},
-		nextPage:  "1234",
-	}
-	assert.Equal(t, "1234", testPositionList.NextPage())
-
-	testPositionList = &eTradePositionList{
-		positions: []ETradePosition{},
-		totalsMap: jsonmap.JsonMap{},
-		nextPage:  "",
-	}
-	assert.Equal(t, "", testPositionList.NextPage())
-}
-
-func TestETradePositionList_AsJsonMap(t *testing.T) {
-	tests := []struct {
-		name             string
-		testPositionList ETradePositionList
-		expectValue      jsonmap.JsonMap
-	}{
-		{
-			name: "AsJsonMap Returns Map With Positions And Totals",
-			testPositionList: &eTradePositionList{
+			expectErr: false,
+			expectValue: &eTradePositionList{
 				positions: []ETradePosition{
 					&eTradePosition{
 						id: 1234,
@@ -384,31 +309,96 @@ func TestETradePositionList_AsJsonMap(t *testing.T) {
 							"positionId": json.Number("1234"),
 						},
 					},
-				},
-				totalsMap: jsonmap.JsonMap{
-					"testTotal": "testValue",
-				},
-			},
-			expectValue: jsonmap.JsonMap{
-				"positions": jsonmap.JsonSlice{
-					jsonmap.JsonMap{
-						"positionId": json.Number("1234"),
+					// Positions in subsequent pages are appended to
+					// the position list.
+					&eTradePosition{
+						id: 5678,
+						jsonMap: jsonmap.JsonMap{
+							"positionId": json.Number("5678"),
+						},
 					},
 				},
-				"totals": jsonmap.JsonMap{
-					"testTotal": "testValue",
+				totalsMap: jsonmap.JsonMap{
+					// The totals come from the first page only. Totals
+					// in subsequent pages are ignored.
+					"bogusTotal": json.Number("9999"),
 				},
+				nextPage: "",
 			},
+		},
+		{
+			name:       "Fails on Invalid JSON",
+			startValue: startingObject,
+			testJson: `
+{
+  "PortfolioResponse": {
+}`,
+			expectErr:   true,
+			expectValue: startingObject,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
+				positionList := tt.startValue
+
 				// Call the Method Under Test
-				actualValue := tt.testPositionList.AsJsonMap()
-				assert.Equal(t, tt.expectValue, actualValue)
+				err := positionList.AddPageFromResponse([]byte(tt.testJson))
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expectValue, positionList)
 			},
 		)
 	}
+}
+
+func TestETradePositionList_NextPage(t *testing.T) {
+	testObject := &eTradePositionList{
+		positions: []ETradePosition{},
+		totalsMap: jsonmap.JsonMap{},
+		nextPage:  "1234",
+	}
+	assert.Equal(t, "1234", testObject.NextPage())
+
+	testObject = &eTradePositionList{
+		positions: []ETradePosition{},
+		totalsMap: jsonmap.JsonMap{},
+		nextPage:  "",
+	}
+	assert.Equal(t, "", testObject.NextPage())
+}
+
+func TestETradePositionList_AsJsonMap(t *testing.T) {
+	testObject := &eTradePositionList{
+		positions: []ETradePosition{
+			&eTradePosition{
+				id: 1234,
+				jsonMap: jsonmap.JsonMap{
+					"positionId": json.Number("1234"),
+				},
+			},
+		},
+		totalsMap: jsonmap.JsonMap{
+			"testTotal": "testValue",
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"positions": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"positionId": json.Number("1234"),
+			},
+		},
+		"totals": jsonmap.JsonMap{
+			"testTotal": "testValue",
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testObject.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
 }

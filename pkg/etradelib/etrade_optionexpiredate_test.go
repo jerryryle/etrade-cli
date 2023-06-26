@@ -15,7 +15,7 @@ func TestCreateETradeOptionExpireDate(t *testing.T) {
 		expectValue ETradeOptionExpireDate
 	}{
 		{
-			name: "CreateETradeOptionExpireDate Creates OptionExpireDate With Valid Response",
+			name: "Creates OptionExpireDate",
 			testJson: `
 {
   "key": "value"
@@ -48,7 +48,7 @@ func TestCreateETradeOptionExpireDate(t *testing.T) {
 }
 
 func TestETradeOptionExpireDate_AsJsonMap(t *testing.T) {
-	testOptionExpireDate := &eTradeOptionExpireDate{
+	testObject := &eTradeOptionExpireDate{
 		jsonMap: jsonmap.JsonMap{
 			"key": "value",
 		},
@@ -57,6 +57,6 @@ func TestETradeOptionExpireDate_AsJsonMap(t *testing.T) {
 		"key": "value",
 	}
 
-	actualValue := testOptionExpireDate.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

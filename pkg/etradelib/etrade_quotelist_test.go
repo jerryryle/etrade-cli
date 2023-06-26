@@ -3,11 +3,10 @@ package etradelib
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeQuoteList(t *testing.T) {
+func TestCreateETradeQuoteListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -15,18 +14,22 @@ func TestCreateETradeQuoteList(t *testing.T) {
 		expectValue ETradeQuoteList
 	}{
 		{
-			name: "CreateETradeQuoteList Creates List With Valid Response",
+			name: "Creates List",
 			testJson: `
 {
   "QuoteResponse": {
     "QuoteData": [
       {
         "key1": "value1"
-      },
-      {
-        "key2": "value2"
       }
-    ]
+    ],
+    "Messages": {
+      "Message": [
+        {
+          "messageKey": "MessageValue"
+        }
+      ]
+    }
   }
 }`,
 			expectErr: false,
@@ -37,51 +40,104 @@ func TestCreateETradeQuoteList(t *testing.T) {
 							"key1": "value1",
 						},
 					},
-					&eTradeQuote{
-						jsonMap: jsonmap.JsonMap{
-							"key2": "value2",
-						},
+				},
+				messages: jsonmap.JsonSlice{
+					jsonmap.JsonMap{
+						"messageKey": "MessageValue",
 					},
 				},
 			},
 		},
 		{
-			name: "CreateETradeQuoteList Can Create Empty List",
+			name: "Can Create Empty List",
 			testJson: `
 {
   "QuoteResponse": {
     "QuoteData": [
-    ]
+    ],
+    "Messages": {
+      "Message": [
+        {
+          "messageKey": "MessageValue"
+        }
+      ]
+    }
   }
 }`,
 			expectErr: false,
 			expectValue: &eTradeQuoteList{
 				quotes: []ETradeQuote{},
+				messages: jsonmap.JsonSlice{
+					jsonmap.JsonMap{
+						"messageKey": "MessageValue",
+					},
+				},
 			},
 		},
 		{
-			name: "CreateETradeQuoteList Fails With Invalid Response",
-			// The "Quote" level is not an array in the following string
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "QuoteResponse": {
-    "QuoteData": {
-      "key": "value"
-    }
-  }
 }`,
 			expectErr:   true,
 			expectValue: nil,
+		},
+		{
+			name: "Succeeds With Missing QuoteData And Creates Empty Slice",
+			testJson: `
+{
+  "QuoteResponse": {
+    "MISSING": [
+    ],
+    "Messages": {
+      "Message": [
+        {
+          "messageKey": "MessageValue"
+        }
+      ]
+    }
+  }
+}`,
+			expectErr: false,
+			expectValue: &eTradeQuoteList{
+				quotes: []ETradeQuote{},
+				messages: jsonmap.JsonSlice{
+					jsonmap.JsonMap{
+						"messageKey": "MessageValue",
+					},
+				},
+			},
+		},
+		{
+			name: "Succeeds With Missing Messages And Creates Nil Slice",
+			testJson: `
+{
+  "QuoteResponse": {
+    "QuoteData": [
+    ],
+    "MISSING": {
+      "Message": [
+        {
+          "messageKey": "MessageValue"
+        }
+      ]
+    }
+  }
+}`,
+			expectErr: false,
+			expectValue: &eTradeQuoteList{
+				quotes:   []ETradeQuote{},
+				messages: jsonmap.JsonSlice(nil),
+			},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeQuoteList(responseMap)
+				actualValue, err := CreateETradeQuoteListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -95,13 +151,13 @@ func TestCreateETradeQuoteList(t *testing.T) {
 
 func TestETradeQuoteList_GetAllQuotes(t *testing.T) {
 	tests := []struct {
-		name          string
-		testQuoteList ETradeQuoteList
-		expectValue   []ETradeQuote
+		name        string
+		testObject  ETradeQuoteList
+		expectValue []ETradeQuote
 	}{
 		{
-			name: "GetAllQuotes Returns All Quotes",
-			testQuoteList: &eTradeQuoteList{
+			name: "Returns All Quotes",
+			testObject: &eTradeQuoteList{
 				quotes: []ETradeQuote{
 					&eTradeQuote{
 						jsonMap: jsonmap.JsonMap{
@@ -129,8 +185,8 @@ func TestETradeQuoteList_GetAllQuotes(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllQuotes Can Return Empty List",
-			testQuoteList: &eTradeQuoteList{
+			name: "Can Return Empty List",
+			testObject: &eTradeQuoteList{
 				quotes: []ETradeQuote{},
 			},
 			expectValue: []ETradeQuote{},
@@ -141,9 +197,43 @@ func TestETradeQuoteList_GetAllQuotes(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testQuoteList.GetAllQuotes()
+				actualValue := tt.testObject.GetAllQuotes()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
+}
+
+func TestETradeQuoteList_AsJsonMap(t *testing.T) {
+	testObject := &eTradeQuoteList{
+		quotes: []ETradeQuote{
+			&eTradeQuote{
+				jsonMap: jsonmap.JsonMap{
+					"key1": "value1",
+				},
+			},
+		},
+		messages: jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"messageKey": "MessageValue",
+			},
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"quotes": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"key1": "value1",
+			},
+		},
+		"messages": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"messageKey": "MessageValue",
+			},
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testObject.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
 }

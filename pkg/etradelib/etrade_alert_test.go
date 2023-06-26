@@ -16,7 +16,7 @@ func TestCreateETradeAlert(t *testing.T) {
 		expectValue ETradeAlert
 	}{
 		{
-			name: "CreateETradeAlert Creates Alert With Valid Response",
+			name: "Creates Alert",
 			testJson: `
 {
   "id": 1234
@@ -30,10 +30,10 @@ func TestCreateETradeAlert(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeAlert Fails If Missing Alert ID",
+			name: "Fails If Missing Alert ID",
 			testJson: `
 {
-  "someOtherKey": "test"
+  "MISSING": 1234
 }`,
 			expectErr:   true,
 			expectValue: nil,
@@ -59,7 +59,7 @@ func TestCreateETradeAlert(t *testing.T) {
 }
 
 func TestETradeAlert_GetId(t *testing.T) {
-	testAlert := &eTradeAlert{
+	testObject := &eTradeAlert{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"id": json.Number("1234"),
@@ -67,12 +67,12 @@ func TestETradeAlert_GetId(t *testing.T) {
 	}
 	expectedValue := int64(1234)
 
-	actualValue := testAlert.GetId()
+	actualValue := testObject.GetId()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
 func TestETradeAlert_AsJsonMap(t *testing.T) {
-	testAlert := &eTradeAlert{
+	testObject := &eTradeAlert{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"id": json.Number("1234"),
@@ -82,6 +82,6 @@ func TestETradeAlert_AsJsonMap(t *testing.T) {
 		"id": json.Number("1234"),
 	}
 
-	actualValue := testAlert.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

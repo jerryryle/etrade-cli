@@ -24,7 +24,7 @@ func TestJsonSlice_SetValue(t *testing.T) {
 			expectValue:   JsonSlice{"TestValue"},
 		},
 		{
-			name:          "Index Too Big Returns Error",
+			name:          "Index Too Big Fails",
 			startingValue: JsonSlice{0},
 			testIndex:     1,
 			testValue:     "TestValue",
@@ -32,7 +32,7 @@ func TestJsonSlice_SetValue(t *testing.T) {
 			expectValue:   JsonSlice{0},
 		},
 		{
-			name:          "Index Negative Returns Error",
+			name:          "Index Negative Fails",
 			startingValue: JsonSlice{0},
 			testIndex:     -1,
 			testValue:     "TestValue",
@@ -166,7 +166,7 @@ func TestJsonSlice_SetValueAtPath(t *testing.T) {
 			expectValue:   JsonSlice{JsonMap{"Key": "TestValue"}},
 		},
 		{
-			name:          "Empty Path Returns Error",
+			name:          "Empty Path Fails",
 			startingValue: JsonSlice{0},
 			testPath:      "",
 			testValue:     "TestValue",

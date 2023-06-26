@@ -4,11 +4,10 @@ import (
 	"encoding/json"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeAlertList(t *testing.T) {
+func TestCreateETradeAlertListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -16,16 +15,13 @@ func TestCreateETradeAlertList(t *testing.T) {
 		expectValue ETradeAlertList
 	}{
 		{
-			name: "CreateETradeAlertList Creates List With Valid Response",
+			name: "Creates Alert List",
 			testJson: `
 {
   "AlertsResponse": {
     "Alert": [
       {
         "id": 1234
-      },
-      {
-        "id": 5678
       }
     ]
   }
@@ -39,17 +35,11 @@ func TestCreateETradeAlertList(t *testing.T) {
 							"id": json.Number("1234"),
 						},
 					},
-					&eTradeAlert{
-						id: 5678,
-						jsonMap: jsonmap.JsonMap{
-							"id": json.Number("5678"),
-						},
-					},
 				},
 			},
 		},
 		{
-			name: "CreateETradeAlertList Can Create Empty List",
+			name: "Creates Empty List",
 			testJson: `
 {
   "AlertsResponse": {
@@ -63,14 +53,39 @@ func TestCreateETradeAlertList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeAlertList Fails With Invalid Response",
-			// The "Alert" level is not an array in the following string
+			name: "Fails With Bad JSON",
 			testJson: `
 {
   "AlertsResponse": {
-    "Alert": {
-      "id": 1234
-    }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing AlertsResponse",
+			testJson: `
+{
+  "MISSING": {
+    "Alert": [
+      {
+        "id": 1234
+      }
+    ]
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing Alert Id",
+			testJson: `
+{
+  "AlertsResponse": {
+    "Alert": [
+      {
+        "MISSING": 1234
+      }
+    ]
   }
 }`,
 			expectErr:   true,
@@ -81,10 +96,8 @@ func TestCreateETradeAlertList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeAlertList(responseMap)
+				actualValue, err := CreateETradeAlertListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -98,13 +111,13 @@ func TestCreateETradeAlertList(t *testing.T) {
 
 func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 	tests := []struct {
-		name          string
-		testAlertList ETradeAlertList
-		expectValue   []ETradeAlert
+		name        string
+		testObject  ETradeAlertList
+		expectValue []ETradeAlert
 	}{
 		{
-			name: "GetAllAlerts Returns All Alerts",
-			testAlertList: &eTradeAlertList{
+			name: "Returns All Alerts",
+			testObject: &eTradeAlertList{
 				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
@@ -136,8 +149,8 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllAlerts Can Return Empty List",
-			testAlertList: &eTradeAlertList{
+			name: "Can Return Empty List",
+			testObject: &eTradeAlertList{
 				alerts: []ETradeAlert{},
 			},
 			expectValue: []ETradeAlert{},
@@ -148,7 +161,7 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testAlertList.GetAllAlerts()
+				actualValue := tt.testObject.GetAllAlerts()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
@@ -157,14 +170,14 @@ func TestETradeAlertList_GetAllAlerts(t *testing.T) {
 
 func TestETradeAlertList_GetAlertById(t *testing.T) {
 	tests := []struct {
-		name          string
-		testAlertList ETradeAlertList
-		testAlertID   int64
-		expectValue   ETradeAlert
+		name        string
+		testObject  ETradeAlertList
+		testId      int64
+		expectValue ETradeAlert
 	}{
 		{
-			name: "GetAlertById Returns Alert For Valid ID",
-			testAlertList: &eTradeAlertList{
+			name: "Returns Alert For Valid ID",
+			testObject: &eTradeAlertList{
 				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
@@ -174,7 +187,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 					},
 				},
 			},
-			testAlertID: 1234,
+			testId: 1234,
 			expectValue: &eTradeAlert{
 				id: 1234,
 				jsonMap: jsonmap.JsonMap{
@@ -183,8 +196,8 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAlertById Returns Nil For Invalid ID",
-			testAlertList: &eTradeAlertList{
+			name: "Returns Nil For Invalid ID",
+			testObject: &eTradeAlertList{
 				alerts: []ETradeAlert{
 					&eTradeAlert{
 						id: 1234,
@@ -194,7 +207,7 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 					},
 				},
 			},
-			testAlertID: 5678,
+			testId:      5678,
 			expectValue: nil,
 		},
 	}
@@ -203,9 +216,34 @@ func TestETradeAlertList_GetAlertById(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testAlertList.GetAlertById(tt.testAlertID)
+				actualValue := tt.testObject.GetAlertById(tt.testId)
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
+}
+
+func TestETradeAlertList_AsJsonMap(t *testing.T) {
+	testObject := &eTradeAlertList{
+		alerts: []ETradeAlert{
+			&eTradeAlert{
+				id: 1234,
+				jsonMap: jsonmap.JsonMap{
+					"id": "1234",
+				},
+			},
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"alerts": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"id": "1234",
+			},
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testObject.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
 }

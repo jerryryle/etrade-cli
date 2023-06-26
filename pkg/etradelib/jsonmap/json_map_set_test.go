@@ -32,7 +32,7 @@ func TestJsonMap_SetValue(t *testing.T) {
 			expectValue:   JsonMap{"TestKey": "TestValue"},
 		},
 		{
-			name:          "Empty Key Returns Error",
+			name:          "Empty Key Fails",
 			startingValue: JsonMap{},
 			testKey:       "",
 			testValue:     "TestValue",
@@ -158,7 +158,7 @@ func TestJsonMap_SetValueAtPath(t *testing.T) {
 			expectValue:   JsonMap{"Level1": JsonMap{"Level2": JsonMap{"Level3": "TestValue"}}},
 		},
 		{
-			name:          "Empty Path Returns Error",
+			name:          "Empty Path Fails",
 			startingValue: JsonMap{},
 			testPath:      "",
 			testValue:     "TestValue",
@@ -166,7 +166,7 @@ func TestJsonMap_SetValueAtPath(t *testing.T) {
 			expectValue:   JsonMap{},
 		},
 		{
-			name:          "Cannot Create Missing Slice In Map",
+			name:          "Create Missing Slice In Map Fails",
 			startingValue: JsonMap{
 				// Map is empty. The "Level1" key cannot be added because the
 				// [0] index in the path implies that it should hold a slice.
@@ -179,7 +179,7 @@ func TestJsonMap_SetValueAtPath(t *testing.T) {
 			expectValue: JsonMap{},
 		},
 		{
-			name: "Cannot Create Missing Slice In Slice",
+			name: "Create Missing Slice In Slice Fails",
 			startingValue: JsonMap{
 				// Map contains key "Level1" holding a slice with one int.
 				// "Level1[0]" can be accessed because it exists; however
@@ -209,7 +209,29 @@ func TestJsonMap_SetValueAtPath(t *testing.T) {
 			expectValue: JsonMap{"Level1": JsonSlice{JsonMap{"Key": "TestValue"}}},
 		},
 		{
-			name:          "Cannot Set Value For Path That Indexes Existing Slice With Index Too Big",
+			name:          "Set Value For Path That Indexes Existing Map As Slice Fails",
+			startingValue: JsonMap{"Level1": JsonMap{"Level2": "Level2Value"}},
+			testPath:      ".Level1[0]",
+			testValue:     "TestValue",
+			expectErr:     true,
+			expectValue: JsonMap{
+				// The starting map should remain untouched
+				"Level1": JsonMap{"Level2": "Level2Value"},
+			},
+		},
+		{
+			name:          "Set Value For Path That Indexes Existing Slice As Map Fails",
+			startingValue: JsonMap{"Level1": JsonSlice{"A"}},
+			testPath:      ".Level1.A",
+			testValue:     "TestValue",
+			expectErr:     true,
+			expectValue: JsonMap{
+				// The starting map should remain untouched
+				"Level1": JsonSlice{"A"},
+			},
+		},
+		{
+			name:          "Set Value For Path That Indexes Existing Slice With Index Too Big Fails",
 			startingValue: JsonMap{"Level1": JsonSlice{0}},
 			testPath:      "Level1[1].Key",
 			testValue:     "TestValue",
@@ -220,7 +242,18 @@ func TestJsonMap_SetValueAtPath(t *testing.T) {
 			},
 		},
 		{
-			name:          "Cannot Set Value For Path That Indexes Existing Slice With Index Negative",
+			name:          "Set Value For Path That Indexes Slice With Non-Numeric Index Fails",
+			startingValue: JsonMap{"Level1": JsonSlice{0}},
+			testPath:      "Level1[A].Key",
+			testValue:     "TestValue",
+			expectErr:     true,
+			expectValue: JsonMap{
+				// The starting map should remain untouched
+				"Level1": JsonSlice{0},
+			},
+		},
+		{
+			name:          "Set Value For Path That Indexes Existing Slice With Index Negative Fails",
 			startingValue: JsonMap{"Level1": JsonSlice{0}},
 			testPath:      "Level1[-1].Key",
 			testValue:     "TestValue",

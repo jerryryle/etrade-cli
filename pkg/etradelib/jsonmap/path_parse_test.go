@@ -55,6 +55,12 @@ func TestPathParse(t *testing.T) {
 			expectValue: []interface{}{"path1", "path2", 0, 1},
 		},
 		{
+			name:        "Invalid Path With Non-Numeric Array Index",
+			testPath:    "path1.path2[A]",
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
 			name:        "Invalid Path With Array Index Followed By Key",
 			testPath:    "path1.[0]path2",
 			expectErr:   true,

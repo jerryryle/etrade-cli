@@ -15,7 +15,7 @@ func TestCreateETradeQuote(t *testing.T) {
 		expectValue ETradeQuote
 	}{
 		{
-			name: "CreateETradeQuote Creates Quote With Valid Response",
+			name: "Creates Quote",
 			testJson: `
 {
   "key": "value"
@@ -48,7 +48,7 @@ func TestCreateETradeQuote(t *testing.T) {
 }
 
 func TestETradeQuote_AsJsonMap(t *testing.T) {
-	testQuote := &eTradeQuote{
+	testObject := &eTradeQuote{
 		jsonMap: jsonmap.JsonMap{
 			"key": "value",
 		},
@@ -57,6 +57,6 @@ func TestETradeQuote_AsJsonMap(t *testing.T) {
 		"key": "value",
 	}
 
-	actualValue := testQuote.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

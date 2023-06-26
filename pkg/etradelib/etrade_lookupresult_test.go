@@ -15,7 +15,7 @@ func TestCreateETradeLookupResult(t *testing.T) {
 		expectValue ETradeLookupResult
 	}{
 		{
-			name: "CreateETradeLookupResult Creates Lookup With Valid Response",
+			name: "Creates Lookup",
 			testJson: `
 {
   "key": "value"
@@ -48,7 +48,7 @@ func TestCreateETradeLookupResult(t *testing.T) {
 }
 
 func TestETradeLookupResult_AsJsonMap(t *testing.T) {
-	testResult := &eTradeLookupResult{
+	testObject := &eTradeLookupResult{
 		jsonMap: jsonmap.JsonMap{
 			"key": "value",
 		},
@@ -57,6 +57,6 @@ func TestETradeLookupResult_AsJsonMap(t *testing.T) {
 		"key": "value",
 	}
 
-	actualValue := testResult.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

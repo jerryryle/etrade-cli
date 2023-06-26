@@ -90,9 +90,7 @@ func CreateETradeOptionChainPairListFromResponse(response []byte) (ETradeOptionC
 }
 
 func CreateETradeOptionChainPairList(lookupListResponseMap jsonmap.JsonMap) (ETradeOptionChainPairList, error) {
-	optionChainPairsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPathWithDefault(
-		optionChainPairListOptionChainPairsResponsePath, nil,
-	)
+	optionChainPairsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPath(optionChainPairListOptionChainPairsResponsePath)
 	if err != nil {
 		return nil, err
 	}

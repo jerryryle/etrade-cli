@@ -3,11 +3,10 @@ package etradelib
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeLookupResultList(t *testing.T) {
+func TestCreateETradeLookupResultListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -15,16 +14,13 @@ func TestCreateETradeLookupResultList(t *testing.T) {
 		expectValue ETradeLookupResultList
 	}{
 		{
-			name: "CreateETradeLookupResultList Creates List With Valid Response",
+			name: "Creates List With Valid Response",
 			testJson: `
 {
   "LookupResponse": {
     "Data": [
       {
         "key1": "value1"
-      },
-      {
-        "key2": "value2"
       }
     ]
   }
@@ -37,16 +33,11 @@ func TestCreateETradeLookupResultList(t *testing.T) {
 							"key1": "value1",
 						},
 					},
-					&eTradeLookupResult{
-						jsonMap: jsonmap.JsonMap{
-							"key2": "value2",
-						},
-					},
 				},
 			},
 		},
 		{
-			name: "CreateETradeLookupResultList Can Create Empty List",
+			name: "Creates Empty List",
 			testJson: `
 {
   "LookupResponse": {
@@ -60,14 +51,24 @@ func TestCreateETradeLookupResultList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeLookupResultList Fails With Invalid Response",
-			// The "LookupResult" level is not an array in the following string
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "LookupResponse": {
-    "Data": {
-      "key": "value"
-    }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing LookupResponse",
+			testJson: `
+{
+  "MISSING": {
+    "Data": [
+      {
+        "key1": "value1"
+      }
+    ]
   }
 }`,
 			expectErr:   true,
@@ -78,10 +79,8 @@ func TestCreateETradeLookupResultList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeLookupResultList(responseMap)
+				actualValue, err := CreateETradeLookupResultListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -95,13 +94,13 @@ func TestCreateETradeLookupResultList(t *testing.T) {
 
 func TestETradeLookupResultList_GetAllLookupResults(t *testing.T) {
 	tests := []struct {
-		name                 string
-		testLookupResultList ETradeLookupResultList
-		expectValue          []ETradeLookupResult
+		name        string
+		testObject  ETradeLookupResultList
+		expectValue []ETradeLookupResult
 	}{
 		{
-			name: "GetAllLookupResults Returns All LookupResults",
-			testLookupResultList: &eTradeLookupResultList{
+			name: "Returns All LookupResults",
+			testObject: &eTradeLookupResultList{
 				results: []ETradeLookupResult{
 					&eTradeLookupResult{
 						jsonMap: jsonmap.JsonMap{
@@ -129,8 +128,8 @@ func TestETradeLookupResultList_GetAllLookupResults(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllLookupResults Can Return Empty List",
-			testLookupResultList: &eTradeLookupResultList{
+			name: "Can Return Empty List",
+			testObject: &eTradeLookupResultList{
 				results: []ETradeLookupResult{},
 			},
 			expectValue: []ETradeLookupResult{},
@@ -141,9 +140,33 @@ func TestETradeLookupResultList_GetAllLookupResults(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testLookupResultList.GetAllResults()
+				actualValue := tt.testObject.GetAllResults()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
+}
+
+func TestETradeLookupResultList_AsJsonMap(t *testing.T) {
+	testObject := &eTradeLookupResultList{
+		results: []ETradeLookupResult{
+			&eTradeLookupResult{
+				jsonMap: jsonmap.JsonMap{
+					"key1": "value1",
+				},
+			},
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"results": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"key1": "value1",
+			},
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testObject.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
 }

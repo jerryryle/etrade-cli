@@ -15,7 +15,7 @@ func TestCreateETradeOptionChainPair(t *testing.T) {
 		expectValue ETradeOptionChainPair
 	}{
 		{
-			name: "CreateETradeOptionChainPair Creates OptionChainPair With Valid Response",
+			name: "Creates OptionChainPair",
 			testJson: `
 {
   "key": "value"
@@ -48,7 +48,7 @@ func TestCreateETradeOptionChainPair(t *testing.T) {
 }
 
 func TestETradeOptionChainPair_AsJsonMap(t *testing.T) {
-	testOptionChainPair := &eTradeOptionChainPair{
+	testObject := &eTradeOptionChainPair{
 		jsonMap: jsonmap.JsonMap{
 			"key": "value",
 		},
@@ -57,6 +57,6 @@ func TestETradeOptionChainPair_AsJsonMap(t *testing.T) {
 		"key": "value",
 	}
 
-	actualValue := testOptionChainPair.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

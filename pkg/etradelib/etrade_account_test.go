@@ -15,7 +15,7 @@ func TestCreateETradeAccount(t *testing.T) {
 		expectValue ETradeAccount
 	}{
 		{
-			name: "CreateETradeAccount Creates Account With Valid Response",
+			name: "Creates Account With Valid Response",
 			testJson: `
 {
   "accountId": "Account 1 ID",
@@ -32,9 +32,10 @@ func TestCreateETradeAccount(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeAccount Fails If Missing Account ID",
+			name: "Fails If Missing Account ID",
 			testJson: `
 {
+  "MISSING": "Account 1 ID",
   "accountIdKey": "Account 1 ID Key"
 }`,
 			expectErr:   true,
@@ -44,7 +45,8 @@ func TestCreateETradeAccount(t *testing.T) {
 			name: "CreateETradeAccount Fails If Missing Account ID Key",
 			testJson: `
 {
-  "accountId": "Account 1 ID"
+  "accountId": "Account 1 ID",
+  "MISSING": "Account 1 ID Key"
 }`,
 			expectErr:   true,
 			expectValue: nil,
@@ -70,7 +72,7 @@ func TestCreateETradeAccount(t *testing.T) {
 }
 
 func TestETradeAccount_GetId(t *testing.T) {
-	testAccount := &eTradeAccount{
+	testObject := &eTradeAccount{
 		jsonMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
@@ -80,12 +82,12 @@ func TestETradeAccount_GetId(t *testing.T) {
 	}
 	expectedValue := "Account 1 ID"
 
-	actualValue := testAccount.GetId()
+	actualValue := testObject.GetId()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
 func TestETradeAccount_GetIdKey(t *testing.T) {
-	testAccount := &eTradeAccount{
+	testObject := &eTradeAccount{
 		jsonMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
@@ -95,12 +97,12 @@ func TestETradeAccount_GetIdKey(t *testing.T) {
 	}
 	expectedValue := "Account 1 ID Key"
 
-	actualValue := testAccount.GetIdKey()
+	actualValue := testObject.GetIdKey()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
 func TestETradeAccount_AsJsonMap(t *testing.T) {
-	testAccount := &eTradeAccount{
+	testObject := &eTradeAccount{
 		jsonMap: jsonmap.JsonMap{
 			"accountId":    "Account 1 ID",
 			"accountIdKey": "Account 1 ID Key",
@@ -113,6 +115,6 @@ func TestETradeAccount_AsJsonMap(t *testing.T) {
 		"accountIdKey": "Account 1 ID Key",
 	}
 
-	actualValue := testAccount.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

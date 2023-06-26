@@ -16,7 +16,7 @@ func TestCreateETradeOrder(t *testing.T) {
 		expectValue ETradeOrder
 	}{
 		{
-			name: "CreateETradeOrder Creates Order With Valid Response",
+			name: "Creates Order",
 			testJson: `
 {
   "orderId": 1234
@@ -30,10 +30,10 @@ func TestCreateETradeOrder(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeOrder Fails If Missing Order ID",
+			name: "Fails If Missing Order ID",
 			testJson: `
 {
-  "someOtherKey": "test"
+  "MISSING": "test"
 }`,
 			expectErr:   true,
 			expectValue: nil,
@@ -59,7 +59,7 @@ func TestCreateETradeOrder(t *testing.T) {
 }
 
 func TestETradeOrder_GetId(t *testing.T) {
-	testOrder := &eTradeOrder{
+	testObject := &eTradeOrder{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"orderId": json.Number("1234"),
@@ -67,12 +67,12 @@ func TestETradeOrder_GetId(t *testing.T) {
 	}
 	expectedValue := int64(1234)
 
-	actualValue := testOrder.GetId()
+	actualValue := testObject.GetId()
 	assert.Equal(t, expectedValue, actualValue)
 }
 
 func TestETradeOrder_AsJsonMap(t *testing.T) {
-	testOrder := &eTradeOrder{
+	testObject := &eTradeOrder{
 		id: 1234,
 		jsonMap: jsonmap.JsonMap{
 			"orderId": json.Number("1234"),
@@ -82,6 +82,6 @@ func TestETradeOrder_AsJsonMap(t *testing.T) {
 		"orderId": json.Number("1234"),
 	}
 
-	actualValue := testOrder.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectedValue, actualValue)
 }

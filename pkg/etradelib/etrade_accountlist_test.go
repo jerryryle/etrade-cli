@@ -3,11 +3,10 @@ package etradelib
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeAccountList(t *testing.T) {
+func TestCreateETradeAccountListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -15,7 +14,7 @@ func TestCreateETradeAccountList(t *testing.T) {
 		expectValue ETradeAccountList
 	}{
 		{
-			name: "CreateETradeAccountList Creates List With Valid Response",
+			name: "Creates Account List",
 			testJson: `
 {
   "AccountListResponse": {
@@ -24,10 +23,6 @@ func TestCreateETradeAccountList(t *testing.T) {
         {
           "accountId": "Account 1 ID",
           "accountIdKey": "Account 1 ID Key"
-        },
-        {
-          "accountId": "Account 2 ID",
-          "accountIdKey": "Account 2 ID Key"
         }
       ]
     }
@@ -44,19 +39,11 @@ func TestCreateETradeAccountList(t *testing.T) {
 							"accountIdKey": "Account 1 ID Key",
 						},
 					},
-					&eTradeAccount{
-						id:    "Account 2 ID",
-						idKey: "Account 2 ID Key",
-						jsonMap: jsonmap.JsonMap{
-							"accountId":    "Account 2 ID",
-							"accountIdKey": "Account 2 ID Key",
-						},
-					},
 				},
 			},
 		},
 		{
-			name: "CreateETradeAccountList Can Create Empty List",
+			name: "Creates Empty Account List",
 			testJson: `
 {
   "AccountListResponse": {
@@ -72,21 +59,46 @@ func TestCreateETradeAccountList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeAccountList Fails With Invalid Response",
-			// The "Account" level is missing from the following string
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "AccountListResponse": {
-    "Accounts": [
-      {
-        "accountId": "Account 1 ID",
-        "accountIdKey": "Account 1 ID Key"
-      },
-      {
-        "accountId": "Account 2 ID",
-        "accountIdKey": "Account 2 ID Key"
-      }
-    ]
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails Without Account Key",
+			testJson: `
+{
+  "AccountListResponse": {
+    "Accounts": {
+      "MISSING": [
+        {
+          "accountId": "Account 1 ID",
+          "accountIdKey": "Account 1 ID Key"
+        }
+      ]
+    }
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails Without Account Id",
+			// The "accountId" key is missing from the following string
+			testJson: `
+{
+  "AccountListResponse": {
+    "Accounts": {
+      "Account": [
+        {
+          "MISSING": "Account 1 ID",
+          "accountIdKey": "Account 1 ID Key"
+        }
+      ]
+    }
   }
 }`,
 			expectErr:   true,
@@ -97,10 +109,8 @@ func TestCreateETradeAccountList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeAccountList(responseMap)
+				actualValue, err := CreateETradeAccountListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -114,13 +124,13 @@ func TestCreateETradeAccountList(t *testing.T) {
 
 func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 	tests := []struct {
-		name            string
-		testAccountList ETradeAccountList
-		expectValue     []ETradeAccount
+		name        string
+		testObject  ETradeAccountList
+		expectValue []ETradeAccount
 	}{
 		{
-			name: "GetAllAccounts Returns All Accounts",
-			testAccountList: &eTradeAccountList{
+			name: "Returns All Accounts",
+			testObject: &eTradeAccountList{
 				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
@@ -160,8 +170,8 @@ func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllAccounts Can Return Empty List",
-			testAccountList: &eTradeAccountList{
+			name: "Can Return Empty List",
+			testObject: &eTradeAccountList{
 				accounts: []ETradeAccount{},
 			},
 			expectValue: []ETradeAccount{},
@@ -172,7 +182,7 @@ func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testAccountList.GetAllAccounts()
+				actualValue := tt.testObject.GetAllAccounts()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
@@ -181,14 +191,14 @@ func TestETradeAccountList_GetAllAccounts(t *testing.T) {
 
 func TestETradeAccountList_GetAccountById(t *testing.T) {
 	tests := []struct {
-		name            string
-		testAccountList ETradeAccountList
-		testAccountID   string
-		expectValue     ETradeAccount
+		name        string
+		testObject  ETradeAccountList
+		testId      string
+		expectValue ETradeAccount
 	}{
 		{
-			name: "GetAccountById Returns Account For Valid ID",
-			testAccountList: &eTradeAccountList{
+			name: "Returns Account For Valid ID",
+			testObject: &eTradeAccountList{
 				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
@@ -200,7 +210,7 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 					},
 				},
 			},
-			testAccountID: "Account 1 ID",
+			testId: "Account 1 ID",
 			expectValue: &eTradeAccount{
 				id:    "Account 1 ID",
 				idKey: "Account 1 ID Key",
@@ -211,8 +221,8 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAccountById Returns Nil For Invalid ID",
-			testAccountList: &eTradeAccountList{
+			name: "Returns Nil For Invalid ID",
+			testObject: &eTradeAccountList{
 				accounts: []ETradeAccount{
 					&eTradeAccount{
 						id:    "Account 1 ID",
@@ -224,8 +234,8 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 					},
 				},
 			},
-			testAccountID: "Account 2 ID",
-			expectValue:   nil,
+			testId:      "Account 2 ID",
+			expectValue: nil,
 		},
 	}
 
@@ -233,7 +243,7 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testAccountList.GetAccountById(tt.testAccountID)
+				actualValue := tt.testObject.GetAccountById(tt.testId)
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
@@ -241,7 +251,7 @@ func TestETradeAccountList_GetAccountById(t *testing.T) {
 }
 
 func TestETradeAccountList_AsJsonMap(t *testing.T) {
-	testAccountList := &eTradeAccountList{
+	testObject := &eTradeAccountList{
 		accounts: []ETradeAccount{
 			&eTradeAccount{
 				id:    "Account 1 ID",
@@ -264,6 +274,6 @@ func TestETradeAccountList_AsJsonMap(t *testing.T) {
 	}
 
 	// Call the Method Under Test
-	actualValue := testAccountList.AsJsonMap()
+	actualValue := testObject.AsJsonMap()
 	assert.Equal(t, expectValue, actualValue)
 }

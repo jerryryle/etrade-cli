@@ -3,11 +3,10 @@ package etradelib
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeTransactionList(t *testing.T) {
+func TestCreateETradeTransactionListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -15,16 +14,13 @@ func TestCreateETradeTransactionList(t *testing.T) {
 		expectValue ETradeTransactionList
 	}{
 		{
-			name: "CreateETradeTransactionList Creates List With Valid Response",
+			name: "Creates List",
 			testJson: `
 {
   "TransactionListResponse": {
     "Transaction": [
       {
         "transactionId": "1234"
-      },
-      {
-        "transactionId": "5678"
       }
     ]
   }
@@ -38,17 +34,11 @@ func TestCreateETradeTransactionList(t *testing.T) {
 							"transactionId": "1234",
 						},
 					},
-					&eTradeTransaction{
-						id: "5678",
-						jsonMap: jsonmap.JsonMap{
-							"transactionId": "5678",
-						},
-					},
 				},
 			},
 		},
 		{
-			name: "CreateETradeTransactionList Can Create Empty List",
+			name: "Can Create Empty List",
 			testJson: `
 {
   "TransactionListResponse": {
@@ -62,14 +52,39 @@ func TestCreateETradeTransactionList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeTransactionList Fails With Invalid Response",
-			// The "Transaction" level is not an array in the following string
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "TransactionListResponse": {
-    "Transaction": {
-      "transactionId": 1234
-    }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing Transaction Key",
+			testJson: `
+{
+  "TransactionListResponse": {
+    "MISSING": [
+      {
+        "transactionId": "1234"
+      }
+    ]
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing Transaction ID",
+			testJson: `
+{
+  "TransactionListResponse": {
+    "Transaction": [
+      {
+        "MISSING": "1234"
+      }
+    ]
   }
 }`,
 			expectErr:   true,
@@ -80,10 +95,8 @@ func TestCreateETradeTransactionList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeTransactionList(responseMap)
+				actualValue, err := CreateETradeTransactionListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -97,13 +110,13 @@ func TestCreateETradeTransactionList(t *testing.T) {
 
 func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 	tests := []struct {
-		name                string
-		testTransactionList ETradeTransactionList
-		expectValue         []ETradeTransaction
+		name        string
+		testObject  ETradeTransactionList
+		expectValue []ETradeTransaction
 	}{
 		{
 			name: "GetAllTransactions Returns All Transactions",
-			testTransactionList: &eTradeTransactionList{
+			testObject: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: "1234",
@@ -136,7 +149,7 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 		},
 		{
 			name: "GetAllTransactions Can Return Empty List",
-			testTransactionList: &eTradeTransactionList{
+			testObject: &eTradeTransactionList{
 				transactions: []ETradeTransaction{},
 			},
 			expectValue: []ETradeTransaction{},
@@ -147,7 +160,7 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testTransactionList.GetAllTransactions()
+				actualValue := tt.testObject.GetAllTransactions()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
@@ -156,14 +169,14 @@ func TestETradeTransactionList_GetAllTransactions(t *testing.T) {
 
 func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 	tests := []struct {
-		name                string
-		testTransactionList ETradeTransactionList
-		testTransactionID   string
-		expectValue         ETradeTransaction
+		name        string
+		testObject  ETradeTransactionList
+		testId      string
+		expectValue ETradeTransaction
 	}{
 		{
 			name: "GetTransactionById Returns Transaction For Valid ID",
-			testTransactionList: &eTradeTransactionList{
+			testObject: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: "1234",
@@ -173,7 +186,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 					},
 				},
 			},
-			testTransactionID: "1234",
+			testId: "1234",
 			expectValue: &eTradeTransaction{
 				id: "1234",
 				jsonMap: jsonmap.JsonMap{
@@ -183,7 +196,7 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 		},
 		{
 			name: "GetTransactionById Returns Nil For Invalid ID",
-			testTransactionList: &eTradeTransactionList{
+			testObject: &eTradeTransactionList{
 				transactions: []ETradeTransaction{
 					&eTradeTransaction{
 						id: "1234",
@@ -193,8 +206,8 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 					},
 				},
 			},
-			testTransactionID: "5678",
-			expectValue:       nil,
+			testId:      "5678",
+			expectValue: nil,
 		},
 	}
 
@@ -202,53 +215,37 @@ func TestETradeTransactionList_GetTransactionById(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testTransactionList.GetTransactionById(tt.testTransactionID)
+				actualValue := tt.testObject.GetTransactionById(tt.testId)
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
 }
 
-func TestETradeTransactionList_AddPage(t *testing.T) {
-	type pageTest struct {
+func TestETradeTransactionList_AddPageFromResponse(t *testing.T) {
+	startingObject := &eTradeTransactionList{
+		transactions: []ETradeTransaction{
+			&eTradeTransaction{
+				id: "1234",
+				jsonMap: jsonmap.JsonMap{
+					"transactionId": "1234",
+				},
+			},
+		},
+		nextPage: "2",
+	}
+
+	tests := []struct {
+		name        string
+		startValue  ETradeTransactionList
 		testJson    string
 		expectErr   bool
 		expectValue ETradeTransactionList
-	}
-	tests := []struct {
-		name      string
-		pageTests []pageTest
 	}{
 		{
-			name: "AddPage Can Add Pages",
-			pageTests: []pageTest{
-				{
-					testJson: `
-{
-  "TransactionListResponse": {
-    "marker": "2",
-    "Transaction": [
-      {
-        "transactionId": "1234"
-      }
-    ]
-  }
-}`,
-					expectErr: false,
-					expectValue: &eTradeTransactionList{
-						transactions: []ETradeTransaction{
-							&eTradeTransaction{
-								id: "1234",
-								jsonMap: jsonmap.JsonMap{
-									"transactionId": "1234",
-								},
-							},
-						},
-						nextPage: "2",
-					},
-				},
-				{
-					testJson: `
+			name:       "Can Add Pages",
+			startValue: startingObject,
+			testJson: `
 {
   "TransactionListResponse": {
     "Transaction": [
@@ -258,67 +255,91 @@ func TestETradeTransactionList_AddPage(t *testing.T) {
     ]
   }
 }`,
-					expectErr: false,
-					expectValue: &eTradeTransactionList{
-						transactions: []ETradeTransaction{
-							&eTradeTransaction{
-								id: "1234",
-								jsonMap: jsonmap.JsonMap{
-									"transactionId": "1234",
-								},
-							},
-							// Transactions in subsequent pages are appended to
-							// the transaction list.
-							&eTradeTransaction{
-								id: "5678",
-								jsonMap: jsonmap.JsonMap{
-									"transactionId": "5678",
-								},
-							},
+			expectErr: false,
+			expectValue: &eTradeTransactionList{
+				transactions: []ETradeTransaction{
+					&eTradeTransaction{
+						id: "1234",
+						jsonMap: jsonmap.JsonMap{
+							"transactionId": "1234",
 						},
-						nextPage: "",
+					},
+					// Transactions in subsequent pages are appended to
+					// the transaction list.
+					&eTradeTransaction{
+						id: "5678",
+						jsonMap: jsonmap.JsonMap{
+							"transactionId": "5678",
+						},
 					},
 				},
+				nextPage: "",
 			},
+		},
+		{
+			name:       "Fails With Invalid JSON",
+			startValue: startingObject,
+			testJson: `
+{
+  "TransactionListResponse": {
+}`,
+			expectErr:   true,
+			expectValue: startingObject,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				var transactionList ETradeTransactionList
-				for testIndex, pt := range tt.pageTests {
-					responseMap, err := NewNormalizedJsonMap([]byte(pt.testJson))
-					require.Nil(t, err)
-
-					if testIndex == 0 {
-						transactionList, err = CreateETradeTransactionList(responseMap)
-					} else {
-						// Call the Method Under Test
-						err = transactionList.AddPage(responseMap)
-					}
-					if pt.expectErr {
-						assert.Error(t, err)
-					} else {
-						assert.Nil(t, err)
-					}
-					assert.Equal(t, pt.expectValue, transactionList)
+				transactionList := tt.startValue
+				// Call the Method Under Test
+				err := transactionList.AddPageFromResponse([]byte(tt.testJson))
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
 				}
+				assert.Equal(t, tt.expectValue, transactionList)
 			},
 		)
 	}
 }
 
 func TestETradeTransactionList_NextPage(t *testing.T) {
-	testTransactionList := &eTradeTransactionList{
+	testObject := &eTradeTransactionList{
 		transactions: []ETradeTransaction{},
 		nextPage:     "1234",
 	}
-	assert.Equal(t, "1234", testTransactionList.NextPage())
+	assert.Equal(t, "1234", testObject.NextPage())
 
-	testTransactionList = &eTradeTransactionList{
+	testObject = &eTradeTransactionList{
 		transactions: []ETradeTransaction{},
 		nextPage:     "",
 	}
-	assert.Equal(t, "", testTransactionList.NextPage())
+	assert.Equal(t, "", testObject.NextPage())
+}
+
+func TestETradeTransactionList_AsJsonMap(t *testing.T) {
+	testObject := &eTradeTransactionList{
+		transactions: []ETradeTransaction{
+			&eTradeTransaction{
+				id: "1234",
+				jsonMap: jsonmap.JsonMap{
+					"transactionId": "1234",
+				},
+			},
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"transactions": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"transactionId": "1234",
+			},
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testObject.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
 }

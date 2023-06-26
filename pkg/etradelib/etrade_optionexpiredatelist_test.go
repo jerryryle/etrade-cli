@@ -3,11 +3,10 @@ package etradelib
 import (
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-func TestCreateETradeOptionExpireDateList(t *testing.T) {
+func TestCreateETradeOptionExpireDateListFromResponse(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -15,16 +14,13 @@ func TestCreateETradeOptionExpireDateList(t *testing.T) {
 		expectValue ETradeOptionExpireDateList
 	}{
 		{
-			name: "CreateETradeOptionExpireDateList Creates List With Valid Response",
+			name: "Creates List",
 			testJson: `
 {
   "OptionExpireDateResponse": {
     "ExpirationDate": [
       {
         "key1": "value1"
-      },
-      {
-        "key2": "value2"
       }
     ]
   }
@@ -37,16 +33,11 @@ func TestCreateETradeOptionExpireDateList(t *testing.T) {
 							"key1": "value1",
 						},
 					},
-					&eTradeOptionExpireDate{
-						jsonMap: jsonmap.JsonMap{
-							"key2": "value2",
-						},
-					},
 				},
 			},
 		},
 		{
-			name: "CreateETradeOptionExpireDateList Can Create Empty List",
+			name: "Creates Empty List",
 			testJson: `
 {
   "OptionExpireDateResponse": {
@@ -60,14 +51,24 @@ func TestCreateETradeOptionExpireDateList(t *testing.T) {
 			},
 		},
 		{
-			name: "CreateETradeOptionExpireDateList Fails With Invalid Response",
-			// The "OptionExpireDate" level is not an array in the following string
+			name: "Fails With Invalid JSON",
 			testJson: `
 {
   "OptionExpireDateResponse": {
-    "ExpirationDate": {
-      "key": "value"
-    }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails With Missing ExpirationDate",
+			testJson: `
+{
+  "OptionExpireDateResponse": {
+    "MISSING": [
+      {
+        "key1": "value1"
+      }
+    ]
   }
 }`,
 			expectErr:   true,
@@ -78,10 +79,8 @@ func TestCreateETradeOptionExpireDateList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
-				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeOptionExpireDateList(responseMap)
+				actualValue, err := CreateETradeOptionExpireDateListFromResponse([]byte(tt.testJson))
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
@@ -95,13 +94,13 @@ func TestCreateETradeOptionExpireDateList(t *testing.T) {
 
 func TestETradeOptionExpireDateList_GetAllOptionExpireDates(t *testing.T) {
 	tests := []struct {
-		name                     string
-		testOptionExpireDateList ETradeOptionExpireDateList
-		expectValue              []ETradeOptionExpireDate
+		name        string
+		testObject  ETradeOptionExpireDateList
+		expectValue []ETradeOptionExpireDate
 	}{
 		{
-			name: "GetAllOptionExpireDates Returns All OptionExpireDates",
-			testOptionExpireDateList: &eTradeOptionExpireDateList{
+			name: "Returns All OptionExpireDates",
+			testObject: &eTradeOptionExpireDateList{
 				optionExpireDates: []ETradeOptionExpireDate{
 					&eTradeOptionExpireDate{
 						jsonMap: jsonmap.JsonMap{
@@ -129,8 +128,8 @@ func TestETradeOptionExpireDateList_GetAllOptionExpireDates(t *testing.T) {
 			},
 		},
 		{
-			name: "GetAllOptionExpireDates Can Return Empty List",
-			testOptionExpireDateList: &eTradeOptionExpireDateList{
+			name: "Can Return Empty List",
+			testObject: &eTradeOptionExpireDateList{
 				optionExpireDates: []ETradeOptionExpireDate{},
 			},
 			expectValue: []ETradeOptionExpireDate{},
@@ -141,9 +140,33 @@ func TestETradeOptionExpireDateList_GetAllOptionExpireDates(t *testing.T) {
 		t.Run(
 			tt.name, func(t *testing.T) {
 				// Call the Method Under Test
-				actualValue := tt.testOptionExpireDateList.GetAllOptionExpireDates()
+				actualValue := tt.testObject.GetAllOptionExpireDates()
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
 	}
+}
+
+func TestETradeOptionExpireDateList_AsJsonMap(t *testing.T) {
+	testObject := &eTradeOptionExpireDateList{
+		optionExpireDates: []ETradeOptionExpireDate{
+			&eTradeOptionExpireDate{
+				jsonMap: jsonmap.JsonMap{
+					"key1": "value1",
+				},
+			},
+		},
+	}
+
+	expectValue := jsonmap.JsonMap{
+		"optionExpireDates": jsonmap.JsonSlice{
+			jsonmap.JsonMap{
+				"key1": "value1",
+			},
+		},
+	}
+
+	// Call the Method Under Test
+	actualValue := testObject.AsJsonMap()
+	assert.Equal(t, expectValue, actualValue)
 }
