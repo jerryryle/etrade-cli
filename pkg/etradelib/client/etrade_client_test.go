@@ -11,9 +11,10 @@ import (
 	"time"
 )
 
-func createTestClient(t *testing.T, responseData string, expectUrl string) ETradeClient {
+func createTestClient(t *testing.T, responseData string, expectMethod string, expectUrl string) ETradeClient {
 	httpClient := NewHttpClientFake(
 		func(req *http.Request) *http.Response {
+			assert.Equal(t, expectMethod, req.Method)
 			assert.Equal(t, expectUrl, req.URL.String())
 			return &http.Response{
 				StatusCode: http.StatusOK,
@@ -33,6 +34,7 @@ func TestETradeClient(t *testing.T) {
 	tests := []struct {
 		name           string
 		testFn         testFn
+		expectMethod   string
 		expectUrl      string
 		expectResponse []byte
 		expectErr      bool
@@ -42,6 +44,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListAccounts()
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/list",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -51,6 +54,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetAccountBalances("1234", true)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/balance?instType=BROKERAGE&realTimeNAV=true",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -60,6 +64,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetAccountBalances("", true)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -74,6 +79,7 @@ func TestETradeClient(t *testing.T) {
 					constants.SortOrderAsc, "5", 6,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/transactions?count=6&endDate=01022023&marker=5&sortOrder=ASC&startDate=01012023",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -83,6 +89,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactions("1234", nil, nil, constants.SortOrderNil, "", -1)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/transactions",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -92,6 +99,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactions("", nil, nil, constants.SortOrderNil, "", -1)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -101,6 +109,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactionDetails("1234", "5678")
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/transactions/5678",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -110,6 +119,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactionDetails("", "5678")
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -119,6 +129,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListTransactionDetails("1234", "")
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -131,6 +142,7 @@ func TestETradeClient(t *testing.T) {
 					constants.MarketSessionRegular, true, true, constants.PortfolioViewComplete,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/portfolio?count=5&lotsRequired=true&marketSession=REGULAR&pageNumber=6&sortBy=SYMBOL&sortOrder=ASC&totalsRequired=true&view=COMPLETE",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -143,6 +155,7 @@ func TestETradeClient(t *testing.T) {
 					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/portfolio?lotsRequired=true&totalsRequired=true",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -155,6 +168,7 @@ func TestETradeClient(t *testing.T) {
 					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
 				)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -167,6 +181,7 @@ func TestETradeClient(t *testing.T) {
 					constants.MarketSessionNil, true, true, constants.PortfolioViewNil,
 				)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -178,9 +193,22 @@ func TestETradeClient(t *testing.T) {
 					1, constants.AlertCategoryAccount, constants.AlertStatusUnread, constants.SortOrderAsc, "FOO",
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/user/alerts?category=ACCOUNT&count=1&direction=ASC&search=FOO&status=UNREAD",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
+		},
+		{
+			name: "List Alerts Fails With Count Too Big",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.ListAlerts(
+					301, constants.AlertCategoryAccount, constants.AlertStatusUnread, constants.SortOrderAsc, "FOO",
+				)
+			},
+			expectMethod:   "",
+			expectUrl:      "",
+			expectResponse: nil,
+			expectErr:      true,
 		},
 		{
 			name: "List Alerts Can Omit All Optional Arguments",
@@ -189,6 +217,7 @@ func TestETradeClient(t *testing.T) {
 					-1, constants.AlertCategoryNil, constants.AlertStatusNil, constants.SortOrderNil, "",
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/user/alerts",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -198,6 +227,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.ListAlertDetails("1234", true)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/user/alerts/1234?htmlTags=true",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -207,6 +237,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetQuotes([]string{"GOOG"}, constants.QuoteDetailAll, true, false)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/quote/GOOG?detailFlag=ALL&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -216,6 +247,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetQuotes([]string{"GOOG"}, constants.QuoteDetailNil, true, false)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/quote/GOOG?requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -225,6 +257,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetQuotes([]string{}, constants.QuoteDetailNil, true, false)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -239,6 +272,7 @@ func TestETradeClient(t *testing.T) {
 					}, constants.QuoteDetailAll, true, false,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/quote/1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26?detailFlag=ALL&overrideSymbolCount=true&requireEarningsDate=true&skipMiniOptionsCheck=false",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -255,6 +289,7 @@ func TestETradeClient(t *testing.T) {
 					}, constants.QuoteDetailAll, true, false,
 				)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -264,6 +299,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.LookupProduct("A")
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/lookup/A",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -273,6 +309,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.LookupProduct("")
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -288,6 +325,7 @@ func TestETradeClient(t *testing.T) {
 					constants.OptionCategoryAll, constants.OptionChainTypeCall, constants.OptionPriceTypeAll,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/optionchains?chainType=CALL&expiryDay=3&expiryMonth=2&expiryYear=1&includeWeekly=true&noOfStrikes=5&optionCategory=ALL&priceType=ALL&skipAdjusted=true&strikePriceNear=4&symbol=GOOG",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -303,6 +341,7 @@ func TestETradeClient(t *testing.T) {
 					constants.OptionCategoryNil, constants.OptionChainTypeNil, constants.OptionPriceTypeNil,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/optionchains?includeWeekly=true&skipAdjusted=true&symbol=GOOG",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -318,6 +357,7 @@ func TestETradeClient(t *testing.T) {
 					constants.OptionCategoryNil, constants.OptionChainTypeNil, constants.OptionPriceTypeNil,
 				)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -327,6 +367,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetOptionExpireDates("GOOG", constants.OptionExpiryTypeAll)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/optionexpiredate?expiryType=ALL&symbol=GOOG",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -336,6 +377,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetOptionExpireDates("GOOG", constants.OptionExpiryTypeNil)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/market/optionexpiredate?symbol=GOOG",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -345,6 +387,7 @@ func TestETradeClient(t *testing.T) {
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetOptionExpireDates("", constants.OptionExpiryTypeNil)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -361,6 +404,7 @@ func TestETradeClient(t *testing.T) {
 					constants.MarketSessionRegular,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/orders?count=5&fromDate=01012023&marker=TestMarker&marketSession=REGULAR&securityType=EQ&status=OPEN&symbol=A%2CB&toDate=01022023&transactionType=BUY",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -373,6 +417,7 @@ func TestETradeClient(t *testing.T) {
 					constants.OrderTransactionTypeNil, constants.MarketSessionNil,
 				)
 			},
+			expectMethod:   "GET",
 			expectUrl:      "https://api.etrade.com/v1/accounts/1234/orders",
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -385,6 +430,7 @@ func TestETradeClient(t *testing.T) {
 					constants.OrderTransactionTypeNil, constants.MarketSessionNil,
 				)
 			},
+			expectMethod:   "",
 			expectUrl:      "",
 			expectResponse: nil,
 			expectErr:      true,
@@ -394,7 +440,7 @@ func TestETradeClient(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				client := createTestClient(t, testResponseData, tt.expectUrl)
+				client := createTestClient(t, testResponseData, tt.expectMethod, tt.expectUrl)
 				// Call the Method Under Test
 				response, err := tt.testFn(client)
 				if tt.expectErr {

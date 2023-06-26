@@ -205,6 +205,11 @@ func (c *eTradeClient) ListAlerts(
 	[]byte, error,
 ) {
 	queryValues := url.Values{}
+	if count > constants.AlertsMaxCount {
+		return nil, fmt.Errorf(
+			"count of %d requested, which exceeds the maximum of %d", count, constants.AlertsMaxCount,
+		)
+	}
 	if count >= 0 {
 		queryValues.Add("count", fmt.Sprintf("%d", count))
 	}
