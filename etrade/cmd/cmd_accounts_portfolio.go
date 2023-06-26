@@ -37,7 +37,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	cmd.Flags().BoolVarP(&c.flags.withLots, "with-lots", "l", false, "include lots in results")
 
 	// Initialize Enum Flag Values
-	c.flags.portfolioView = *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewNil)
+	c.flags.portfolioView = *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewQuick)
 	c.flags.sortBy = *newEnumFlagValue(sortByMap, constants.PortfolioSortByNil)
 	c.flags.sortOrder = *newEnumFlagValue(sortOrderMap, constants.SortOrderNil)
 	c.flags.marketSession = *newEnumFlagValue(marketSessionMap, constants.MarketSessionNil)
