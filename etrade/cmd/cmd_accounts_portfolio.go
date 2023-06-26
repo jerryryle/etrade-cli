@@ -9,7 +9,6 @@ import (
 
 type accountsPortfolioFlags struct {
 	totalsRequired bool
-	lotsRequired   bool
 	portfolioView  enumFlagValue[constants.PortfolioView]
 	sortBy         enumFlagValue[constants.PortfolioSortBy]
 	sortOrder      enumFlagValue[constants.SortOrder]
@@ -34,7 +33,6 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 
 	// Add Flags
 	cmd.Flags().BoolVarP(&c.flags.totalsRequired, "totals-required", "t", true, "include totals in results")
-	cmd.Flags().BoolVarP(&c.flags.lotsRequired, "lots-required", "l", true, "include lots in results")
 
 	// Initialize Enum Flag Values
 	c.flags.portfolioView = *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewNil)
@@ -104,7 +102,7 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 	response, err := c.Context.Client.ViewPortfolio(
 		account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), "",
 		c.flags.marketSession.Value(),
-		c.flags.totalsRequired, c.flags.lotsRequired, c.flags.portfolioView.Value(),
+		c.flags.totalsRequired, true, c.flags.portfolioView.Value(),
 	)
 	if err != nil {
 		return err
@@ -119,7 +117,7 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		response, err = c.Context.Client.ViewPortfolio(
 			account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(),
 			positionList.NextPage(),
-			c.flags.marketSession.Value(), c.flags.totalsRequired, c.flags.lotsRequired, c.flags.portfolioView.Value(),
+			c.flags.marketSession.Value(), c.flags.totalsRequired, true, c.flags.portfolioView.Value(),
 		)
 		if err != nil {
 			return err
