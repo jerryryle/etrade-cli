@@ -32,5 +32,6 @@ func (c *CommandAlerts) Command() *cobra.Command {
 	// Add Subcommands
 	cmd.AddCommand((&CommandAlertsList{Context: &c.context}).Command())
 	cmd.AddCommand((&CommandAlertsDetails{Context: &c.context}).Command())
+	cmd.AddCommand((&CommandAlertsDelete{Context: &c.context}).Command())
 	return cmd
 }

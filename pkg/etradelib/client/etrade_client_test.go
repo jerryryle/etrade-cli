@@ -233,6 +233,16 @@ func TestETradeClient(t *testing.T) {
 			expectErr:      false,
 		},
 		{
+			name: "Delete Alerts",
+			testFn: func(client ETradeClient) ([]byte, error) {
+				return client.DeleteAlerts([]string{"1234", "5678"})
+			},
+			expectMethod:   "DELETE",
+			expectUrl:      "https://api.etrade.com/v1/user/alerts/1234,5678",
+			expectResponse: []byte(testResponseData),
+			expectErr:      false,
+		},
+		{
 			name: "Get Quotes With All Optional Arguments",
 			testFn: func(client ETradeClient) ([]byte, error) {
 				return client.GetQuotes([]string{"GOOG"}, constants.QuoteDetailAll, true, false)
