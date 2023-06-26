@@ -25,6 +25,14 @@ func dateTransformerMs(value interface{}) interface{} {
 	}
 }
 
+func timeTransformerMs(value interface{}) interface{} {
+	if timeValue, err := getValueAsTime(value, true); err == nil {
+		return timeValue.Format(time.TimeOnly)
+	} else {
+		return value
+	}
+}
+
 func dateTimeTransformer(value interface{}) interface{} {
 	if timeValue, err := getValueAsTime(value, false); err == nil {
 		return timeValue.Format(time.DateTime)
@@ -36,6 +44,14 @@ func dateTimeTransformer(value interface{}) interface{} {
 func dateTransformer(value interface{}) interface{} {
 	if timeValue, err := getValueAsTime(value, false); err == nil {
 		return timeValue.Format(time.DateOnly)
+	} else {
+		return value
+	}
+}
+
+func timeTransformer(value interface{}) interface{} {
+	if timeValue, err := getValueAsTime(value, false); err == nil {
+		return timeValue.Format(time.TimeOnly)
 	} else {
 		return value
 	}
