@@ -9,6 +9,7 @@ import (
 
 type accountsPortfolioFlags struct {
 	totalsRequired bool
+	withLots       bool
 	portfolioView  enumFlagValue[constants.PortfolioView]
 	sortBy         enumFlagValue[constants.PortfolioSortBy]
 	sortOrder      enumFlagValue[constants.SortOrder]
@@ -33,6 +34,7 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 
 	// Add Flags
 	cmd.Flags().BoolVarP(&c.flags.totalsRequired, "totals-required", "t", true, "include totals in results")
+	cmd.Flags().BoolVarP(&c.flags.withLots, "with-lots", "l", false, "include lots in results")
 
 	// Initialize Enum Flag Values
 	c.flags.portfolioView = *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewNil)
@@ -128,16 +130,29 @@ func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
 		}
 	}
 
-	renderDescriptor := quickViewRenderDescriptor
+	if c.flags.withLots {
+		for _, position := range positionList.GetAllPositions() {
+			response, err = c.Context.Client.ListPositionLotsDetails(account.GetIdKey(), position.GetId())
+			if err != nil {
+				return err
+			}
+			err = position.AddLotsFromResponse(response)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	renderDescriptor := GetQuickViewRenderDescriptor(c.flags.withLots)
 	switch c.flags.portfolioView.Value() {
 	case constants.PortfolioViewPerformance:
-		renderDescriptor = performanceViewRenderDescriptor
+		renderDescriptor = GetPerformanceViewRenderDescriptor(c.flags.withLots)
 	case constants.PortfolioViewFundamental:
-		renderDescriptor = fundamentalViewRenderDescriptor
+		renderDescriptor = GetFundamentalViewRenderDescriptor(c.flags.withLots)
 	case constants.PortfolioViewOptionsWatch:
-		renderDescriptor = optionsWatchViewRenderDescriptor
+		renderDescriptor = GetOptionsWatchViewRenderDescriptor(c.flags.withLots)
 	case constants.PortfolioViewComplete:
-		renderDescriptor = completeViewRenderDescriptor
+		renderDescriptor = GetCompleteViewRenderDescriptor(c.flags.withLots)
 	}
 
 	err = c.Context.Renderer.Render(positionList.AsJsonMap(), renderDescriptor)
@@ -161,107 +176,178 @@ var totalsRenderDescriptor = RenderDescriptor{
 	SpaceAfter:   false,
 }
 
+var lotsRenderDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: ".lots",
+		Values: []RenderValue{
+			{Header: "Price", Path: ".price"},
+			{Header: "Term Code", Path: ".termCode"},
+			{Header: "Day's Gain $", Path: ".daysGain"},
+			{Header: "Day's Gain %", Path: ".daysGainPct"},
+			{Header: "Market Value", Path: ".marketValue"},
+			{Header: "Total Cost", Path: ".totalCost"},
+			{Header: "Total Cost For Gain %", Path: ".totalCostForGainPct"},
+			{Header: "Total Gain", Path: ".totalGain"},
+			{Header: "Lot Source Code", Path: ".lotSourceCode"},
+			{Header: "Original Qty", Path: ".originalQty"},
+			{Header: "Remaining Qty", Path: ".remainingQty"},
+			{Header: "Available Qty", Path: ".availableQty"},
+			{Header: "Order No", Path: ".orderNo"},
+			{Header: "Leg No", Path: ".legNo"},
+			{Header: "Acquired Date", Path: ".acquiredDate", Transformer: dateTimeTransformer},
+			{Header: "Location Code", Path: ".locationCode"},
+			{Header: "Exchange Rate", Path: ".exchangeRate"},
+			{Header: "Settlement Currency", Path: ".settlementCurrency"},
+			{Header: "Payment Currency", Path: ".paymentCurrency"},
+			{Header: "Adj Price", Path: ".adjPrice"},
+			{Header: "Commissions Per Share", Path: ".commPerShare"},
+			{Header: "Fees Per Share", Path: ".feesPerShare"},
+			{Header: "Adjusted Premium", Path: ".premiumAdj"},
+			{Header: "Short Type", Path: ".shortType"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   true,
+	},
+}
+
 // TODO: Update these descriptors to pull out more fields
-var quickViewRenderDescriptor = []RenderDescriptor{
-	{
-		ObjectPath: ".positions",
-		Values: []RenderValue{
-			{Header: "Symbol", Path: ".product.symbol"},
-			{Header: "Last Price $", Path: ".quick.lastTrade"},
-			{Header: "Change $", Path: ".quick.change"},
-			{Header: "Change %", Path: ".quick.changePct"},
-			{Header: "Quantity", Path: ".quantity"},
-			{Header: "Price Paid $", Path: ".pricePaid"},
-			{Header: "Day's Gain $", Path: ".daysGain"},
-			{Header: "Total Gain $", Path: ".totalGain"},
-			{Header: "Total Gain %", Path: ".totalGainPct"},
-			{Header: "Value $", Path: ".marketValue"},
+
+func GetQuickViewRenderDescriptor(withLots bool) []RenderDescriptor {
+	subObjects := []RenderDescriptor(nil)
+	if withLots {
+		subObjects = lotsRenderDescriptor
+	}
+	return []RenderDescriptor{
+		{
+			ObjectPath: ".positions",
+			Values: []RenderValue{
+				{Header: "Symbol", Path: ".product.symbol"},
+				{Header: "Last Price $", Path: ".quick.lastTrade"},
+				{Header: "Change $", Path: ".quick.change"},
+				{Header: "Change %", Path: ".quick.changePct"},
+				{Header: "Quantity", Path: ".quantity"},
+				{Header: "Price Paid $", Path: ".pricePaid"},
+				{Header: "Day's Gain $", Path: ".daysGain"},
+				{Header: "Total Gain $", Path: ".totalGain"},
+				{Header: "Total Gain %", Path: ".totalGainPct"},
+				{Header: "Value $", Path: ".marketValue"},
+			},
+			SubObjects:   subObjects,
+			DefaultValue: "",
+			SpaceAfter:   true,
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
-	},
-	totalsRenderDescriptor,
+		totalsRenderDescriptor,
+	}
 }
 
-var performanceViewRenderDescriptor = []RenderDescriptor{
-	{
-		ObjectPath: ".positions",
-		Values: []RenderValue{
-			{Header: "Symbol", Path: ".product.symbol"},
-			{Header: "Last Price $", Path: ".performance.lastTrade"},
-			{Header: "Change $", Path: ".performance.change"},
-			{Header: "Change %", Path: ".performance.changePct"},
-			{Header: "Quantity", Path: ".quantity"},
-			{Header: "Price Paid $", Path: ".pricePaid"},
-			{Header: "Day's Gain $", Path: ".daysGain"},
-			{Header: "Total Gain $", Path: ".totalGain"},
-			{Header: "Total Gain %", Path: ".totalGainPct"},
-			{Header: "Value $", Path: ".marketValue"},
+func GetPerformanceViewRenderDescriptor(withLots bool) []RenderDescriptor {
+	subObjects := []RenderDescriptor(nil)
+	if withLots {
+		subObjects = lotsRenderDescriptor
+	}
+	return []RenderDescriptor{
+		{
+			ObjectPath: ".positions",
+			Values: []RenderValue{
+				{Header: "Symbol", Path: ".product.symbol"},
+				{Header: "Last Price $", Path: ".performance.lastTrade"},
+				{Header: "Change $", Path: ".performance.change"},
+				{Header: "Change %", Path: ".performance.changePct"},
+				{Header: "Quantity", Path: ".quantity"},
+				{Header: "Price Paid $", Path: ".pricePaid"},
+				{Header: "Day's Gain $", Path: ".daysGain"},
+				{Header: "Total Gain $", Path: ".totalGain"},
+				{Header: "Total Gain %", Path: ".totalGainPct"},
+				{Header: "Value $", Path: ".marketValue"},
+			},
+			SubObjects:   subObjects,
+			DefaultValue: "",
+			SpaceAfter:   true,
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
-	},
-	totalsRenderDescriptor,
+		totalsRenderDescriptor,
+	}
 }
 
-var fundamentalViewRenderDescriptor = []RenderDescriptor{
-	{
-		ObjectPath: ".positions",
-		Values: []RenderValue{
-			{Header: "Symbol", Path: ".product.symbol"},
-			{Header: "Last Price $", Path: ".fundamental.lastTrade"},
-			{Header: "Change $", Path: ".fundamental.change"},
-			{Header: "Change %", Path: ".fundamental.changePct"},
-			{Header: "Quantity", Path: ".quantity"},
-			{Header: "Price Paid $", Path: ".pricePaid"},
-			{Header: "Day's Gain $", Path: ".daysGain"},
-			{Header: "Total Gain $", Path: ".totalGain"},
-			{Header: "Total Gain %", Path: ".totalGainPct"},
-			{Header: "Value $", Path: ".marketValue"},
+func GetFundamentalViewRenderDescriptor(withLots bool) []RenderDescriptor {
+	subObjects := []RenderDescriptor(nil)
+	if withLots {
+		subObjects = lotsRenderDescriptor
+	}
+	return []RenderDescriptor{
+		{
+			ObjectPath: ".positions",
+			Values: []RenderValue{
+				{Header: "Symbol", Path: ".product.symbol"},
+				{Header: "Last Price $", Path: ".fundamental.lastTrade"},
+				{Header: "Change $", Path: ".fundamental.change"},
+				{Header: "Change %", Path: ".fundamental.changePct"},
+				{Header: "Quantity", Path: ".quantity"},
+				{Header: "Price Paid $", Path: ".pricePaid"},
+				{Header: "Day's Gain $", Path: ".daysGain"},
+				{Header: "Total Gain $", Path: ".totalGain"},
+				{Header: "Total Gain %", Path: ".totalGainPct"},
+				{Header: "Value $", Path: ".marketValue"},
+			},
+			SubObjects:   subObjects,
+			DefaultValue: "",
+			SpaceAfter:   true,
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
-	},
-	totalsRenderDescriptor,
+		totalsRenderDescriptor,
+	}
 }
 
-var optionsWatchViewRenderDescriptor = []RenderDescriptor{
-	{
-		ObjectPath: ".positions",
-		Values: []RenderValue{
-			{Header: "Symbol", Path: ".product.symbol"},
-			{Header: "Quantity", Path: ".quantity"},
-			{Header: "Price Paid $", Path: ".pricePaid"},
-			{Header: "Day's Gain $", Path: ".daysGain"},
-			{Header: "Total Gain $", Path: ".totalGain"},
-			{Header: "Total Gain %", Path: ".totalGainPct"},
-			{Header: "Value $", Path: ".marketValue"},
+func GetOptionsWatchViewRenderDescriptor(withLots bool) []RenderDescriptor {
+	subObjects := []RenderDescriptor(nil)
+	if withLots {
+		subObjects = lotsRenderDescriptor
+	}
+
+	return []RenderDescriptor{
+		{
+			ObjectPath: ".positions",
+			Values: []RenderValue{
+				{Header: "Symbol", Path: ".product.symbol"},
+				{Header: "Quantity", Path: ".quantity"},
+				{Header: "Price Paid $", Path: ".pricePaid"},
+				{Header: "Day's Gain $", Path: ".daysGain"},
+				{Header: "Total Gain $", Path: ".totalGain"},
+				{Header: "Total Gain %", Path: ".totalGainPct"},
+				{Header: "Value $", Path: ".marketValue"},
+			},
+			SubObjects:   subObjects,
+			DefaultValue: "",
+			SpaceAfter:   true,
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
-	},
-	totalsRenderDescriptor,
+		totalsRenderDescriptor,
+	}
 }
 
-var completeViewRenderDescriptor = []RenderDescriptor{
-	{
-		ObjectPath: ".positions",
-		Values: []RenderValue{
-			{Header: "Symbol", Path: ".product.symbol"},
-			{Header: "Last Price $", Path: ".complete.lastTrade"},
-			{Header: "Change $", Path: ".complete.change"},
-			{Header: "Change %", Path: ".complete.changePct"},
-			{Header: "Quantity", Path: ".quantity"},
-			{Header: "Price Paid $", Path: ".pricePaid"},
-			{Header: "Day's Gain $", Path: ".daysGain"},
-			{Header: "Total Gain $", Path: ".totalGain"},
-			{Header: "Total Gain %", Path: ".totalGainPct"},
-			{Header: "Value $", Path: ".marketValue"},
+func GetCompleteViewRenderDescriptor(withLots bool) []RenderDescriptor {
+	subObjects := []RenderDescriptor(nil)
+	if withLots {
+		subObjects = lotsRenderDescriptor
+	}
+	return []RenderDescriptor{
+		{
+			ObjectPath: ".positions",
+			Values: []RenderValue{
+				{Header: "Symbol", Path: ".product.symbol"},
+				{Header: "Last Price $", Path: ".complete.lastTrade"},
+				{Header: "Change $", Path: ".complete.change"},
+				{Header: "Change %", Path: ".complete.changePct"},
+				{Header: "Quantity", Path: ".quantity"},
+				{Header: "Price Paid $", Path: ".pricePaid"},
+				{Header: "Day's Gain $", Path: ".daysGain"},
+				{Header: "Total Gain $", Path: ".totalGain"},
+				{Header: "Total Gain %", Path: ".totalGainPct"},
+				{Header: "Value $", Path: ".marketValue"},
+			},
+			SubObjects:   subObjects,
+			DefaultValue: "",
+			SpaceAfter:   true,
 		},
-		DefaultValue: "",
-		SpaceAfter:   true,
-	},
-	totalsRenderDescriptor,
+		totalsRenderDescriptor,
+	}
 }
 
 var portfolioViewMap = map[string]enumValueWithHelp[constants.PortfolioView]{

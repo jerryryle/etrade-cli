@@ -21,6 +21,8 @@ type ViewPortfolioFn func(
 	marketSession constants.MarketSession, totalsRequired bool, lotsRequired bool, view constants.PortfolioView,
 ) ([]byte, error)
 
+type ListPositionLotsDetailsFn func(accountIdKey string, positionId int64) ([]byte, error)
+
 type ListAlertsFn func(
 	count int, category constants.AlertCategory, status constants.AlertStatus, sort constants.SortOrder, search string,
 ) ([]byte, error)
@@ -48,18 +50,19 @@ type ListOrdersFn func(
 ) ([]byte, error)
 
 type ETradeClientFake struct {
-	ListAccountsFn           ListAccountsFn
-	GetAccountBalancesFn     GetAccountBalancesFn
-	ListTransactionsFn       ListTransactionsFn
-	ListTransactionDetailsFn ListTransactionDetailsFn
-	ViewPortfolioFn          ViewPortfolioFn
-	ListAlertsFn             ListAlertsFn
-	ListAlertDetailsFn       ListAlertDetailsFn
-	GetQuotesFn              GetQuotesFn
-	LookupProductFn          LookupProductFn
-	GetOptionChainsFn        GetOptionChainsFn
-	GetOptionExpireDatesFn   GetOptionExpireDatesFn
-	ListOrdersFn             ListOrdersFn
+	ListAccountsFn            ListAccountsFn
+	GetAccountBalancesFn      GetAccountBalancesFn
+	ListTransactionsFn        ListTransactionsFn
+	ListTransactionDetailsFn  ListTransactionDetailsFn
+	ViewPortfolioFn           ViewPortfolioFn
+	ListPositionLotsDetailsFn ListPositionLotsDetailsFn
+	ListAlertsFn              ListAlertsFn
+	ListAlertDetailsFn        ListAlertDetailsFn
+	GetQuotesFn               GetQuotesFn
+	LookupProductFn           LookupProductFn
+	GetOptionChainsFn         GetOptionChainsFn
+	GetOptionExpireDatesFn    GetOptionExpireDatesFn
+	ListOrdersFn              ListOrdersFn
 
 	defaultJson []byte
 	defaultErr  error
@@ -113,6 +116,14 @@ func (c *ETradeClientFake) ViewPortfolio(
 		return c.ViewPortfolioFn(
 			accountIdKey, count, sortBy, sortOrder, pageNumber, marketSession, totalsRequired, lotsRequired, view,
 		)
+	} else {
+		return c.defaultJson, c.defaultErr
+	}
+}
+
+func (c *ETradeClientFake) ListPositionLotsDetails(accountIdKey string, positionId int64) ([]byte, error) {
+	if c.ListPositionLotsDetailsFn != nil {
+		return c.ListPositionLotsDetailsFn(accountIdKey, positionId)
 	} else {
 		return c.defaultJson, c.defaultErr
 	}

@@ -55,6 +55,11 @@ func TestSandboxUrls(t *testing.T) {
 	)
 	assert.Equal(
 		t,
+		"https://apisb.etrade.com/v1/accounts/1234/portfolio/5678",
+		urls.ListPositionLotsDetailsUrl("1234", 5678),
+	)
+	assert.Equal(
+		t,
 		"https://apisb.etrade.com/v1/user/alerts",
 		urls.ListAlertsUrl(),
 	)

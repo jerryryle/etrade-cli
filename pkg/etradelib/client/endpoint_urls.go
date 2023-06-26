@@ -16,6 +16,7 @@ type EndpointUrls interface {
 	ListTransactionsUrl(accountIdKey string) string
 	ListTransactionDetailsUrl(accountIdKey string, transactionId string) string
 	ViewPortfolioUrl(accountIdKey string) string
+	ListPositionLotsDetailsUrl(accountIdKey string, positionId int64) string
 	ListAlertsUrl() string
 	ListAlertDetailsUrl(alertId string) string
 	DeleteAlertUrl(alertIdList string) string
@@ -32,29 +33,30 @@ type EndpointUrls interface {
 }
 
 type endpointUrls struct {
-	getRequestTokenUrl        string
-	authorizeApplicationUrl   string
-	getAccessTokenUrl         string
-	renewAccessTokenUrl       string
-	revokeAccessTokenUrl      string
-	listAccountsUrl           string
-	getAccountBalancesUrl     string
-	listTransactionsUrl       string
-	listTransactionDetailsUrl string
-	viewPortfolioUrl          string
-	listAlertsUrl             string
-	listAlertDetailsUrl       string
-	deleteAlertUrl            string
-	getQuotesUrl              string
-	lookUpProductUrl          string
-	getOptionChainsUrl        string
-	getOptionExpireDatesUrl   string
-	listOrdersUrl             string
-	previewOrderUrl           string
-	placeOrderUrl             string
-	cancelOrderUrl            string
-	changePreviewedOrderUrl   string
-	placeChangedOrderUrl      string
+	getRequestTokenUrl         string
+	authorizeApplicationUrl    string
+	getAccessTokenUrl          string
+	renewAccessTokenUrl        string
+	revokeAccessTokenUrl       string
+	listAccountsUrl            string
+	getAccountBalancesUrl      string
+	listTransactionsUrl        string
+	listTransactionDetailsUrl  string
+	viewPortfolioUrl           string
+	listPositionLotsDetailsUrl string
+	listAlertsUrl              string
+	listAlertDetailsUrl        string
+	deleteAlertUrl             string
+	getQuotesUrl               string
+	lookUpProductUrl           string
+	getOptionChainsUrl         string
+	getOptionExpireDatesUrl    string
+	listOrdersUrl              string
+	previewOrderUrl            string
+	placeOrderUrl              string
+	cancelOrderUrl             string
+	changePreviewedOrderUrl    string
+	placeChangedOrderUrl       string
 }
 
 func (s *endpointUrls) GetRequestTokenUrl() string {
@@ -95,6 +97,10 @@ func (s *endpointUrls) ListTransactionDetailsUrl(accountIdKey string, transactio
 
 func (s *endpointUrls) ViewPortfolioUrl(accountIdKey string) string {
 	return fmt.Sprintf(s.viewPortfolioUrl, accountIdKey)
+}
+
+func (s *endpointUrls) ListPositionLotsDetailsUrl(accountIdKey string, positionId int64) string {
+	return fmt.Sprintf(s.listPositionLotsDetailsUrl, accountIdKey, positionId)
 }
 
 func (s *endpointUrls) ListAlertsUrl() string {
@@ -153,29 +159,30 @@ const (
 	productionUrlBase = "https://api.etrade.com"
 	sandboxUrlBase    = "https://apisb.etrade.com"
 
-	getRequestTokenUrlTemplate        = "{B}/oauth/request_token"
-	authorizeApplicationUrlTemplate   = "https://us.etrade.com/e/t/etws/authorize"
-	getAccessTokenUrlTemplate         = "{B}/oauth/access_token"
-	renewAccessTokenUrlTemplate       = "{B}/oauth/renew_access_token"
-	revokeAccessTokenUrlTemplate      = "{B}/oauth/revoke_access_token"
-	listAccountsUrlTemplate           = "{B}/v1/accounts/list"
-	getAccountBalancesUrlTemplate     = "{B}/v1/accounts/%s/balance"
-	listTransactionsUrlTemplate       = "{B}/v1/accounts/%s/transactions"
-	listTransactionDetailsUrlTemplate = "{B}/v1/accounts/%s/transactions/%s"
-	viewPortfolioUrlTemplate          = "{B}/v1/accounts/%s/portfolio"
-	listAlertsUrlTemplate             = "{B}/v1/user/alerts"
-	listAlertDetailsUrlTemplate       = "{B}/v1/user/alerts/%s"
-	deleteAlertUrlTemplate            = "{B}/v1/user/alerts/%s"
-	getQuotesUrlTemplate              = "{B}/v1/market/quote/%s"
-	lookUpProductUrlTemplate          = "{B}/v1/market/lookup/%s"
-	getOptionChainsUrlTemplate        = "{B}/v1/market/optionchains"
-	getOptionExpireDatesUrlTemplate   = "{B}/v1/market/optionexpiredate"
-	listOrdersUrlTemplate             = "{B}/v1/accounts/%s/orders"
-	previewOrderUrlTemplate           = "{B}/v1/accounts/%s/orders/preview"
-	placeOrderUrlTemplate             = "{B}/v1/accounts/%s/orders/place"
-	cancelOrderUrlTemplate            = "{B}/v1/accounts/%s/orders/cancel"
-	changePreviewedOrderUrlTemplate   = "{B}/v1/accounts/%s/orders/%s/change/preview"
-	placeChangedOrderUrlTemplate      = "{B}/v1/accounts/%s/orders/%s/change/place"
+	getRequestTokenUrlTemplate         = "{B}/oauth/request_token"
+	authorizeApplicationUrlTemplate    = "https://us.etrade.com/e/t/etws/authorize"
+	getAccessTokenUrlTemplate          = "{B}/oauth/access_token"
+	renewAccessTokenUrlTemplate        = "{B}/oauth/renew_access_token"
+	revokeAccessTokenUrlTemplate       = "{B}/oauth/revoke_access_token"
+	listAccountsUrlTemplate            = "{B}/v1/accounts/list"
+	getAccountBalancesUrlTemplate      = "{B}/v1/accounts/%s/balance"
+	listTransactionsUrlTemplate        = "{B}/v1/accounts/%s/transactions"
+	listTransactionDetailsUrlTemplate  = "{B}/v1/accounts/%s/transactions/%s"
+	viewPortfolioUrlTemplate           = "{B}/v1/accounts/%s/portfolio"
+	listPositionLotsDetailsUrlTemplate = "{B}/v1/accounts/%s/portfolio/%d"
+	listAlertsUrlTemplate              = "{B}/v1/user/alerts"
+	listAlertDetailsUrlTemplate        = "{B}/v1/user/alerts/%s"
+	deleteAlertUrlTemplate             = "{B}/v1/user/alerts/%s"
+	getQuotesUrlTemplate               = "{B}/v1/market/quote/%s"
+	lookUpProductUrlTemplate           = "{B}/v1/market/lookup/%s"
+	getOptionChainsUrlTemplate         = "{B}/v1/market/optionchains"
+	getOptionExpireDatesUrlTemplate    = "{B}/v1/market/optionexpiredate"
+	listOrdersUrlTemplate              = "{B}/v1/accounts/%s/orders"
+	previewOrderUrlTemplate            = "{B}/v1/accounts/%s/orders/preview"
+	placeOrderUrlTemplate              = "{B}/v1/accounts/%s/orders/place"
+	cancelOrderUrlTemplate             = "{B}/v1/accounts/%s/orders/cancel"
+	changePreviewedOrderUrlTemplate    = "{B}/v1/accounts/%s/orders/%s/change/preview"
+	placeChangedOrderUrlTemplate       = "{B}/v1/accounts/%s/orders/%s/change/place"
 )
 
 func GetEndpointUrls(production bool) EndpointUrls {
@@ -186,29 +193,30 @@ func GetEndpointUrls(production bool) EndpointUrls {
 		urlBase = sandboxUrlBase
 	}
 	return &endpointUrls{
-		getRequestTokenUrl:        renderUrlTemplateWithBase(getRequestTokenUrlTemplate, urlBase),
-		authorizeApplicationUrl:   renderUrlTemplateWithBase(authorizeApplicationUrlTemplate, urlBase),
-		getAccessTokenUrl:         renderUrlTemplateWithBase(getAccessTokenUrlTemplate, urlBase),
-		renewAccessTokenUrl:       renderUrlTemplateWithBase(renewAccessTokenUrlTemplate, urlBase),
-		revokeAccessTokenUrl:      renderUrlTemplateWithBase(revokeAccessTokenUrlTemplate, urlBase),
-		listAccountsUrl:           renderUrlTemplateWithBase(listAccountsUrlTemplate, urlBase),
-		getAccountBalancesUrl:     renderUrlTemplateWithBase(getAccountBalancesUrlTemplate, urlBase),
-		listTransactionsUrl:       renderUrlTemplateWithBase(listTransactionsUrlTemplate, urlBase),
-		listTransactionDetailsUrl: renderUrlTemplateWithBase(listTransactionDetailsUrlTemplate, urlBase),
-		viewPortfolioUrl:          renderUrlTemplateWithBase(viewPortfolioUrlTemplate, urlBase),
-		listAlertsUrl:             renderUrlTemplateWithBase(listAlertsUrlTemplate, urlBase),
-		listAlertDetailsUrl:       renderUrlTemplateWithBase(listAlertDetailsUrlTemplate, urlBase),
-		deleteAlertUrl:            renderUrlTemplateWithBase(deleteAlertUrlTemplate, urlBase),
-		getQuotesUrl:              renderUrlTemplateWithBase(getQuotesUrlTemplate, urlBase),
-		lookUpProductUrl:          renderUrlTemplateWithBase(lookUpProductUrlTemplate, urlBase),
-		getOptionChainsUrl:        renderUrlTemplateWithBase(getOptionChainsUrlTemplate, urlBase),
-		getOptionExpireDatesUrl:   renderUrlTemplateWithBase(getOptionExpireDatesUrlTemplate, urlBase),
-		listOrdersUrl:             renderUrlTemplateWithBase(listOrdersUrlTemplate, urlBase),
-		previewOrderUrl:           renderUrlTemplateWithBase(previewOrderUrlTemplate, urlBase),
-		placeOrderUrl:             renderUrlTemplateWithBase(placeOrderUrlTemplate, urlBase),
-		cancelOrderUrl:            renderUrlTemplateWithBase(cancelOrderUrlTemplate, urlBase),
-		changePreviewedOrderUrl:   renderUrlTemplateWithBase(changePreviewedOrderUrlTemplate, urlBase),
-		placeChangedOrderUrl:      renderUrlTemplateWithBase(placeChangedOrderUrlTemplate, urlBase),
+		getRequestTokenUrl:         renderUrlTemplateWithBase(getRequestTokenUrlTemplate, urlBase),
+		authorizeApplicationUrl:    renderUrlTemplateWithBase(authorizeApplicationUrlTemplate, urlBase),
+		getAccessTokenUrl:          renderUrlTemplateWithBase(getAccessTokenUrlTemplate, urlBase),
+		renewAccessTokenUrl:        renderUrlTemplateWithBase(renewAccessTokenUrlTemplate, urlBase),
+		revokeAccessTokenUrl:       renderUrlTemplateWithBase(revokeAccessTokenUrlTemplate, urlBase),
+		listAccountsUrl:            renderUrlTemplateWithBase(listAccountsUrlTemplate, urlBase),
+		getAccountBalancesUrl:      renderUrlTemplateWithBase(getAccountBalancesUrlTemplate, urlBase),
+		listTransactionsUrl:        renderUrlTemplateWithBase(listTransactionsUrlTemplate, urlBase),
+		listTransactionDetailsUrl:  renderUrlTemplateWithBase(listTransactionDetailsUrlTemplate, urlBase),
+		viewPortfolioUrl:           renderUrlTemplateWithBase(viewPortfolioUrlTemplate, urlBase),
+		listPositionLotsDetailsUrl: renderUrlTemplateWithBase(listPositionLotsDetailsUrlTemplate, urlBase),
+		listAlertsUrl:              renderUrlTemplateWithBase(listAlertsUrlTemplate, urlBase),
+		listAlertDetailsUrl:        renderUrlTemplateWithBase(listAlertDetailsUrlTemplate, urlBase),
+		deleteAlertUrl:             renderUrlTemplateWithBase(deleteAlertUrlTemplate, urlBase),
+		getQuotesUrl:               renderUrlTemplateWithBase(getQuotesUrlTemplate, urlBase),
+		lookUpProductUrl:           renderUrlTemplateWithBase(lookUpProductUrlTemplate, urlBase),
+		getOptionChainsUrl:         renderUrlTemplateWithBase(getOptionChainsUrlTemplate, urlBase),
+		getOptionExpireDatesUrl:    renderUrlTemplateWithBase(getOptionExpireDatesUrlTemplate, urlBase),
+		listOrdersUrl:              renderUrlTemplateWithBase(listOrdersUrlTemplate, urlBase),
+		previewOrderUrl:            renderUrlTemplateWithBase(previewOrderUrlTemplate, urlBase),
+		placeOrderUrl:              renderUrlTemplateWithBase(placeOrderUrlTemplate, urlBase),
+		cancelOrderUrl:             renderUrlTemplateWithBase(cancelOrderUrlTemplate, urlBase),
+		changePreviewedOrderUrl:    renderUrlTemplateWithBase(changePreviewedOrderUrlTemplate, urlBase),
+		placeChangedOrderUrl:       renderUrlTemplateWithBase(placeChangedOrderUrlTemplate, urlBase),
 	}
 }
 

@@ -30,6 +30,8 @@ type ETradeClient interface {
 		view constants.PortfolioView,
 	) ([]byte, error)
 
+	ListPositionLotsDetails(accountIdKey string, positionId int64) ([]byte, error)
+
 	ListAlerts(
 		count int, category constants.AlertCategory, status constants.AlertStatus, sort constants.SortOrder,
 		search string,
@@ -178,6 +180,18 @@ func (c *eTradeClient) ViewPortfolio(
 	}
 
 	response, err := c.doRequest("GET", c.urls.ViewPortfolioUrl(accountIdKey), queryValues)
+	if err != nil {
+		return nil, err
+	}
+	return response, nil
+}
+
+func (c *eTradeClient) ListPositionLotsDetails(accountIdKey string, positionId int64) ([]byte, error) {
+	if accountIdKey == "" {
+		return nil, errors.New("accountIdKey not provided")
+	}
+
+	response, err := c.doRequest("GET", c.urls.ListPositionLotsDetailsUrl(accountIdKey, positionId), nil)
 	if err != nil {
 		return nil, err
 	}
