@@ -8,7 +8,7 @@ type CommandAccounts struct {
 	context CommandContext
 }
 
-func (c *CommandAccounts) Command(globalFlags *GlobalFlags) *cobra.Command {
+func (c *CommandAccounts) Command(globalFlags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "accounts",
 		Short: "Account actions",

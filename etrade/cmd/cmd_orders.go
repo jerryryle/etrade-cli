@@ -8,7 +8,7 @@ type CommandOrders struct {
 	context CommandContext
 }
 
-func (c *CommandOrders) Command(globalFlags *GlobalFlags) *cobra.Command {
+func (c *CommandOrders) Command(globalFlags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "orders",
 		Short: "Order actions",

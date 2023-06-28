@@ -8,7 +8,7 @@ type CommandAlerts struct {
 	context CommandContext
 }
 
-func (c *CommandAlerts) Command(globalFlags *GlobalFlags) *cobra.Command {
+func (c *CommandAlerts) Command(globalFlags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "alerts",
 		Short: "Alert actions",

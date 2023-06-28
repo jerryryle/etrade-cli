@@ -8,7 +8,7 @@ type CommandMarket struct {
 	context CommandContext
 }
 
-func (c *CommandMarket) Command(globalFlags *GlobalFlags) *cobra.Command {
+func (c *CommandMarket) Command(globalFlags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "market",
 		Short: "Market actions",

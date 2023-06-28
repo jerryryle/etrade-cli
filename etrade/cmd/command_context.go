@@ -14,7 +14,7 @@ type CommandContext struct {
 	Renderer Renderer
 }
 
-func NewCommandContext(customerId string, debug bool, outputFileName string, format OutputFormat) (
+func NewCommandContext(customerId string, debug bool, outputFileName string, format outputFormat) (
 	*CommandContext, error,
 ) {
 	var err error
@@ -44,17 +44,17 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 	// Set up output renderer
 	renderer := Renderer(nil)
 	switch format {
-	case OutputFormatJson:
+	case outputFormatJson:
 		renderer = &jsonRenderer{
 			outputFile: outputFile,
 			pretty:     false,
 		}
-	case OutputFormatJsonPretty:
+	case outputFormatJsonPretty:
 		renderer = &jsonRenderer{
 			outputFile: outputFile,
 			pretty:     true,
 		}
-	case OutputFormatCsv:
+	case outputFormatCsv:
 		renderer = &csvRenderer{
 			outputFile: outputFile,
 			pretty:     true,

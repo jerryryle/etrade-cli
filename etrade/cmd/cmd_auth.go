@@ -7,7 +7,7 @@ import (
 type CommandAuth struct {
 }
 
-func (c *CommandAuth) Command(globalFlags *GlobalFlags) *cobra.Command {
+func (c *CommandAuth) Command(globalFlags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "auth",
 		Short: "Authentication actions",
