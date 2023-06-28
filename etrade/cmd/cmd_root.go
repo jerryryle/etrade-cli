@@ -42,6 +42,7 @@ func (c *RootCommand) Command() *cobra.Command {
 	cmd.AddCommand((&CommandAlerts{GlobalFlags: &c.globalFlags}).Command())
 	cmd.AddCommand((&CommandMarket{GlobalFlags: &c.globalFlags}).Command())
 	cmd.AddCommand((&CommandOrders{GlobalFlags: &c.globalFlags}).Command())
+	cmd.AddCommand((&CommandAuth{}).Command())
 	cmd.AddCommand((&CommandCfg{}).Command())
 
 	return cmd

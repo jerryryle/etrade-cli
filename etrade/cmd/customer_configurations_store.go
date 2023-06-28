@@ -94,6 +94,10 @@ func (c *CustomerConfigurationsStore) SetCustomerConfigurationForId(
 	c.customerConfigMap[configId] = *configuration
 }
 
+func (c *CustomerConfigurationsStore) GetAllConfigurations() map[string]CustomerConfiguration {
+	return c.customerConfigMap
+}
+
 func (c *CustomerConfigurationsStore) ForEachCustomerConfig(
 	fn func(configId string, customerName string, production bool),
 ) {
