@@ -38,12 +38,12 @@ func (c *RootCommand) Command() *cobra.Command {
 	)
 
 	// Add Subcommands
-	cmd.AddCommand((&CommandAccounts{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandAlerts{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandMarket{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandOrders{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandAuth{}).Command())
-	cmd.AddCommand((&CommandCfg{}).Command())
+	cmd.AddCommand((&CommandAccounts{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandAlerts{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandMarket{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandOrders{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandAuth{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandCfg{}).Command(&c.globalFlags))
 
 	return cmd
 }

@@ -5,19 +5,17 @@ import (
 )
 
 type CommandMarket struct {
-	GlobalFlags *GlobalFlags
-	context     CommandContext
+	context CommandContext
 }
 
-func (c *CommandMarket) Command() *cobra.Command {
+func (c *CommandMarket) Command(globalFlags *GlobalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "market",
 		Short: "Market actions",
 		Long:  "Perform market actions",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			context, err := NewCommandContext(
-				c.GlobalFlags.customerId, c.GlobalFlags.debug, c.GlobalFlags.outputFileName,
-				c.GlobalFlags.outputFormat.Value(),
+				globalFlags.customerId, globalFlags.debug, globalFlags.outputFileName, globalFlags.outputFormat.Value(),
 			)
 			if err != nil {
 				return err

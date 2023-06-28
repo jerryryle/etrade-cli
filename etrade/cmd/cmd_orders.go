@@ -5,19 +5,17 @@ import (
 )
 
 type CommandOrders struct {
-	GlobalFlags *GlobalFlags
-	context     CommandContext
+	context CommandContext
 }
 
-func (c *CommandOrders) Command() *cobra.Command {
+func (c *CommandOrders) Command(globalFlags *GlobalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "orders",
 		Short: "Order actions",
 		Long:  "Perform order actions",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			context, err := NewCommandContext(
-				c.GlobalFlags.customerId, c.GlobalFlags.debug, c.GlobalFlags.outputFileName,
-				c.GlobalFlags.outputFormat.Value(),
+				globalFlags.customerId, globalFlags.debug, globalFlags.outputFileName, globalFlags.outputFormat.Value(),
 			)
 			if err != nil {
 				return err

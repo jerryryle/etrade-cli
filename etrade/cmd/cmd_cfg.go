@@ -7,7 +7,7 @@ import (
 type CommandCfg struct {
 }
 
-func (c *CommandCfg) Command() *cobra.Command {
+func (c *CommandCfg) Command(globalFlags *GlobalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "cfg",
 		Short: "Configuration actions",
