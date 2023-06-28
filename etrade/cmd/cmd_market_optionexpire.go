@@ -12,7 +12,7 @@ type marketOptionExpireFlags struct {
 }
 
 type CommandMarketOptionExpire struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   marketOptionExpireFlags
 }
 

@@ -13,7 +13,7 @@ type marketQuotesFlags struct {
 }
 
 type CommandMarketQuote struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   marketQuotesFlags
 }
 

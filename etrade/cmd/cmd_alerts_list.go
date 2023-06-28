@@ -16,7 +16,7 @@ type alertsListFlags struct {
 }
 
 type CommandAlertsList struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   alertsListFlags
 }
 

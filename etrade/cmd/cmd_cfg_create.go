@@ -10,7 +10,8 @@ type cfgCreateFlags struct {
 }
 
 type CommandCfgCreate struct {
-	flags cfgCreateFlags
+	Context *CommandContext
+	flags   cfgCreateFlags
 }
 
 func (c *CommandCfgCreate) Command() *cobra.Command {
@@ -28,11 +29,7 @@ func (c *CommandCfgCreate) Command() *cobra.Command {
 }
 
 func (c *CommandCfgCreate) CreateConfig() error {
-	userHomeFolder, err := getUserHomeFolder()
-	if err != nil {
-		return fmt.Errorf("unable to locate the current user's home folder: %w", err)
-	}
-	cfgFilePath := getCfgFilePath(userHomeFolder)
+	cfgFilePath := getCfgFilePath(c.Context.ConfigurationFolder)
 
 	defaultConfig := CustomerConfigurationStore{
 		customerConfigMap: map[string]CustomerConfiguration{
@@ -50,7 +47,7 @@ func (c *CommandCfgCreate) CreateConfig() error {
 			},
 		},
 	}
-	err = SaveCustomerConfigurationStoreToFile(cfgFilePath, c.flags.force, &defaultConfig, nil)
+	err := SaveCustomerConfigurationStoreToFile(cfgFilePath, c.flags.force, &defaultConfig, nil)
 	if err != nil {
 		return fmt.Errorf(
 			"Unable to create the default configuration file at %s (%w).\nThe file may already exist. To overwrite it, use the --force flag",

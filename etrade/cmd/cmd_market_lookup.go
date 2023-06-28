@@ -6,7 +6,7 @@ import (
 )
 
 type CommandMarketLookup struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 }
 
 func (c *CommandMarketLookup) Command() *cobra.Command {

@@ -17,7 +17,7 @@ type accountsPortfolioFlags struct {
 }
 
 type CommandAccountsPortfolio struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   accountsPortfolioFlags
 }
 

@@ -5,7 +5,7 @@ import (
 )
 
 type CommandMarket struct {
-	context CommandContext
+	context CommandContextWithClient
 }
 
 func (c *CommandMarket) Command(globalFlags *globalFlags) *cobra.Command {
@@ -14,9 +14,7 @@ func (c *CommandMarket) Command(globalFlags *globalFlags) *cobra.Command {
 		Short: "Market actions",
 		Long:  "Perform market actions",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			context, err := NewCommandContext(
-				globalFlags.customerId, globalFlags.debug, globalFlags.outputFileName, globalFlags.outputFormat.Value(),
-			)
+			context, err := NewCommandContextWithClientFromFlags(globalFlags)
 			if err != nil {
 				return err
 			}
@@ -24,7 +22,7 @@ func (c *CommandMarket) Command(globalFlags *globalFlags) *cobra.Command {
 			return nil
 		},
 		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
-			return CleanupCommandContext(&c.context)
+			return c.context.Close()
 		},
 	}
 	// Add Subcommands

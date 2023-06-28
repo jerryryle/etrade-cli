@@ -17,7 +17,7 @@ type marketOptionChainsFlags struct {
 }
 
 type CommandMarketOptionChains struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   marketOptionChainsFlags
 }
 

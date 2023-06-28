@@ -97,11 +97,3 @@ func (c *CustomerConfigurationStore) SetCustomerConfigurationForId(
 func (c *CustomerConfigurationStore) GetAllConfigurations() map[string]CustomerConfiguration {
 	return c.customerConfigMap
 }
-
-func (c *CustomerConfigurationStore) ForEachCustomerConfig(
-	fn func(configId string, customerName string, production bool),
-) {
-	for k, v := range c.customerConfigMap {
-		fn(k, v.CustomerName, v.CustomerProduction)
-	}
-}

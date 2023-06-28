@@ -8,7 +8,7 @@ import (
 )
 
 type CommandAlertsDelete struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 }
 
 func (c *CommandAlertsDelete) Command() *cobra.Command {
