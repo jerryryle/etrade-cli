@@ -80,18 +80,18 @@ func SaveCustomerConfigurationStoreToFile(
 	return SaveCustomerConfigurationStore(file, cc)
 }
 
-func (c *CustomerConfigurationStore) GetCustomerConfigurationById(configId string) (*CustomerConfiguration, error) {
-	configItem, exists := c.customerConfigMap[configId]
+func (c *CustomerConfigurationStore) GetCustomerConfigurationById(customerId string) (*CustomerConfiguration, error) {
+	configItem, exists := c.customerConfigMap[customerId]
 	if !exists {
-		return nil, errors.New("configuration not found")
+		return nil, errors.New("customer not found")
 	}
 	return &configItem, nil
 }
 
 func (c *CustomerConfigurationStore) SetCustomerConfigurationForId(
-	configId string, configuration *CustomerConfiguration,
+	customerId string, configuration *CustomerConfiguration,
 ) {
-	c.customerConfigMap[configId] = *configuration
+	c.customerConfigMap[customerId] = *configuration
 }
 
 func (c *CustomerConfigurationStore) GetAllConfigurations() map[string]CustomerConfiguration {
