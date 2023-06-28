@@ -6,7 +6,7 @@ import (
 )
 
 type CommandAlertsDetails struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 }
 
 func (c *CommandAlertsDetails) Command() *cobra.Command {

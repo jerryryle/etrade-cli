@@ -20,7 +20,7 @@ type ordersListFlags struct {
 }
 
 type CommandOrdersList struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   ordersListFlags
 }
 

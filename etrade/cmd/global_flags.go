@@ -1,16 +1,16 @@
 package cmd
 
-type GlobalFlags struct {
+type globalFlags struct {
 	customerId     string
 	debug          bool
 	outputFileName string
-	outputFormat   enumFlagValue[OutputFormat]
+	outputFormat   enumFlagValue[outputFormat]
 }
 
-type OutputFormat int
+type outputFormat int
 
 const (
-	OutputFormatCsv = iota
-	OutputFormatJson
-	OutputFormatJsonPretty
+	outputFormatCsv = iota
+	outputFormatJson
+	outputFormatJsonPretty
 )

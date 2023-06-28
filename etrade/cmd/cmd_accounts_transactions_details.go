@@ -6,7 +6,7 @@ import (
 )
 
 type CommandAccountsTransactionsDetails struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 }
 
 func (c *CommandAccountsTransactionsDetails) Command() *cobra.Command {

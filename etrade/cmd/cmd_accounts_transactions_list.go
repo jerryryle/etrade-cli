@@ -14,7 +14,7 @@ type accountsTransactionsListFlags struct {
 }
 
 type CommandAccountsTransactionsList struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   accountsTransactionsListFlags
 }
 

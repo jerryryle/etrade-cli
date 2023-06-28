@@ -6,7 +6,7 @@ import (
 )
 
 type RootCommand struct {
-	globalFlags GlobalFlags
+	globalFlags globalFlags
 }
 
 func (c *RootCommand) Command() *cobra.Command {
@@ -23,7 +23,7 @@ func (c *RootCommand) Command() *cobra.Command {
 	)
 
 	// Initialize Global Enum Flag Values
-	c.globalFlags.outputFormat = *newEnumFlagValue(outputFormatMap, OutputFormatCsv)
+	c.globalFlags.outputFormat = *newEnumFlagValue(outputFormatMap, outputFormatCsv)
 
 	// Add Global Enum Flags
 	cmd.PersistentFlags().Var(
@@ -38,18 +38,18 @@ func (c *RootCommand) Command() *cobra.Command {
 	)
 
 	// Add Subcommands
-	cmd.AddCommand((&CommandAccounts{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandAlerts{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandMarket{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandOrders{GlobalFlags: &c.globalFlags}).Command())
-	cmd.AddCommand((&CommandAuth{}).Command())
-	cmd.AddCommand((&CommandCfg{}).Command())
+	cmd.AddCommand((&CommandAccounts{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandAlerts{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandMarket{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandOrders{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandAuth{}).Command(&c.globalFlags))
+	cmd.AddCommand((&CommandCfg{}).Command(&c.globalFlags))
 
 	return cmd
 }
 
-var outputFormatMap = map[string]enumValueWithHelp[OutputFormat]{
-	"csv":        {OutputFormatCsv, "CSV output"},
-	"json":       {OutputFormatJson, "raw JSON output"},
-	"jsonPretty": {OutputFormatJsonPretty, "formatted JSON output"},
+var outputFormatMap = map[string]enumValueWithHelp[outputFormat]{
+	"csv":        {outputFormatCsv, "CSV output"},
+	"json":       {outputFormatJson, "raw JSON output"},
+	"jsonPretty": {outputFormatJsonPretty, "formatted JSON output"},
 }

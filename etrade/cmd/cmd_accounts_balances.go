@@ -11,7 +11,7 @@ type commandAccountsBalancesFlags struct {
 }
 
 type CommandAccountsBalances struct {
-	Context *CommandContext
+	Context *CommandContextWithClient
 	flags   commandAccountsBalancesFlags
 }
 
