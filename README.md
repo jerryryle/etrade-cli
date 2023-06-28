@@ -1,7 +1,9 @@
 # etrade-cli
-E*TRADE Command-line Interface
+ETrade Command-line Interface
 
-This is a hobby project to create a command-line E*TRADE client in Go.
+This is a hobby project to create a command-line ETrade client in Go.
+
+USE THIS AT YOUR OWN RISK. The ETrade API is poorly-documented and ETrade's test environment is inadequate; therefore, I cannot guarantee the accuracy of this client implementation. Using it with your ETrade account could result in financial disaster.   
 
 Quick Start:
 1. Install Go 1.20 or later: https://go.dev/doc/install
