@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/spf13/cobra"
 )
 
@@ -10,15 +11,26 @@ type cfgCreateFlags struct {
 }
 
 type CommandCfgCreate struct {
-	Context *CommandContext
+	context CommandContext
 	flags   cfgCreateFlags
 }
 
-func (c *CommandCfgCreate) Command() *cobra.Command {
+func (c *CommandCfgCreate) Command(globalFlags *globalFlags) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create default configuration",
 		Long:  "Create a default configuration file",
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			context, err := NewCommandContextFromFlags(globalFlags)
+			if err != nil {
+				return err
+			}
+			c.context = *context
+			return nil
+		},
+		PersistentPostRunE: func(cmd *cobra.Command, args []string) error {
+			return c.context.Close()
+		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return c.CreateConfig()
 		},
@@ -29,7 +41,7 @@ func (c *CommandCfgCreate) Command() *cobra.Command {
 }
 
 func (c *CommandCfgCreate) CreateConfig() error {
-	cfgFilePath := getCfgFilePath(c.Context.ConfigurationFolder)
+	cfgFilePath := getCfgFilePath(c.context.ConfigurationFolder)
 
 	defaultConfig := CustomerConfigurationStore{
 		customerConfigMap: map[string]CustomerConfiguration{
@@ -54,9 +66,28 @@ func (c *CommandCfgCreate) CreateConfig() error {
 			cfgFilePath, err,
 		)
 	}
-	fmt.Printf(
-		"Default configuration file successfully created at %s\nPlease update it with your customer information from ETrade.\n",
-		cfgFilePath,
-	)
+
+	resultMap := jsonmap.JsonMap{
+		"status": "success",
+		"message": fmt.Sprintf(
+			"Default configuration file successfully created at %s. Please update it with your customer information from ETrade.",
+			cfgFilePath,
+		),
+	}
+	if err := c.context.Renderer.Render(resultMap, cfgCreateDescriptor); err != nil {
+		return err
+	}
 	return nil
+}
+
+var cfgCreateDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: "",
+		Values: []RenderValue{
+			{Header: "Status", Path: ".status"},
+			{Header: "Message", Path: ".message"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }

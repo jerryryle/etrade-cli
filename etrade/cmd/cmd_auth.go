@@ -5,7 +5,7 @@ import (
 )
 
 type CommandAuth struct {
-	context CommandContext
+	context CommandContextWithStore
 }
 
 func (c *CommandAuth) Command(globalFlags *globalFlags) *cobra.Command {
@@ -14,7 +14,7 @@ func (c *CommandAuth) Command(globalFlags *globalFlags) *cobra.Command {
 		Short: "Authentication actions",
 		Long:  "Authentication actions",
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-			context, err := NewCommandContextFromFlags(globalFlags)
+			context, err := NewCommandContextWithStoreFromFlags(globalFlags)
 			if err != nil {
 				return err
 			}

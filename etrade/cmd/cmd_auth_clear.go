@@ -2,12 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/spf13/cobra"
 	"os"
 )
 
 type CommandAuthClear struct {
-	Context *CommandContext
+	Context *CommandContextWithStore
 }
 
 func (c *CommandAuthClear) Command() *cobra.Command {
@@ -43,6 +44,24 @@ func (c *CommandAuthClear) ClearAuth(customerId string) error {
 			return fmt.Errorf("unable to remove auth cache for %s (%w)", customerId, err)
 		}
 	}
-	fmt.Println("Done!")
+
+	resultMap := jsonmap.JsonMap{
+		"status": "success",
+	}
+
+	if err := c.Context.Renderer.Render(resultMap, clearAuthDescriptor); err != nil {
+		return err
+	}
 	return nil
+}
+
+var clearAuthDescriptor = []RenderDescriptor{
+	{
+		ObjectPath: "",
+		Values: []RenderValue{
+			{Header: "Status", Path: ".status"},
+		},
+		DefaultValue: "",
+		SpaceAfter:   false,
+	},
 }
