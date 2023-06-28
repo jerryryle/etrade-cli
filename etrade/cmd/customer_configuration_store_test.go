@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestCustomerConfigurationsStoreLoadSucceedsWithGoodJson(t *testing.T) {
+func TestCustomerConfigurationStoreLoadSucceedsWithGoodJson(t *testing.T) {
 	jsonData := `{
   "TestCfg1": {
     "customerName": "TestName1",
@@ -22,7 +22,7 @@ func TestCustomerConfigurationsStoreLoadSucceedsWithGoodJson(t *testing.T) {
   }
 }`
 	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationsStore(reader)
+	ccs, err := LoadCustomerConfigurationStore(reader)
 	assert.Nil(t, err)
 
 	configuration, err := ccs.GetCustomerConfigurationById("TestCfg1")
@@ -44,16 +44,16 @@ func TestCustomerConfigurationsStoreLoadSucceedsWithGoodJson(t *testing.T) {
 	assert.Error(t, err, "configuration not found")
 }
 
-func TestCustomerConfigurationsStoreLoadSucceedsWithMissingFields(t *testing.T) {
+func TestCustomerConfigurationStoreLoadSucceedsWithMissingFields(t *testing.T) {
 	jsonData := `{
 }`
 	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationsStore(reader)
+	ccs, err := LoadCustomerConfigurationStore(reader)
 	assert.Nil(t, err)
 	assert.NotNil(t, ccs)
 }
 
-func TestCustomerConfigurationsStoreLoadSucceedsWithExtraFields(t *testing.T) {
+func TestCustomerConfigurationStoreLoadSucceedsWithExtraFields(t *testing.T) {
 	jsonData := `{
   "TestCfg1": {
     "customerName": "TestName1",
@@ -70,7 +70,7 @@ func TestCustomerConfigurationsStoreLoadSucceedsWithExtraFields(t *testing.T) {
   }
 }`
 	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationsStore(reader)
+	ccs, err := LoadCustomerConfigurationStore(reader)
 	assert.Nil(t, err)
 
 	configuration, err := ccs.GetCustomerConfigurationById("TestCfg1")
@@ -88,7 +88,7 @@ func TestCustomerConfigurationsStoreLoadSucceedsWithExtraFields(t *testing.T) {
 	assert.Equal(t, "TestSecret2", configuration.CustomerConsumerSecret)
 }
 
-func TestCustomerConfigurationsStoreLoadFailsWithBadJson(t *testing.T) {
+func TestCustomerConfigurationStoreLoadFailsWithBadJson(t *testing.T) {
 	// Malformed JSON
 	jsonData := `{
   "BogusCfg1": {
@@ -99,7 +99,7 @@ func TestCustomerConfigurationsStoreLoadFailsWithBadJson(t *testing.T) {
   }
 }`
 	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationsStore(reader)
+	ccs, err := LoadCustomerConfigurationStore(reader)
 	assert.NotNil(t, err)
 	assert.Nil(t, ccs)
 }

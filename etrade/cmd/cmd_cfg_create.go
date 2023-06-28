@@ -34,7 +34,7 @@ func (c *CommandCfgCreate) CreateConfig() error {
 	}
 	cfgFilePath := getCfgFilePath(userHomeFolder)
 
-	defaultConfig := CustomerConfigurationsStore{
+	defaultConfig := CustomerConfigurationStore{
 		customerConfigMap: map[string]CustomerConfiguration{
 			"CustomerId1": {
 				CustomerName:           "Customer Name 1",
@@ -50,7 +50,7 @@ func (c *CommandCfgCreate) CreateConfig() error {
 			},
 		},
 	}
-	err = SaveCustomerConfigurationsStoreToFile(cfgFilePath, c.flags.force, &defaultConfig, nil)
+	err = SaveCustomerConfigurationStoreToFile(cfgFilePath, c.flags.force, &defaultConfig, nil)
 	if err != nil {
 		return fmt.Errorf(
 			"Unable to create the default configuration file at %s (%w).\nThe file may already exist. To overwrite it, use the --force flag",

@@ -15,24 +15,24 @@ type CustomerConfiguration struct {
 	CustomerConsumerSecret string `json:"customerConsumerSecret"`
 }
 
-type CustomerConfigurationsStore struct {
+type CustomerConfigurationStore struct {
 	customerConfigMap map[string]CustomerConfiguration
 }
 
-func LoadCustomerConfigurationsStore(reader io.Reader) (*CustomerConfigurationsStore, error) {
+func LoadCustomerConfigurationStore(reader io.Reader) (*CustomerConfigurationStore, error) {
 	bytes, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err
 	}
-	var cc = CustomerConfigurationsStore{}
+	var cc = CustomerConfigurationStore{}
 	if err := json.Unmarshal(bytes, &cc.customerConfigMap); err != nil {
 		return nil, err
 	}
 	return &cc, nil
 }
 
-func LoadCustomerConfigurationsStoreFromFile(filename string, logger *slog.Logger) (
-	*CustomerConfigurationsStore, error,
+func LoadCustomerConfigurationStoreFromFile(filename string, logger *slog.Logger) (
+	*CustomerConfigurationStore, error,
 ) {
 	file, err := os.Open(filename)
 	if file != nil {
@@ -46,10 +46,10 @@ func LoadCustomerConfigurationsStoreFromFile(filename string, logger *slog.Logge
 	if err != nil {
 		return nil, err
 	}
-	return LoadCustomerConfigurationsStore(file)
+	return LoadCustomerConfigurationStore(file)
 }
 
-func SaveCustomerConfigurationsStore(writer io.Writer, cc *CustomerConfigurationsStore) error {
+func SaveCustomerConfigurationStore(writer io.Writer, cc *CustomerConfigurationStore) error {
 	encoder := json.NewEncoder(writer)
 	encoder.SetIndent("", "  ")
 	if err := encoder.Encode(&cc.customerConfigMap); err != nil {
@@ -58,8 +58,8 @@ func SaveCustomerConfigurationsStore(writer io.Writer, cc *CustomerConfiguration
 	return nil
 }
 
-func SaveCustomerConfigurationsStoreToFile(
-	filename string, overwriteExisting bool, cc *CustomerConfigurationsStore, logger *slog.Logger,
+func SaveCustomerConfigurationStoreToFile(
+	filename string, overwriteExisting bool, cc *CustomerConfigurationStore, logger *slog.Logger,
 ) error {
 	openFlags := os.O_RDWR | os.O_CREATE | os.O_TRUNC
 	if !overwriteExisting {
@@ -77,10 +77,10 @@ func SaveCustomerConfigurationsStoreToFile(
 	if err != nil {
 		return err
 	}
-	return SaveCustomerConfigurationsStore(file, cc)
+	return SaveCustomerConfigurationStore(file, cc)
 }
 
-func (c *CustomerConfigurationsStore) GetCustomerConfigurationById(configId string) (*CustomerConfiguration, error) {
+func (c *CustomerConfigurationStore) GetCustomerConfigurationById(configId string) (*CustomerConfiguration, error) {
 	configItem, exists := c.customerConfigMap[configId]
 	if !exists {
 		return nil, errors.New("configuration not found")
@@ -88,17 +88,17 @@ func (c *CustomerConfigurationsStore) GetCustomerConfigurationById(configId stri
 	return &configItem, nil
 }
 
-func (c *CustomerConfigurationsStore) SetCustomerConfigurationForId(
+func (c *CustomerConfigurationStore) SetCustomerConfigurationForId(
 	configId string, configuration *CustomerConfiguration,
 ) {
 	c.customerConfigMap[configId] = *configuration
 }
 
-func (c *CustomerConfigurationsStore) GetAllConfigurations() map[string]CustomerConfiguration {
+func (c *CustomerConfigurationStore) GetAllConfigurations() map[string]CustomerConfiguration {
 	return c.customerConfigMap
 }
 
-func (c *CustomerConfigurationsStore) ForEachCustomerConfig(
+func (c *CustomerConfigurationStore) ForEachCustomerConfig(
 	fn func(configId string, customerName string, production bool),
 ) {
 	for k, v := range c.customerConfigMap {

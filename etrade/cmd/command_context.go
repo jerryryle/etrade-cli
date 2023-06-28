@@ -67,7 +67,7 @@ func NewCommandContext(customerId string, debug bool, outputFileName string, for
 		return nil, fmt.Errorf("unable to locate the current user's home folder: %w", err)
 	}
 	cfgFilePath := getCfgFilePath(userHomeFolder)
-	customerConfigStore, err := LoadCustomerConfigurationsStoreFromFile(cfgFilePath, logger)
+	customerConfigStore, err := LoadCustomerConfigurationStoreFromFile(cfgFilePath, logger)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"configuration file %s is missing or corrupt (error: %w). you can create a default configuration file with the command 'cfg create'",

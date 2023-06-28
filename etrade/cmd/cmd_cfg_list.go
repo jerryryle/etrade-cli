@@ -28,7 +28,7 @@ func (c *CommandCfgList) ListConfig() error {
 		return fmt.Errorf("unable to locate the current user's home folder: %w", err)
 	}
 	cfgFilePath := getCfgFilePath(userHomeFolder)
-	customerConfigStore, err := LoadCustomerConfigurationsStoreFromFile(cfgFilePath, nil)
+	customerConfigStore, err := LoadCustomerConfigurationStoreFromFile(cfgFilePath, nil)
 	if err != nil {
 		return fmt.Errorf(
 			"configuration file %s is missing or corrupt (error: %w). you can create a default configuration file with the command 'cfg create'",
