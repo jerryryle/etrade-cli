@@ -11,6 +11,12 @@ import (
 )
 
 type CommandContext struct {
+	Logger              *slog.Logger
+	Renderer            Renderer
+	ConfigurationFolder string
+}
+
+type CommandContextWithStore struct {
 	Logger                     *slog.Logger
 	Renderer                   Renderer
 	ConfigurationFolder        string
@@ -68,25 +74,16 @@ func NewCommandContextFromFlags(flags *globalFlags) (*CommandContext, error) {
 		}
 	}
 
-	// Load the configuration file and locate the configuration for the requested customer ID
+	// Locate the configuration folder
 	configurationFolder, err := getUserHomeFolder()
 	if err != nil {
 		return nil, fmt.Errorf("unable to locate the current user's home folder: %w", err)
 	}
-	cfgFilePath := getCfgFilePath(configurationFolder)
-	customerConfigurationStore, err := LoadCustomerConfigurationStoreFromFile(cfgFilePath, logger)
-	if err != nil {
-		return nil, fmt.Errorf(
-			"configuration file %s is missing or corrupt (error: %w). you can create a default configuration file with the command 'cfg create'",
-			cfgFilePath, err,
-		)
-	}
 
 	return &CommandContext{
-		Logger:                     logger,
-		Renderer:                   renderer,
-		ConfigurationFolder:        configurationFolder,
-		CustomerConfigurationStore: customerConfigurationStore,
+		Logger:              logger,
+		Renderer:            renderer,
+		ConfigurationFolder: configurationFolder,
 	}, nil
 }
 
@@ -94,8 +91,36 @@ func (c *CommandContext) Close() error {
 	return c.Renderer.Close()
 }
 
-func NewCommandContextWithClientFromFlags(flags *globalFlags) (*CommandContextWithClient, error) {
+func NewCommandContextWithStoreFromFlags(flags *globalFlags) (*CommandContextWithStore, error) {
 	context, err := NewCommandContextFromFlags(flags)
+	if err != nil {
+		return nil, err
+	}
+
+	// Load the configuration file
+	cfgFilePath := getCfgFilePath(context.ConfigurationFolder)
+	customerConfigurationStore, err := LoadCustomerConfigurationStoreFromFile(cfgFilePath, context.Logger)
+	if err != nil {
+		return nil, fmt.Errorf(
+			"configuration file %s is missing or corrupt (error: %w). you can create a default configuration file with the command 'cfg create'",
+			cfgFilePath, err,
+		)
+	}
+
+	return &CommandContextWithStore{
+		Logger:                     context.Logger,
+		Renderer:                   context.Renderer,
+		ConfigurationFolder:        context.ConfigurationFolder,
+		CustomerConfigurationStore: customerConfigurationStore,
+	}, nil
+}
+
+func (c *CommandContextWithStore) Close() error {
+	return c.Renderer.Close()
+}
+
+func NewCommandContextWithClientFromFlags(flags *globalFlags) (*CommandContextWithClient, error) {
+	context, err := NewCommandContextWithStoreFromFlags(flags)
 	if err != nil {
 		return nil, err
 	}
