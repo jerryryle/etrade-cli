@@ -142,6 +142,9 @@ func NewCommandContextWithClientFromFlags(flags *globalFlags) (*CommandContextWi
 		cacheFilePath,
 		context.Logger,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	return &CommandContextWithClient{
 		Logger:   context.Logger,
