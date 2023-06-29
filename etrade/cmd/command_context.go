@@ -174,14 +174,20 @@ func createClientWithCredentialCache(
 	}
 	var accessToken = cachedCredentials.AccessToken
 	var accessSecret = cachedCredentials.AccessSecret
+
+	// Try renewing the session with the cached credentials. If they're empty
+	// or otherwise invalid, this will fail.
 	eTradeClient, err = authSession.Renew(accessToken, accessSecret)
 	if err != nil {
+		// Renewal failed, so start a new session.
 		authUrl, err := authSession.Begin()
 		if err != nil {
 			return nil, err
 		}
 		_, _ = fmt.Fprintf(os.Stderr, "Visit this URL to get a validation code:\n%s\n\n", authUrl)
 
+		// Prompt the user to visit the auth URL to get a validation code.
+		// Then wait for them to input the code.
 		var validationCode string
 		_, _ = fmt.Fprintf(os.Stderr, "Enter validation code: ")
 		_, err = fmt.Scanln(&validationCode)
@@ -192,11 +198,14 @@ func createClientWithCredentialCache(
 			return nil, errors.New("no validation code provided")
 		}
 
+		// Verify the code.
 		eTradeClient, accessToken, accessSecret, err = authSession.Verify(validationCode)
 		if err != nil {
 			return nil, err
 		}
 	}
+
+	// Store new or renewed credentials to the cache file.
 	err = SaveCachedCredentialsToFile(
 		cacheFilePath,
 		&CachedCredentials{accessToken, accessSecret, time.Now()},
