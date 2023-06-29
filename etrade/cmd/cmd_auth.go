@@ -26,6 +26,7 @@ func (c *CommandAuth) Command(globalFlags *globalFlags) *cobra.Command {
 		},
 	}
 	// Add Subcommands
-	cmd.AddCommand((&CommandAuthClear{Context: &c.context}).Command())
+	cmd.AddCommand((&CommandAuthClear{Context: &c.context}).Command(globalFlags))
+	cmd.AddCommand((&CommandAuthLogin{Context: &c.context}).Command(globalFlags))
 	return cmd
 }
