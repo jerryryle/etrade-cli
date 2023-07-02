@@ -61,13 +61,9 @@ func (c *CommandAuthLogin) Login(customerId string) error {
 	}
 	// Store new or renewed credentials to the cache file.
 	consumerKey, _, accessToken, accessSecret := eTradeClient.GetKeys()
-	cacheFilePath := getFileCachePathForCustomer(c.Context.ConfigurationFolder, consumerKey)
-	err = SaveCachedCredentialsToFile(
-		cacheFilePath,
-		&CachedCredentials{accessToken, accessSecret, time.Now()},
-		c.Context.Logger,
-	)
-	if err != nil {
+	if err = c.Context.ConfigurationFolder.SaveCachedCredentialsToFile(
+		consumerKey, &CachedCredentials{accessToken, accessSecret, time.Now()}, c.Context.Logger,
+	); err != nil {
 		return err
 	}
 

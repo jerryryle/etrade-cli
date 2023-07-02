@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 type CommandAuthClear struct {
@@ -28,9 +27,8 @@ func (c *CommandAuthClear) ClearAuth(customerId string) error {
 	if err != nil {
 		return fmt.Errorf("customer id '%s' not found in config file", customerId)
 	}
-	cacheFilePath := getFileCachePathForCustomer(c.Context.ConfigurationFolder, customerConfig.CustomerConsumerKey)
-	err = os.Remove(cacheFilePath)
-	if err != nil && !os.IsNotExist(err) {
+	err = c.Context.ConfigurationFolder.RemoveCachedCredentialsFile(customerConfig.CustomerConsumerKey)
+	if err != nil {
 		return fmt.Errorf("unable to remove auth cache for %s (%w)", customerId, err)
 	}
 

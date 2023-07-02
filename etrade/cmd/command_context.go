@@ -11,13 +11,13 @@ import (
 type CommandContext struct {
 	Logger              *slog.Logger
 	Renderer            Renderer
-	ConfigurationFolder string
+	ConfigurationFolder ConfigurationFolder
 }
 
 type CommandContextWithStore struct {
 	Logger                     *slog.Logger
 	Renderer                   Renderer
-	ConfigurationFolder        string
+	ConfigurationFolder        ConfigurationFolder
 	CustomerConfigurationStore *CustomerConfigurationStore
 }
 
@@ -73,7 +73,7 @@ func NewCommandContextFromFlags(flags *globalFlags) (*CommandContext, error) {
 	}
 
 	// Locate the configuration folder
-	configurationFolder, err := getUserHomeFolder()
+	configurationFolder, err := os.UserHomeDir()
 	if err != nil {
 		return nil, fmt.Errorf("unable to locate the current user's home folder: %w", err)
 	}
@@ -81,7 +81,7 @@ func NewCommandContextFromFlags(flags *globalFlags) (*CommandContext, error) {
 	return &CommandContext{
 		Logger:              logger,
 		Renderer:            renderer,
-		ConfigurationFolder: configurationFolder,
+		ConfigurationFolder: NewConfigurationFolder(configurationFolder),
 	}, nil
 }
 
@@ -96,12 +96,11 @@ func NewCommandContextWithStoreFromFlags(flags *globalFlags) (*CommandContextWit
 	}
 
 	// Load the configuration file
-	cfgFilePath := getCfgFilePath(context.ConfigurationFolder)
-	customerConfigurationStore, err := LoadCustomerConfigurationStoreFromFile(cfgFilePath, context.Logger)
+	customerConfigurationStore, err := context.ConfigurationFolder.LoadCustomerConfiguration(context.Logger)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"configuration file %s is missing or corrupt (error: %w). you can create a default configuration file with the command 'cfg create'",
-			cfgFilePath, err,
+			context.ConfigurationFolder.GetConfigurationFilePath(), err,
 		)
 	}
 
@@ -137,7 +136,7 @@ func NewCommandContextWithClientFromFlags(flags *globalFlags) (*CommandContextWi
 }
 
 func NewETradeClientForCustomer(
-	customerId string, cfgFolder string, cfgStore *CustomerConfigurationStore, logger *slog.Logger,
+	customerId string, cfgFolder ConfigurationFolder, cfgStore *CustomerConfigurationStore, logger *slog.Logger,
 ) (client.ETradeClient, error) {
 	if customerId == "" {
 		return nil, errors.New("customer id must be specified with --customer-id flag")
@@ -146,10 +145,9 @@ func NewETradeClientForCustomer(
 	if err != nil {
 		return nil, fmt.Errorf("customer id '%s' not found in config file", customerId)
 	}
-	cacheFilePath := getFileCachePathForCustomer(cfgFolder, customerConfig.CustomerConsumerKey)
 
 	// Try loading cached credentials
-	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath, logger)
+	cachedCredentials, err := cfgFolder.LoadCachedCredentialsFromFile(customerConfig.CustomerConsumerKey, logger)
 	if err != nil {
 		// If loading cached credentials fails, then create a new, empty
 		// credential cache. It will yield empty strings for the cached token,
