@@ -3,6 +3,7 @@ package client
 import (
 	"errors"
 	"fmt"
+	"github.com/dghubble/oauth1"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"golang.org/x/exp/slog"
 	"io"
@@ -13,6 +14,12 @@ import (
 )
 
 type ETradeClient interface {
+	Authenticate() (string, error)
+
+	Verify(verifyKey string) error
+
+	GetKeys() (consumerKey string, consumerSecret string, accessToken string, accessSecret string)
+
 	ListAccounts() ([]byte, error)
 
 	GetAccountBalances(accountIdKey string, realTimeNAV bool) ([]byte, error)
@@ -64,20 +71,104 @@ type ETradeClient interface {
 }
 
 type eTradeClient struct {
-	urls       EndpointUrls
-	httpClient *http.Client
-	Logger     *slog.Logger
+	urls           EndpointUrls
+	httpClient     HttpClient
+	logger         *slog.Logger
+	config         OAuthConfig
+	consumerKey    string
+	consumerSecret string
+	requestToken   string
+	requestSecret  string
+	accessToken    string
+	accessSecret   string
 }
 
-func CreateETradeClient(urls EndpointUrls, httpClient *http.Client, logger *slog.Logger) ETradeClient {
-	return &eTradeClient{
-		urls:       urls,
-		httpClient: httpClient,
-		Logger:     logger,
+func CreateETradeClient(
+	logger *slog.Logger, production bool, consumerKey string, consumerSecret string, accessToken string,
+	accessSecret string,
+) (ETradeClient, error) {
+	if consumerKey == "" || consumerSecret == "" {
+		return nil, errors.New("invalid consumer credentials provided")
 	}
+	urls := GetEndpointUrls(production)
+
+	authorizeEndpoint := oauth1.Endpoint{
+		RequestTokenURL: urls.GetRequestTokenUrl(),
+		AuthorizeURL:    urls.AuthorizeApplicationUrl(),
+		AccessTokenURL:  urls.GetAccessTokenUrl(),
+	}
+
+	config := oauth1.Config{
+		ConsumerKey:    consumerKey,
+		ConsumerSecret: oauth1.PercentEncode(consumerSecret),
+		CallbackURL:    "oob",
+		Endpoint:       authorizeEndpoint,
+	}
+
+	token := oauth1.NewToken(accessToken, oauth1.PercentEncode(accessSecret))
+	httpClient := config.Client(oauth1.NoContext, token)
+
+	return &eTradeClient{
+		urls:           urls,
+		httpClient:     httpClient,
+		logger:         logger,
+		config:         &config,
+		consumerKey:    consumerKey,
+		consumerSecret: consumerSecret,
+		accessToken:    accessToken,
+		accessSecret:   accessSecret,
+	}, nil
+}
+
+var ErrETradeAuthFailed = errors.New("authentication failed")
+
+func IsAuthFailed(err error) bool {
+	return err == ErrETradeAuthFailed
 }
 
 const queryDateLayout = "01022006"
+
+func (c *eTradeClient) Authenticate() (string, error) {
+	_, err := c.doRequest("GET", c.urls.RenewAccessTokenUrl(), nil)
+	// If access token renewal succeeded, then we're done. Return success.
+	if err == nil {
+		return "", nil
+	}
+	// If the error is anything other than an auth failure, then fail.
+	if !IsAuthFailed(err) {
+		return "", err
+	}
+	// If access token renewal failed, then begin a new auth session by
+	// requesting a new token.
+	c.requestToken, c.requestSecret, err = c.config.RequestToken()
+	if err != nil {
+		return "", err
+	}
+	// Format and return the authorization string
+	authorizeUrl, err := url.Parse(c.urls.AuthorizeApplicationUrl())
+	values := authorizeUrl.Query()
+	values.Add("key", c.consumerKey)
+	values.Add("token", c.requestToken)
+	authorizeUrl.RawQuery = values.Encode()
+	return authorizeUrl.String(), nil
+}
+
+func (c *eTradeClient) Verify(verifyKey string) error {
+	var err error
+	c.accessToken, c.accessSecret, err = c.config.AccessToken(
+		c.requestToken, oauth1.PercentEncode(c.requestSecret), verifyKey,
+	)
+	if err != nil {
+		return err
+	}
+	token := oauth1.NewToken(c.accessToken, oauth1.PercentEncode(c.accessSecret))
+	c.httpClient = c.config.Client(oauth1.NoContext, token)
+	return nil
+}
+
+func (c *eTradeClient) GetKeys() (consumerKey string, consumerSecret string, accessToken string, accessSecret string) {
+	return c.consumerKey, c.consumerSecret, c.accessToken, c.accessSecret
+}
 
 func (c *eTradeClient) ListAccounts() ([]byte, error) {
 	response, err := c.doRequest("GET", c.urls.ListAccountsUrl(), nil)
@@ -427,13 +518,13 @@ func (c *eTradeClient) doRequest(method string, baseUrl string, queryValues url.
 	req.URL.RawQuery = queryValues.Encode()
 
 	// Perform the request
-	c.Logger.Debug(method + " " + req.URL.String())
+	c.logger.Debug(method + " " + req.URL.String())
 	httpResponse, err := c.httpClient.Do(req)
 	if httpResponse != nil {
 		defer func(Body io.ReadCloser) {
 			err := Body.Close()
 			if err != nil {
-				c.Logger.Error(err.Error())
+				c.logger.Error(err.Error())
 			}
 		}(httpResponse.Body)
 	}
@@ -441,14 +532,19 @@ func (c *eTradeClient) doRequest(method string, baseUrl string, queryValues url.
 		return nil, err
 	}
 
-	// Check the response for an error and return response bytes if none
+	// Return an auth failure if the status code is a 401
+	if httpResponse.StatusCode == http.StatusUnauthorized {
+		return nil, ErrETradeAuthFailed
+	}
+	// Return a failure if the status code is not 200
 	if httpResponse.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("request failed: %s", httpResponse.Status)
 	}
+	// Return the response bytes if no error
 	responseBytes, err := io.ReadAll(httpResponse.Body)
 	if err != nil {
 		return nil, err
 	}
-	c.Logger.Debug(string(responseBytes))
+	c.logger.Debug(string(responseBytes))
 	return responseBytes, nil
 }

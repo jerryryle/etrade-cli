@@ -1,9 +1,16 @@
 package client
 
 import (
+	"errors"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"time"
 )
+
+type AuthenticateFn func() (string, error)
+
+type VerifyFn func(verifyKey string) error
+
+type GetKeysFn func() (consumerKey string, consumerSecret string, accessToken string, accessSecret string)
 
 type ListAccountsFn func() ([]byte, error)
 
@@ -52,6 +59,9 @@ type ListOrdersFn func(
 ) ([]byte, error)
 
 type ETradeClientFake struct {
+	AuthenticateFn            AuthenticateFn
+	VerifyFn                  VerifyFn
+	GetKeysFn                 GetKeysFn
 	ListAccountsFn            ListAccountsFn
 	GetAccountBalancesFn      GetAccountBalancesFn
 	ListTransactionsFn        ListTransactionsFn
@@ -74,6 +84,32 @@ type ETradeClientFake struct {
 func NewClientFake(defaultJson string, defaultError error) ETradeClient {
 	clientFake := ETradeClientFake{defaultJson: []byte(defaultJson), defaultErr: defaultError}
 	return &clientFake
+}
+
+func (c *ETradeClientFake) Authenticate() (string, error) {
+	if c.AuthenticateFn != nil {
+		return c.AuthenticateFn()
+	} else {
+		return "", errors.New("the Authenticate() method is not implemented")
+	}
+}
+
+func (c *ETradeClientFake) Verify(verifyKey string) error {
+	if c.VerifyFn != nil {
+		return c.VerifyFn(verifyKey)
+	} else {
+		return errors.New("the Verify() method is not implemented")
+	}
+}
+
+func (c *ETradeClientFake) GetKeys() (
+	consumerKey string, consumerSecret string, accessToken string, accessSecret string,
+) {
+	if c.GetKeysFn != nil {
+		return c.GetKeysFn()
+	} else {
+		return "", "", "", ""
+	}
 }
 
 func (c *ETradeClientFake) ListAccounts() ([]byte, error) {
