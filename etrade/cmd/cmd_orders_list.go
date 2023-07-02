@@ -48,8 +48,8 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 				}
 			}
 			if response, err := ListOrders(
-				c.Context.Client, accountId, fromDate, toDate, symbols, c.flags.securityType.Value(),
-				c.flags.transactionType.Value(), c.flags.marketSession.Value(),
+				c.Context.Client, accountId, c.flags.status.Value(), fromDate, toDate, symbols,
+				c.flags.securityType.Value(), c.flags.transactionType.Value(), c.flags.marketSession.Value(),
 			); err == nil {
 				return c.Context.Renderer.Render(response, orderListDescriptor)
 			} else {
@@ -81,7 +81,7 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.status, "security-type", "c",
+		&c.flags.securityType, "security-type", "c",
 		fmt.Sprintf("security type (%s)", c.flags.securityType.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
@@ -92,7 +92,7 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.status, "transaction-type", "y",
+		&c.flags.transactionType, "transaction-type", "y",
 		fmt.Sprintf("transaction type (%s)", c.flags.transactionType.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
@@ -103,7 +103,7 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 	)
 
 	cmd.Flags().VarP(
-		&c.flags.status, "market-session", "m",
+		&c.flags.marketSession, "market-session", "m",
 		fmt.Sprintf("market session (%s)", c.flags.marketSession.JoinAllowedValues(", ")),
 	)
 	_ = cmd.RegisterFlagCompletionFunc(
@@ -206,30 +206,4 @@ var orderListDescriptor = []RenderDescriptor{
 		DefaultValue: "",
 		SpaceAfter:   false,
 	},
-}
-
-var orderStatusMap = map[string]enumValueWithHelp[constants.OrderStatus]{
-	"open":            {constants.OrderStatusOpen, "only open orders"},
-	"executed":        {constants.OrderStatusExecuted, "only executed orders"},
-	"canceled":        {constants.OrderStatusCanceled, "only canceled orders"},
-	"individualFills": {constants.OrderStatusIndividualFills, "only orders with individual fills"},
-	"cancelRequested": {constants.OrderStatusCancelRequested, "only cancel requested orders"},
-	"expired":         {constants.OrderStatusExpired, "only expired orders"},
-	"rejected":        {constants.OrderStatusRejected, "only rejected orders"},
-}
-
-var orderSecurityTypeMap = map[string]enumValueWithHelp[constants.OrderSecurityType]{
-	"equity":          {constants.OrderSecurityTypeEquity, "only equity orders"},
-	"option":          {constants.OrderSecurityTypeOption, "only option orders"},
-	"mutualFund":      {constants.OrderSecurityTypeMutualFund, "only mutual fund orders"},
-	"moneyMarketFund": {constants.OrderSecurityTypeMoneyMarketFund, "only money market fund orders"},
-}
-
-var orderTransactionTypeMap = map[string]enumValueWithHelp[constants.OrderTransactionType]{
-	"extendedHours":      {constants.OrderTransactionTypeExtendedHours, "only extended hours orders"},
-	"buy":                {constants.OrderTransactionTypeBuy, "only buy orders"},
-	"sell":               {constants.OrderTransactionTypeSell, "only sell orders"},
-	"short":              {constants.OrderTransactionTypeShort, "only short orders"},
-	"buyToCover":         {constants.OrderTransactionTypeBuyToCover, "only buy to cover orders"},
-	"mutualFundExchange": {constants.OrderTransactionTypeMutualFundExchange, "only mutual fund exchange orders"},
 }

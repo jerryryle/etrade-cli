@@ -32,7 +32,7 @@ func (c *CommandMarketOptionExpire) Command() *cobra.Command {
 	}
 
 	// Initialize Enum Flag Values
-	c.flags.expiryType = *newEnumFlagValue(expiryTypeMap, constants.OptionExpiryTypeNil)
+	c.flags.expiryType = *newEnumFlagValue(optionExpiryTypeMap, constants.OptionExpiryTypeNil)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
@@ -47,17 +47,6 @@ func (c *CommandMarketOptionExpire) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-var expiryTypeMap = map[string]enumValueWithHelp[constants.OptionExpiryType]{
-	"unspecified": {constants.OptionExpiryTypeUnspecified, "unspecified expiry type"},
-	"daily":       {constants.OptionExpiryTypeDaily, "daily expiry type"},
-	"weekly":      {constants.OptionExpiryTypeWeekly, "weekly expiry type"},
-	"monthly":     {constants.OptionExpiryTypeMonthly, "monthly expiry type"},
-	"quarterly":   {constants.OptionExpiryTypeQuarterly, "quarterly expiry type"},
-	"vix":         {constants.OptionExpiryTypeVix, "VIX expiry type"},
-	"all":         {constants.OptionExpiryTypeAll, "all expiry types"},
-	"monthEnd":    {constants.OptionExpiryTypeMonthEnd, "month-end expiry type"},
 }
 
 var optionExpireDatesDescriptor = []RenderDescriptor{

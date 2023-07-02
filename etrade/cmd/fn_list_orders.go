@@ -9,9 +9,9 @@ import (
 )
 
 func ListOrders(
-	eTradeClient client.ETradeClient, accountId string, fromDate *time.Time, toDate *time.Time, symbols []string,
-	securityType constants.OrderSecurityType, transactionType constants.OrderTransactionType,
-	marketSession constants.MarketSession,
+	eTradeClient client.ETradeClient, accountId string, status constants.OrderStatus, fromDate *time.Time,
+	toDate *time.Time, symbols []string, securityType constants.OrderSecurityType,
+	transactionType constants.OrderTransactionType, marketSession constants.MarketSession,
 ) (jsonmap.JsonMap, error) {
 	// This determines how many order items will be retrieved in each request.
 	// This should normally be set to the max for efficiency, but can be
@@ -23,7 +23,7 @@ func ListOrders(
 		return nil, err
 	}
 	response, err := eTradeClient.ListOrders(
-		account.GetIdKey(), "", countPerRequest, constants.OrderStatusNil, fromDate, toDate, symbols, securityType,
+		account.GetIdKey(), "", countPerRequest, status, fromDate, toDate, symbols, securityType,
 		transactionType, marketSession,
 	)
 	if err != nil {
@@ -36,7 +36,7 @@ func ListOrders(
 
 	for orderList.NextPage() != "" {
 		response, err = eTradeClient.ListOrders(
-			account.GetIdKey(), orderList.NextPage(), countPerRequest, constants.OrderStatusNil, fromDate, toDate,
+			account.GetIdKey(), orderList.NextPage(), countPerRequest, status, fromDate, toDate,
 			symbols, securityType, transactionType, marketSession,
 		)
 		if err != nil {

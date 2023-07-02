@@ -57,7 +57,7 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 	)
 
 	// Initialize Enum Flag Values
-	c.flags.detail = *newEnumFlagValue(detailMap, constants.QuoteDetailAll)
+	c.flags.detail = *newEnumFlagValue(quoteDetailMap, constants.QuoteDetailAll)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
@@ -72,15 +72,6 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-var detailMap = map[string]enumValueWithHelp[constants.QuoteDetailFlag]{
-	"all":         {constants.QuoteDetailAll, "get all details"},
-	"fundamental": {constants.QuoteDetailFundamental, "get fundamental details"},
-	"intraday":    {constants.QuoteDetailIntraday, "get intraday details"},
-	"options":     {constants.QuoteDetailOptions, "get options details"},
-	"week52":      {constants.QuoteDetailWeek52, "get 52-week details"},
-	"mutualFund":  {constants.QuoteDetailMutualFund, "get mutual fund details"},
 }
 
 var quoteListMessagesDescriptor = RenderDescriptor{

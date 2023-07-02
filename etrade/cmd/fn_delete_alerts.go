@@ -9,6 +9,7 @@ import (
 )
 
 func DeleteAlerts(eTradeClient client.ETradeClient, alertIds []string) (jsonmap.JsonMap, error) {
+	//TODO: Make this return status instead of listing alerts
 	_, err := eTradeClient.DeleteAlerts(alertIds)
 	if err != nil {
 		return nil, fmt.Errorf("requested Alert Id(s) may not exist (%w)", err)

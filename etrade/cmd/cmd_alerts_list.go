@@ -95,14 +95,3 @@ var alertListDescriptor = []RenderDescriptor{
 		SpaceAfter:   false,
 	},
 }
-
-var alertCategoryMap = map[string]enumValueWithHelp[constants.AlertCategory]{
-	"stock":   {constants.AlertCategoryStock, "only stock-related alerts"},
-	"account": {constants.AlertCategoryAccount, "only account-related alerts"},
-}
-
-var alertStatusMap = map[string]enumValueWithHelp[constants.AlertStatus]{
-	"read":    {constants.AlertStatusRead, "only read alerts"},
-	"unread":  {constants.AlertStatusUnread, "only unread alerts"},
-	"deleted": {constants.AlertStatusDeleted, "only deleted alerts"},
-}

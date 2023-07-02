@@ -51,8 +51,8 @@ func (c *CommandMarketOptionChains) Command() *cobra.Command {
 
 	// Initialize Enum Flag Values
 	c.flags.optionCategory = *newEnumFlagValue(optionCategoryMap, constants.OptionCategoryNil)
-	c.flags.chainType = *newEnumFlagValue(chainTypeMap, constants.OptionChainTypeNil)
-	c.flags.priceType = *newEnumFlagValue(priceTypeMap, constants.OptionPriceTypeNil)
+	c.flags.chainType = *newEnumFlagValue(optionChainTypeMap, constants.OptionChainTypeNil)
+	c.flags.priceType = *newEnumFlagValue(optionPriceTypeMap, constants.OptionPriceTypeNil)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
@@ -89,23 +89,6 @@ func (c *CommandMarketOptionChains) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-var optionCategoryMap = map[string]enumValueWithHelp[constants.OptionCategory]{
-	"standard": {constants.OptionCategoryStandard, "only standard options"},
-	"all":      {constants.OptionCategoryAll, "all options"},
-	"mini":     {constants.OptionCategoryMini, "only mini options"},
-}
-
-var chainTypeMap = map[string]enumValueWithHelp[constants.OptionChainType]{
-	"call":    {constants.OptionChainTypeCall, "only call options"},
-	"put":     {constants.OptionChainTypePut, "only put options"},
-	"callPut": {constants.OptionChainTypeCallPut, "call and put options"},
-}
-
-var priceTypeMap = map[string]enumValueWithHelp[constants.OptionPriceType]{
-	"extendedHours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
-	"all":           {constants.OptionPriceTypeAll, "all price types"},
 }
 
 var optionChainsDescriptor = []RenderDescriptor{
