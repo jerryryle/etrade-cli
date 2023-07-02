@@ -13,7 +13,7 @@ func main() {
 	rootCmd := (&cmd.RootCommand{}).Command()
 
 	if err := rootCmd.Execute(); err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, err)
+		_, _ = fmt.Fprintln(os.Stderr, cmd.AddErrorHelp(err))
 		os.Exit(1)
 	}
 	os.Exit(0)

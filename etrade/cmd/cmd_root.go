@@ -11,9 +11,11 @@ type RootCommand struct {
 
 func (c *RootCommand) Command() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "etrade",
-		Short: "E*TRADE CLI",
-		Long:  "E*TRADE Command Line Interface",
+		Use:           "etrade",
+		Short:         "E*TRADE CLI",
+		Long:          "E*TRADE Command Line Interface",
+		SilenceErrors: true,
+		SilenceUsage:  true,
 	}
 	// Add Global Flags
 	cmd.PersistentFlags().StringVar(&c.globalFlags.customerId, "customer-id", "", "customer identifier")

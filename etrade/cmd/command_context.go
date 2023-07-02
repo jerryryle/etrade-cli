@@ -4,10 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/session"
 	"golang.org/x/exp/slog"
 	"os"
-	"time"
 )
 
 type CommandContext struct {
@@ -125,27 +123,12 @@ func NewCommandContextWithClientFromFlags(flags *globalFlags) (*CommandContextWi
 		return nil, err
 	}
 
-	if flags.customerId == "" {
-		return nil, errors.New("customer id must be specified with --customer-id flag")
-	}
-	customerConfig, err := context.CustomerConfigurationStore.GetCustomerConfigurationById(flags.customerId)
-	if err != nil {
-		return nil, fmt.Errorf("customer id '%s' not found in config file", flags.customerId)
-	}
-	cacheFilePath := getFileCachePathForCustomer(context.ConfigurationFolder, customerConfig.CustomerConsumerKey)
-
-	// Create an ETrade client that's authorized for the customer
-	eTradeClient, err := createClientWithCredentialCache(
-		customerConfig.CustomerProduction,
-		customerConfig.CustomerConsumerKey,
-		customerConfig.CustomerConsumerSecret,
-		cacheFilePath,
-		context.Logger,
+	eTradeClient, err := NewETradeClientForCustomer(
+		flags.customerId, context.ConfigurationFolder, context.CustomerConfigurationStore, context.Logger,
 	)
 	if err != nil {
 		return nil, err
 	}
-
 	return &CommandContextWithClient{
 		Logger:   context.Logger,
 		Renderer: context.Renderer,
@@ -153,66 +136,33 @@ func NewCommandContextWithClientFromFlags(flags *globalFlags) (*CommandContextWi
 	}, nil
 }
 
-func (c *CommandContextWithClient) Close() error {
-	return c.Renderer.Close()
-}
-
-func createClientWithCredentialCache(
-	production bool, consumerKey string, consumerSecret string, cacheFilePath string, logger *slog.Logger,
+func NewETradeClientForCustomer(
+	customerId string, cfgFolder string, cfgStore *CustomerConfigurationStore, logger *slog.Logger,
 ) (client.ETradeClient, error) {
+	if customerId == "" {
+		return nil, errors.New("customer id must be specified with --customer-id flag")
+	}
+	customerConfig, err := cfgStore.GetCustomerConfigurationById(customerId)
+	if err != nil {
+		return nil, fmt.Errorf("customer id '%s' not found in config file", customerId)
+	}
+	cacheFilePath := getFileCachePathForCustomer(cfgFolder, customerConfig.CustomerConsumerKey)
+
+	// Try loading cached credentials
 	cachedCredentials, err := LoadCachedCredentialsFromFile(cacheFilePath, logger)
 	if err != nil {
-		// Create a new, empty credential cache. It will yield empty strings for the cached token, which
-		// will indicate that there are no cached credentials for this customer
+		// If loading cached credentials fails, then create a new, empty
+		// credential cache. It will yield empty strings for the cached token,
+		// which will indicate that there are no cached credentials for this
+		// customer.
 		cachedCredentials = &CachedCredentials{}
 	}
-
-	var eTradeClient client.ETradeClient
-	authSession, err := session.CreateSession(production, consumerKey, consumerSecret, logger)
-	if err != nil {
-		return nil, err
-	}
-	var accessToken = cachedCredentials.AccessToken
-	var accessSecret = cachedCredentials.AccessSecret
-
-	// Try renewing the session with the cached credentials. If they're empty
-	// or otherwise invalid, this will fail.
-	eTradeClient, err = authSession.Renew(accessToken, accessSecret)
-	if err != nil {
-		// Renewal failed, so start a new session.
-		authUrl, err := authSession.Begin()
-		if err != nil {
-			return nil, err
-		}
-		_, _ = fmt.Fprintf(os.Stderr, "Visit this URL to get a validation code:\n%s\n\n", authUrl)
-
-		// Prompt the user to visit the auth URL to get a validation code.
-		// Then wait for them to input the code.
-		var validationCode string
-		_, _ = fmt.Fprintf(os.Stderr, "Enter validation code: ")
-		_, err = fmt.Scanln(&validationCode)
-		if err != nil {
-			return nil, err
-		}
-		if validationCode == "" {
-			return nil, errors.New("no validation code provided")
-		}
-
-		// Verify the code.
-		eTradeClient, accessToken, accessSecret, err = authSession.Verify(validationCode)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// Store new or renewed credentials to the cache file.
-	err = SaveCachedCredentialsToFile(
-		cacheFilePath,
-		&CachedCredentials{accessToken, accessSecret, time.Now()},
-		logger,
+	return client.CreateETradeClient(
+		logger, customerConfig.CustomerProduction, customerConfig.CustomerConsumerKey,
+		customerConfig.CustomerConsumerSecret, cachedCredentials.AccessToken, cachedCredentials.AccessSecret,
 	)
-	if err != nil {
-		return nil, err
-	}
-	return eTradeClient, nil
+}
+
+func (c *CommandContextWithClient) Close() error {
+	return c.Renderer.Close()
 }
