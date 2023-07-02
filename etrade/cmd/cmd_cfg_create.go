@@ -41,8 +41,6 @@ func (c *CommandCfgCreate) Command(globalFlags *globalFlags) *cobra.Command {
 }
 
 func (c *CommandCfgCreate) CreateConfig() error {
-	cfgFilePath := getCfgFilePath(c.context.ConfigurationFolder)
-
 	defaultConfig := CustomerConfigurationStore{
 		customerConfigMap: map[string]CustomerConfiguration{
 			"CustomerId1": {
@@ -59,11 +57,13 @@ func (c *CommandCfgCreate) CreateConfig() error {
 			},
 		},
 	}
-	err := SaveCustomerConfigurationStoreToFile(cfgFilePath, c.flags.force, &defaultConfig, nil)
+	err := c.context.ConfigurationFolder.SaveCustomerConfiguration(
+		&defaultConfig, c.flags.force, c.context.Logger,
+	)
 	if err != nil {
 		return fmt.Errorf(
 			"Unable to create the default configuration file at %s (%w).\nThe file may already exist. To overwrite it, use the --force flag",
-			cfgFilePath, err,
+			c.context.ConfigurationFolder.GetConfigurationFilePath(), err,
 		)
 	}
 
@@ -71,7 +71,7 @@ func (c *CommandCfgCreate) CreateConfig() error {
 		"status": "success",
 		"message": fmt.Sprintf(
 			"Default configuration file successfully created at %s. Please update it with your customer information from ETrade.",
-			cfgFilePath,
+			c.context.ConfigurationFolder.GetConfigurationFilePath(),
 		),
 	}
 	if err := c.context.Renderer.Render(resultMap, cfgCreateDescriptor); err != nil {
