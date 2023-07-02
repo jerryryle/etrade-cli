@@ -11,6 +11,15 @@ type enumValueWithHelp[T comparable] struct {
 	Help  string
 }
 
+type EnumFlagValue interface {
+	String() string
+	Set(value string) error
+	Type() string
+	AllowedValues() []string
+	JoinAllowedValues(separator string) string
+	AllowedValuesWithHelp() []string
+}
+
 type enumFlagValue[T comparable] struct {
 	StringValue           string
 	EnumValue             T
@@ -27,6 +36,7 @@ func newEnumFlagValue[T comparable](
 	allowedValues := make([]string, 0, len(valueMap))
 	allowedValuesWithHelp := make([]string, 0, len(valueMap))
 
+	// TODO: Don't build help in this function. Do it dynamically when needed.
 	for k, v := range valueMap {
 		// Add the value to the list of allowed values
 		allowedValues = append(allowedValues, k)
