@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 )
 
@@ -22,32 +21,16 @@ func (c *CommandAccountsBalances) Command() *cobra.Command {
 		Long:  "Get account balances",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.GetAccountBalances(args[0])
+			accountId := args[0]
+			if response, err := GetAccountBalances(c.Context.Client, accountId, c.flags.realTimeBalance); err == nil {
+				return c.Context.Renderer.Render(response, balancesDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	cmd.Flags().BoolVarP(&c.flags.realTimeBalance, "realtime-balance", "r", true, "return real time balance")
 	return cmd
-}
-
-func (c *CommandAccountsBalances) GetAccountBalances(accountId string) error {
-	account, err := GetAccountById(c.Context.Client, accountId)
-	if err != nil {
-		return err
-	}
-
-	response, err := c.Context.Client.GetAccountBalances(account.GetIdKey(), c.flags.realTimeBalance)
-	if err != nil {
-		return err
-	}
-	balances, err := etradelib.CreateETradeBalancesFromResponse(response)
-	if err != nil {
-		return err
-	}
-	err = c.Context.Renderer.Render(balances.AsJsonMap(), balancesDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var balancesDescriptor = []RenderDescriptor{

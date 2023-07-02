@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 )
 
@@ -16,27 +15,16 @@ func (c *CommandAccountsTransactionsDetails) Command() *cobra.Command {
 		Long:  "List transaction details",
 		Args:  cobra.MatchAll(cobra.ExactArgs(2)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.ListTransactionDetails(args[0], args[1])
+			accountId := args[0]
+			transactionId := args[1]
+			if response, err := ListTransactionDetails(c.Context.Client, accountId, transactionId); err == nil {
+				return c.Context.Renderer.Render(response, transactionDetailsDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	return cmd
-}
-
-func (c *CommandAccountsTransactionsDetails) ListTransactionDetails(accountId string, transactionId string) error {
-	account, err := GetAccountById(c.Context.Client, accountId)
-	if err != nil {
-		return err
-	}
-	response, err := c.Context.Client.ListTransactionDetails(account.GetIdKey(), transactionId)
-	if err != nil {
-		return err
-	}
-	transactionDetails, err := etradelib.CreateETradeTransactionDetailsFromResponse(response)
-	err = c.Context.Renderer.Render(transactionDetails.AsJsonMap(), transactionDetailsDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var transactionDetailsDescriptor = []RenderDescriptor{

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -26,7 +25,15 @@ func (c *CommandAlertsList) Command() *cobra.Command {
 		Short: "List alerts",
 		Long:  "List all alerts for the current customer",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.ListAlerts()
+			if response, err := ListAlerts(
+				c.Context.Client, c.flags.count, c.flags.category.Value(), c.flags.status.Value(),
+				c.flags.sortOrder.Value(),
+				c.flags.search,
+			); err == nil {
+				return c.Context.Renderer.Render(response, alertListDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	// Add Flags
@@ -73,24 +80,6 @@ func (c *CommandAlertsList) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-func (c *CommandAlertsList) ListAlerts() error {
-	response, err := c.Context.Client.ListAlerts(
-		c.flags.count, c.flags.category.Value(), c.flags.status.Value(), c.flags.sortOrder.Value(), c.flags.search,
-	)
-	if err != nil {
-		return err
-	}
-	alertsList, err := etradelib.CreateETradeAlertListFromResponse(response)
-	if err != nil {
-		return err
-	}
-	err = c.Context.Renderer.Render(alertsList.AsJsonMap(), alertListDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var alertListDescriptor = []RenderDescriptor{

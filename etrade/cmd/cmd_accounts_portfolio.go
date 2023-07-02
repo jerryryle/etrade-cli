@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +27,27 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 		Long:  "View Portfolio",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.ViewPortfolio(args[0])
+			accountId := args[0]
+			if response, err := ViewPortfolio(
+				c.Context.Client, accountId, c.flags.sortBy.Value(), c.flags.sortOrder.Value(),
+				c.flags.marketSession.Value(),
+				c.flags.totalsRequired, c.flags.portfolioView.Value(), c.flags.withLots,
+			); err == nil {
+				renderDescriptor := GetQuickViewRenderDescriptor(c.flags.withLots)
+				switch c.flags.portfolioView.Value() {
+				case constants.PortfolioViewPerformance:
+					renderDescriptor = GetPerformanceViewRenderDescriptor(c.flags.withLots)
+				case constants.PortfolioViewFundamental:
+					renderDescriptor = GetFundamentalViewRenderDescriptor(c.flags.withLots)
+				case constants.PortfolioViewOptionsWatch:
+					renderDescriptor = GetOptionsWatchViewRenderDescriptor(c.flags.withLots)
+				case constants.PortfolioViewComplete:
+					renderDescriptor = GetCompleteViewRenderDescriptor(c.flags.withLots)
+				}
+				return c.Context.Renderer.Render(response, renderDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 
@@ -88,78 +107,6 @@ func (c *CommandAccountsPortfolio) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-func (c *CommandAccountsPortfolio) ViewPortfolio(accountId string) error {
-	// This determines how many portfolio items will be retrieved in each
-	// request. This should normally be set to the max for efficiency, but can
-	// be lowered to test the pagination logic.
-	const countPerRequest = constants.PortfolioMaxCount
-
-	account, err := GetAccountById(c.Context.Client, accountId)
-	if err != nil {
-		return err
-	}
-
-	response, err := c.Context.Client.ViewPortfolio(
-		account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(), "",
-		c.flags.marketSession.Value(),
-		c.flags.totalsRequired, true, c.flags.portfolioView.Value(),
-	)
-	if err != nil {
-		return err
-	}
-
-	positionList, err := etradelib.CreateETradePositionListFromResponse(response)
-	if err != nil {
-		return err
-	}
-
-	for positionList.NextPage() != "" {
-		response, err = c.Context.Client.ViewPortfolio(
-			account.GetIdKey(), countPerRequest, c.flags.sortBy.Value(), c.flags.sortOrder.Value(),
-			positionList.NextPage(),
-			c.flags.marketSession.Value(), c.flags.totalsRequired, true, c.flags.portfolioView.Value(),
-		)
-		if err != nil {
-			return err
-		}
-		err = positionList.AddPageFromResponse(response)
-		if err != nil {
-			return err
-		}
-	}
-
-	if c.flags.withLots {
-		for _, position := range positionList.GetAllPositions() {
-			response, err = c.Context.Client.ListPositionLotsDetails(account.GetIdKey(), position.GetId())
-			if err != nil {
-				return err
-			}
-			err = position.AddLotsFromResponse(response)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	renderDescriptor := GetQuickViewRenderDescriptor(c.flags.withLots)
-	switch c.flags.portfolioView.Value() {
-	case constants.PortfolioViewPerformance:
-		renderDescriptor = GetPerformanceViewRenderDescriptor(c.flags.withLots)
-	case constants.PortfolioViewFundamental:
-		renderDescriptor = GetFundamentalViewRenderDescriptor(c.flags.withLots)
-	case constants.PortfolioViewOptionsWatch:
-		renderDescriptor = GetOptionsWatchViewRenderDescriptor(c.flags.withLots)
-	case constants.PortfolioViewComplete:
-		renderDescriptor = GetCompleteViewRenderDescriptor(c.flags.withLots)
-	}
-
-	err = c.Context.Renderer.Render(positionList.AsJsonMap(), renderDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var totalsRenderDescriptor = RenderDescriptor{

@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 	"time"
@@ -31,22 +30,31 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 		Long:  "List orders (with optional list of symbols to filter on)",
 		Args:  cobra.MatchAll(cobra.RangeArgs(1, 26)),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			accountId := args[0]
+			symbols := args[1:]
 			var fromDate, toDate *time.Time = nil, nil
-			var err error
 			if c.flags.fromDate != "" {
+				var err error
 				*fromDate, err = time.Parse("01022006", c.flags.fromDate)
 				if err != nil {
 					return errors.New("from date must be in format MMDDYYYY")
 				}
 			}
 			if c.flags.toDate != "" {
+				var err error
 				*toDate, err = time.Parse("01022006", c.flags.toDate)
 				if err != nil {
 					return errors.New("to date must be in format MMDDYYYY")
 				}
 			}
-
-			return c.ListOrders(args[0], fromDate, toDate, args[1:])
+			if response, err := ListOrders(
+				c.Context.Client, accountId, fromDate, toDate, symbols, c.flags.securityType.Value(),
+				c.flags.transactionType.Value(), c.flags.marketSession.Value(),
+			); err == nil {
+				return c.Context.Renderer.Render(response, orderListDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 
@@ -106,53 +114,6 @@ func (c *CommandOrdersList) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-func (c *CommandOrdersList) ListOrders(
-	accountId string, fromDate *time.Time, toDate *time.Time, symbols []string,
-) error {
-	// This determines how many order items will be retrieved in each request.
-	// This should normally be set to the max for efficiency, but can be
-	// lowered to test the pagination logic.
-	const countPerRequest = constants.OrdersMaxCount
-
-	account, err := GetAccountById(c.Context.Client, accountId)
-	if err != nil {
-		return err
-	}
-
-	response, err := c.Context.Client.ListOrders(
-		account.GetIdKey(), "", countPerRequest, constants.OrderStatusNil, fromDate, toDate, symbols,
-		c.flags.securityType.Value(), c.flags.transactionType.Value(), c.flags.marketSession.Value(),
-	)
-	if err != nil {
-		return err
-	}
-
-	orderList, err := etradelib.CreateETradeOrderListFromResponse(response)
-	if err != nil {
-		return err
-	}
-
-	for orderList.NextPage() != "" {
-		response, err = c.Context.Client.ListOrders(
-			account.GetIdKey(), orderList.NextPage(), countPerRequest, constants.OrderStatusNil, fromDate, toDate,
-			symbols, c.flags.securityType.Value(), c.flags.transactionType.Value(), c.flags.marketSession.Value(),
-		)
-		if err != nil {
-			return err
-		}
-		err = orderList.AddPageFromResponse(response)
-		if err != nil {
-			return err
-		}
-	}
-
-	err = c.Context.Renderer.Render(orderList.AsJsonMap(), orderListDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var orderListDescriptor = []RenderDescriptor{
