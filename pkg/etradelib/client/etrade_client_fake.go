@@ -1,14 +1,13 @@
 package client
 
 import (
-	"errors"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"time"
 )
 
-type AuthenticateFn func() (string, error)
+type AuthenticateFn func() ([]byte, error)
 
-type VerifyFn func(verifyKey string) error
+type VerifyFn func(verifyKey string) ([]byte, error)
 
 type GetKeysFn func() (consumerKey string, consumerSecret string, accessToken string, accessSecret string)
 
@@ -86,19 +85,19 @@ func NewClientFake(defaultJson string, defaultError error) ETradeClient {
 	return &clientFake
 }
 
-func (c *ETradeClientFake) Authenticate() (string, error) {
+func (c *ETradeClientFake) Authenticate() ([]byte, error) {
 	if c.AuthenticateFn != nil {
 		return c.AuthenticateFn()
 	} else {
-		return "", errors.New("the Authenticate() method is not implemented")
+		return c.defaultJson, c.defaultErr
 	}
 }
 
-func (c *ETradeClientFake) Verify(verifyKey string) error {
+func (c *ETradeClientFake) Verify(verifyKey string) ([]byte, error) {
 	if c.VerifyFn != nil {
 		return c.VerifyFn(verifyKey)
 	} else {
-		return errors.New("the Verify() method is not implemented")
+		return c.defaultJson, c.defaultErr
 	}
 }
 

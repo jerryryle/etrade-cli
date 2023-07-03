@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/go-chi/chi/v5"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
@@ -123,37 +124,53 @@ func (s *eTradeServer) Login(w http.ResponseWriter, r *http.Request) {
 
 	if !r.Form.Has("verifyCode") {
 		// If the form does not include "verifyCode" then begin authentication.
-		if authUrl, err := eTradeClient.Authenticate(); err != nil {
-			// Authentication failed. Respond with the error.
+		response, err := eTradeClient.Authenticate()
+		if err != nil {
 			s.WriteError(w, err)
 			return
-		} else {
-			if authUrl != "" {
-				// Authentication succeeded, but a verification code is needed.
-				// Respond with the URL for getting the code.
-				s.WriteJsonMap(w, NewStatusResponseMap("verify", "verifyUrl", authUrl))
-				return
+		}
+		authStatus, err := etradelib.CreateETradeAuthenticationStatusFromResponse(response)
+		if err != nil {
+			s.WriteError(w, err)
+			return
+		}
+		if !authStatus.NeedAuthorization() {
+			// Authentication has succeeded, so update the credential cache
+			consumerKey, _, accessToken, accessSecret := eTradeClient.GetKeys()
+			if err = s.cfgFolder.SaveCachedCredentialsToFile(
+				consumerKey, &CachedCredentials{accessToken, accessSecret, time.Now()}, s.logger,
+			); err != nil {
+				s.logger.Error(err.Error())
 			}
 		}
+		// Respond with the authentication status. If authentication requires
+		// authorization, then this status will contain the authorization URL.
+		s.WriteJsonMap(w, authStatus.AsJsonMap())
+		return
 	} else {
 		// If the form does not include "verifyCode" then perform verification.
-		if err = eTradeClient.Verify(r.Form.Get("verifyCode")); err != nil {
+		response, err := eTradeClient.Verify(r.Form.Get("verifyCode"))
+		if err != nil {
 			// Verification failed. Respond with the error.
 			s.WriteError(w, err)
 			return
 		}
-	}
+		verifyStatus, err := etradelib.CreateETradeStatusFromResponse(response)
+		if err != nil {
+			s.WriteError(w, err)
+			return
+		}
 
-	// If we get here, then authentication has succeeded.
-	// Update the credential cache
-	consumerKey, _, accessToken, accessSecret := eTradeClient.GetKeys()
-	if err = s.cfgFolder.SaveCachedCredentialsToFile(
-		consumerKey, &CachedCredentials{accessToken, accessSecret, time.Now()}, s.logger,
-	); err != nil {
-		s.logger.Error(err.Error())
+		// Verification has succeeded, so update the credential cache
+		consumerKey, _, accessToken, accessSecret := eTradeClient.GetKeys()
+		if err = s.cfgFolder.SaveCachedCredentialsToFile(
+			consumerKey, &CachedCredentials{accessToken, accessSecret, time.Now()}, s.logger,
+		); err != nil {
+			s.logger.Error(err.Error())
+		}
+		// Respond with the verification status.
+		s.WriteJsonMap(w, verifyStatus.AsJsonMap())
 	}
-	// Authentication succeeded. Respond with success.
-	s.WriteJsonMap(w, NewStatusResponseMap("success"))
 }
 
 func (s *eTradeServer) Logout(w http.ResponseWriter, r *http.Request) {
@@ -456,7 +473,7 @@ func (s *eTradeServer) WriteJsonMap(w http.ResponseWriter, jsonMap jsonmap.JsonM
 
 func (s *eTradeServer) WriteError(w http.ResponseWriter, err error) {
 	s.logger.Error(err.Error())
-	responseMap := NewStatusResponseMap("error", "error", err.Error())
+	responseMap := client.NewStatusMap("error", "error", err.Error())
 	responseBytes, err := responseMap.ToJsonBytes(false, false)
 	if err != nil {
 		s.logger.Error(err.Error())
@@ -468,21 +485,6 @@ func (s *eTradeServer) WriteError(w http.ResponseWriter, err error) {
 	if _, err = w.Write(responseBytes); err != nil {
 		s.logger.Error(err.Error())
 	}
-}
-
-func NewStatusResponseMap(status string, keysAndValues ...string) jsonmap.JsonMap {
-	responseMap := jsonmap.JsonMap{
-		"status": status,
-	}
-	if len(keysAndValues)%2 == 0 {
-		for i := 0; i < len(keysAndValues); i += 2 {
-			key := keysAndValues[i]
-			value := keysAndValues[i+1]
-			_ = responseMap.SetString(key, value)
-		}
-	}
-
-	return responseMap
 }
 
 func getStringWithDefaultFromValues(v url.Values, key string, defaultValue string) string {
