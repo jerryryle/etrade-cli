@@ -12,9 +12,9 @@ type eTradeQuote struct {
 	jsonMap jsonmap.JsonMap
 }
 
-func CreateETradeQuote(lookupJsonMap jsonmap.JsonMap) (ETradeQuote, error) {
+func CreateETradeQuote(responseMap jsonmap.JsonMap) (ETradeQuote, error) {
 	return &eTradeQuote{
-		jsonMap: lookupJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

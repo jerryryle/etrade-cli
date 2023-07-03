@@ -47,8 +47,8 @@ func CreateETradeOptionExpireDateListFromResponse(response []byte) (ETradeOption
 	return CreateETradeOptionExpireDateList(responseMap)
 }
 
-func CreateETradeOptionExpireDateList(lookupListResponseMap jsonmap.JsonMap) (ETradeOptionExpireDateList, error) {
-	optionExpireDatesSlice, err := lookupListResponseMap.GetSliceOfMapsAtPath(optionExpireDateListOptionExpireDatesResponsePath)
+func CreateETradeOptionExpireDateList(responseMap jsonmap.JsonMap) (ETradeOptionExpireDateList, error) {
+	optionExpireDatesSlice, err := responseMap.GetSliceOfMapsAtPath(optionExpireDateListOptionExpireDatesResponsePath)
 	if err != nil {
 		return nil, err
 	}

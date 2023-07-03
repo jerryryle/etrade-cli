@@ -23,15 +23,15 @@ const (
 	orderOrderIdResponseKey = "orderId"
 )
 
-func CreateETradeOrder(orderJsonMap jsonmap.JsonMap) (ETradeOrder, error) {
-	orderId, err := orderJsonMap.GetInt(orderOrderIdResponseKey)
+func CreateETradeOrder(responseMap jsonmap.JsonMap) (ETradeOrder, error) {
+	orderId, err := responseMap.GetInt(orderOrderIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeOrder{
 		id:      orderId,
-		jsonMap: orderJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

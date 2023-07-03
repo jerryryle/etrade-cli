@@ -23,15 +23,15 @@ const (
 	transactionTransactionIdResponseKey = "transactionId"
 )
 
-func CreateETradeTransaction(transactionJsonMap jsonmap.JsonMap) (ETradeTransaction, error) {
-	transactionId, err := transactionJsonMap.GetString(transactionTransactionIdResponseKey)
+func CreateETradeTransaction(responseMap jsonmap.JsonMap) (ETradeTransaction, error) {
+	transactionId, err := responseMap.GetString(transactionTransactionIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeTransaction{
 		id:      transactionId,
-		jsonMap: transactionJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

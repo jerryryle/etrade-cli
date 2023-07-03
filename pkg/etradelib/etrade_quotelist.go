@@ -66,8 +66,8 @@ func CreateETradeQuoteListFromResponse(response []byte) (ETradeQuoteList, error)
 	return CreateETradeQuoteList(responseMap)
 }
 
-func CreateETradeQuoteList(lookupListResponseMap jsonmap.JsonMap) (ETradeQuoteList, error) {
-	quotesSlice, err := lookupListResponseMap.GetSliceOfMapsAtPathWithDefault(quoteListQuotesResponsePath, nil)
+func CreateETradeQuoteList(responseMap jsonmap.JsonMap) (ETradeQuoteList, error) {
+	quotesSlice, err := responseMap.GetSliceOfMapsAtPathWithDefault(quoteListQuotesResponsePath, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func CreateETradeQuoteList(lookupListResponseMap jsonmap.JsonMap) (ETradeQuoteLi
 		allQuotes = append(allQuotes, quote)
 	}
 
-	messagesSlice, err := lookupListResponseMap.GetSliceAtPathWithDefault(quoteListMessagesResponsePath, nil)
+	messagesSlice, err := responseMap.GetSliceAtPathWithDefault(quoteListMessagesResponsePath, nil)
 	if err != nil {
 		return nil, err
 	}

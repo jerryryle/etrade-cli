@@ -6,7 +6,7 @@ type ETradeTransactionList interface {
 	GetAllTransactions() []ETradeTransaction
 	GetTransactionById(transactionID string) ETradeTransaction
 	NextPage() string
-	AddPage(transactionListResponseMap jsonmap.JsonMap) error
+	AddPage(responseMap jsonmap.JsonMap) error
 	AddPageFromResponse(response []byte) error
 	AsJsonMap() jsonmap.JsonMap
 }
@@ -57,13 +57,13 @@ func CreateETradeTransactionListFromResponse(response []byte) (
 	return CreateETradeTransactionList(responseMap)
 }
 
-func CreateETradeTransactionList(transactionListResponseMap jsonmap.JsonMap) (ETradeTransactionList, error) {
+func CreateETradeTransactionList(responseMap jsonmap.JsonMap) (ETradeTransactionList, error) {
 	// Create a new orderList with everything initialized to its zero value.
 	transactionList := eTradeTransactionList{
 		transactions: []ETradeTransaction{},
 		nextPage:     "",
 	}
-	err := transactionList.AddPage(transactionListResponseMap)
+	err := transactionList.AddPage(responseMap)
 	if err != nil {
 		return nil, err
 	}
@@ -95,15 +95,15 @@ func (e *eTradeTransactionList) AddPageFromResponse(response []byte) error {
 	return e.AddPage(responseMap)
 }
 
-func (e *eTradeTransactionList) AddPage(transactionListResponseMap jsonmap.JsonMap) error {
-	transactionsSlice, err := transactionListResponseMap.GetSliceOfMapsAtPath(transactionsListTransactionsResponsePath)
+func (e *eTradeTransactionList) AddPage(responseMap jsonmap.JsonMap) error {
+	transactionsSlice, err := responseMap.GetSliceOfMapsAtPath(transactionsListTransactionsResponsePath)
 	if err != nil {
 		return err
 	}
 
 	// the marker key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
-	nextPage, _ := transactionListResponseMap.GetStringAtPath(transactionsListMarkerResponsePath)
+	nextPage, _ := responseMap.GetStringAtPath(transactionsListMarkerResponsePath)
 
 	allTransactions := make([]ETradeTransaction, 0, len(transactionsSlice))
 	for _, transactionJsonMap := range transactionsSlice {

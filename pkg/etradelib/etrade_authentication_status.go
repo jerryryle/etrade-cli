@@ -23,11 +23,12 @@ const (
 	//   "verifyUrl": "<verify URL>" (if status=="verify")
 	// }
 
-	// authenticationStatusStatusKey is the status key
-	authenticationStatusStatusKey = "status"
+	// authenticationStatusStatusResponseKey is the status key
+	authenticationStatusStatusResponseKey = "status"
 
-	// authenticationStatusAuthorizationUrlKey is the authorization URL key
-	authenticationStatusAuthorizationUrlKey = "authorizationUrl"
+	// authenticationStatusAuthorizationUrlResponseKey is the authorization
+	// URL key
+	authenticationStatusAuthorizationUrlResponseKey = "authorizationUrl"
 )
 
 func CreateETradeAuthenticationStatusFromResponse(response []byte) (ETradeAuthenticationStatus, error) {
@@ -38,17 +39,17 @@ func CreateETradeAuthenticationStatusFromResponse(response []byte) (ETradeAuthen
 	return CreateETradeAuthenticationStatus(responseMap)
 }
 
-func CreateETradeAuthenticationStatus(authenticationStatusResponseMap jsonmap.JsonMap) (
+func CreateETradeAuthenticationStatus(responseMap jsonmap.JsonMap) (
 	ETradeAuthenticationStatus, error,
 ) {
-	status, err := authenticationStatusResponseMap.GetString(authenticationStatusStatusKey)
+	status, err := responseMap.GetString(authenticationStatusStatusResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	authorizationUrl := ""
 	if status == "authorize" {
-		if authorizationUrl, err = authenticationStatusResponseMap.GetString(authenticationStatusAuthorizationUrlKey); err != nil {
+		if authorizationUrl, err = responseMap.GetString(authenticationStatusAuthorizationUrlResponseKey); err != nil {
 			return nil, err
 		}
 	} else if status != "success" {
@@ -56,7 +57,7 @@ func CreateETradeAuthenticationStatus(authenticationStatusResponseMap jsonmap.Js
 	}
 
 	return &eTradeAuthenticationStatus{
-		authorizationUrl: authorizationUrl, jsonMap: authenticationStatusResponseMap,
+		authorizationUrl: authorizationUrl, jsonMap: responseMap,
 	}, nil
 }
 

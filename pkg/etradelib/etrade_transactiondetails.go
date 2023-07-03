@@ -37,22 +37,22 @@ func CreateETradeTransactionDetailsFromResponse(response []byte) (ETradeTransact
 	return CreateETradeTransactionDetails(responseMap)
 }
 
-func CreateETradeTransactionDetails(transactionDetailsJsonMap jsonmap.JsonMap) (ETradeTransactionDetails, error) {
+func CreateETradeTransactionDetails(responseMap jsonmap.JsonMap) (ETradeTransactionDetails, error) {
 	var err error
 	// Flatten the response by removing the "transactionDetailsResponse" level
-	transactionDetailsJsonMap, err = transactionDetailsJsonMap.GetMap(transactionDetailsTransactionDetailsResponseKey)
+	responseMap, err = responseMap.GetMap(transactionDetailsTransactionDetailsResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
-	transactionId, err := transactionDetailsJsonMap.GetInt(transactionDetailsTransactionIdResponseKey)
+	transactionId, err := responseMap.GetInt(transactionDetailsTransactionIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeTransactionDetails{
 		id:      transactionId,
-		jsonMap: transactionDetailsJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

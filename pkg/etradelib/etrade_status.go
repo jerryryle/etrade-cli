@@ -24,11 +24,11 @@ const (
 	//   "error": "<error message>" (if status=="error")
 	// }
 
-	// statusStatusKey is the status key
-	statusStatusKey = "status"
+	// statusStatusResponseKey is the status key
+	statusStatusResponseKey = "status"
 
-	// statusErrorKey is the error key
-	statusErrorKey = "error"
+	// statusErrorResponseKey is the error key
+	statusErrorResponseKey = "error"
 )
 
 func CreateETradeStatusFromResponse(response []byte) (ETradeStatus, error) {
@@ -39,10 +39,10 @@ func CreateETradeStatusFromResponse(response []byte) (ETradeStatus, error) {
 	return CreateETradeStatus(responseMap)
 }
 
-func CreateETradeStatus(statusResponseMap jsonmap.JsonMap) (
+func CreateETradeStatus(responseMap jsonmap.JsonMap) (
 	ETradeStatus, error,
 ) {
-	status, err := statusResponseMap.GetString(statusStatusKey)
+	status, err := responseMap.GetString(statusStatusResponseKey)
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func CreateETradeStatus(statusResponseMap jsonmap.JsonMap) (
 		isSuccess = true
 	case "error":
 		isSuccess = false
-		if errorMessage, err = statusResponseMap.GetString(statusErrorKey); err != nil {
+		if errorMessage, err = responseMap.GetString(statusErrorResponseKey); err != nil {
 			return nil, err
 		}
 	default:
@@ -64,7 +64,7 @@ func CreateETradeStatus(statusResponseMap jsonmap.JsonMap) (
 	return &eTradeStatus{
 		isSuccess:    isSuccess,
 		errorMessage: errorMessage,
-		jsonMap:      statusResponseMap,
+		jsonMap:      responseMap,
 	}, nil
 }
 
