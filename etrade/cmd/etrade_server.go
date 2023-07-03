@@ -202,35 +202,22 @@ func (s *eTradeServer) ViewPortfolio(w http.ResponseWriter, r *http.Request) {
 
 	withLots := getBoolWithDefaultFromValues(r.URL.Query(), "withLots", false)
 	totalsRequired := getBoolWithDefaultFromValues(r.URL.Query(), "totalsRequired", true)
-
-	portfolioView := *newEnumFlagValue(portfolioViewMap, constants.PortfolioViewQuick)
-	if err := setEnumFlagFromValues(&portfolioView, r.URL.Query(), "view"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	sortBy := *newEnumFlagValue(portfolioSortByMap, constants.PortfolioSortByNil)
-	if err := setEnumFlagFromValues(&sortBy, r.URL.Query(), "sortBy"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	sortOrder := *newEnumFlagValue(sortOrderMap, constants.SortOrderNil)
-	if err := setEnumFlagFromValues(&sortOrder, r.URL.Query(), "sortOrder"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	marketSession := *newEnumFlagValue(marketSessionMap, constants.MarketSessionNil)
-	if err := setEnumFlagFromValues(&marketSession, r.URL.Query(), "marketSession"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
+	portfolioView := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "view", portfolioViewMap, constants.PortfolioViewQuick,
+	)
+	sortBy := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "sortBy", portfolioSortByMap, constants.PortfolioSortByNil,
+	)
+	sortOrder := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "sortOrder", sortOrderMap, constants.SortOrderNil,
+	)
+	marketSession := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "marketSession", marketSessionMap, constants.MarketSessionNil,
+	)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
 		if response, err := ViewPortfolio(
-			eTradeClient, accountId, sortBy.Value(), sortOrder.Value(), marketSession.Value(), totalsRequired,
-			portfolioView.Value(), withLots,
+			eTradeClient, accountId, sortBy, sortOrder, marketSession, totalsRequired, portfolioView, withLots,
 		); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
@@ -246,17 +233,10 @@ func (s *eTradeServer) ListTransactions(w http.ResponseWriter, r *http.Request) 
 
 	startDate := getDateWithDefaultFromValues(r.URL.Query(), "startDate", "01022006", nil)
 	endDate := getDateWithDefaultFromValues(r.URL.Query(), "endDate", "01022006", nil)
-
-	sortOrder := *newEnumFlagValue(sortOrderMap, constants.SortOrderNil)
-	if err := setEnumFlagFromValues(&sortOrder, r.URL.Query(), "sortOrder"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
+	sortOrder := getEnumFlagWithDefaultFromValues(r.URL.Query(), "sortOrder", sortOrderMap, constants.SortOrderNil)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
-		if response, err := ListTransactions(
-			eTradeClient, accountId, startDate, endDate, sortOrder.Value(),
-		); err == nil {
+		if response, err := ListTransactions(eTradeClient, accountId, startDate, endDate, sortOrder); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
 			s.WriteError(w, err)
@@ -287,35 +267,20 @@ func (s *eTradeServer) ListOrders(w http.ResponseWriter, r *http.Request) {
 
 	fromDate := getDateWithDefaultFromValues(r.URL.Query(), "fromDate", "01022006", nil)
 	toDate := getDateWithDefaultFromValues(r.URL.Query(), "toDate", "01022006", nil)
-
-	status := *newEnumFlagValue(orderStatusMap, constants.OrderStatusNil)
-	if err := setEnumFlagFromValues(&status, r.URL.Query(), "status"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	securityType := *newEnumFlagValue(orderSecurityTypeMap, constants.OrderSecurityTypeNil)
-	if err := setEnumFlagFromValues(&securityType, r.URL.Query(), "securityType"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	transactionType := *newEnumFlagValue(orderTransactionTypeMap, constants.OrderTransactionTypeNil)
-	if err := setEnumFlagFromValues(&transactionType, r.URL.Query(), "transactionType"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	marketSession := *newEnumFlagValue(marketSessionMap, constants.MarketSessionNil)
-	if err := setEnumFlagFromValues(&marketSession, r.URL.Query(), "marketSession"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
+	status := getEnumFlagWithDefaultFromValues(r.URL.Query(), "status", orderStatusMap, constants.OrderStatusNil)
+	securityType := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "securityType", orderSecurityTypeMap, constants.OrderSecurityTypeNil,
+	)
+	transactionType := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "transactionType", orderTransactionTypeMap, constants.OrderTransactionTypeNil,
+	)
+	marketSession := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "marketSession", marketSessionMap, constants.MarketSessionNil,
+	)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
 		if response, err := ListOrders(
-			eTradeClient, accountId, status.Value(), fromDate, toDate, symbols, securityType.Value(),
-			transactionType.Value(), marketSession.Value(),
+			eTradeClient, accountId, status, fromDate, toDate, symbols, securityType, transactionType, marketSession,
 		); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
@@ -329,29 +294,18 @@ func (s *eTradeServer) ListOrders(w http.ResponseWriter, r *http.Request) {
 func (s *eTradeServer) ListAlerts(w http.ResponseWriter, r *http.Request) {
 	count := getIntWithDefaultFromValues(r.URL.Query(), "search", -1)
 	search := getStringWithDefaultFromValues(r.URL.Query(), "search", "")
-
-	category := *newEnumFlagValue(alertCategoryMap, constants.AlertCategoryNil)
-	if err := setEnumFlagFromValues(&category, r.URL.Query(), "category"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	status := *newEnumFlagValue(alertStatusMap, constants.AlertStatusNil)
-	if err := setEnumFlagFromValues(&status, r.URL.Query(), "status"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	sortOrder := *newEnumFlagValue(sortOrderMap, constants.SortOrderNil)
-	if err := setEnumFlagFromValues(&sortOrder, r.URL.Query(), "sortOrder"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
+	category := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "category", alertCategoryMap, constants.AlertCategoryNil,
+	)
+	status := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "status", alertStatusMap, constants.AlertStatusNil,
+	)
+	sortOrder := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "sortOrder", sortOrderMap, constants.SortOrderNil,
+	)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
-		if response, err := ListAlerts(
-			eTradeClient, count, category.Value(), status.Value(), sortOrder.Value(), search,
-		); err == nil {
+		if response, err := ListAlerts(eTradeClient, count, category, status, sortOrder, search); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
 			s.WriteError(w, err)
@@ -410,18 +364,13 @@ func (s *eTradeServer) Lookup(w http.ResponseWriter, r *http.Request) {
 func (s *eTradeServer) GetQuote(w http.ResponseWriter, r *http.Request) {
 	symbols := r.URL.Query()["symbol"]
 
-	detail := *newEnumFlagValue(quoteDetailMap, constants.QuoteDetailAll)
-	if err := setEnumFlagFromValues(&detail, r.URL.Query(), "detail"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
+	detail := getEnumFlagWithDefaultFromValues(r.URL.Query(), "detail", quoteDetailMap, constants.QuoteDetailAll)
 	requireEarningsDate := getBoolWithDefaultFromValues(r.URL.Query(), "requireEarningsDate", true)
 	skipMiniOptionsCheck := getBoolWithDefaultFromValues(r.URL.Query(), "skipMiniOptionsCheck", false)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
 		if response, err := GetQuotes(
-			eTradeClient, symbols, detail.Value(), requireEarningsDate, skipMiniOptionsCheck,
+			eTradeClient, symbols, detail, requireEarningsDate, skipMiniOptionsCheck,
 		); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
@@ -444,33 +393,22 @@ func (s *eTradeServer) GetOptionChains(w http.ResponseWriter, r *http.Request) {
 	expiryDay := getIntWithDefaultFromValues(r.URL.Query(), "expiryDay", -1)
 	strikePriceNear := getIntWithDefaultFromValues(r.URL.Query(), "strikePriceNear", -1)
 	noOfStrikes := getIntWithDefaultFromValues(r.URL.Query(), "noOfStrikes", -1)
-
 	includeWeekly := getBoolWithDefaultFromValues(r.URL.Query(), "includeWeekly", true)
 	skipAdjusted := getBoolWithDefaultFromValues(r.URL.Query(), "skipAdjusted", false)
-
-	optionCategory := *newEnumFlagValue(optionCategoryMap, constants.OptionCategoryNil)
-	if err := setEnumFlagFromValues(&optionCategory, r.URL.Query(), "optionCategory"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	chainType := *newEnumFlagValue(optionChainTypeMap, constants.OptionChainTypeNil)
-	if err := setEnumFlagFromValues(&chainType, r.URL.Query(), "chainType"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
-
-	priceType := *newEnumFlagValue(optionPriceTypeMap, constants.OptionPriceTypeNil)
-	if err := setEnumFlagFromValues(&priceType, r.URL.Query(), "priceType"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
+	optionCategory := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "optionCategory", optionCategoryMap, constants.OptionCategoryNil,
+	)
+	chainType := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "chainType", optionChainTypeMap, constants.OptionChainTypeNil,
+	)
+	priceType := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "chainType", optionPriceTypeMap, constants.OptionPriceTypeNil,
+	)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
 		if response, err := GetOptionChains(
-			eTradeClient, symbol, expiryYear, expiryMonth, expiryDay,
-			strikePriceNear, noOfStrikes, includeWeekly, skipAdjusted,
-			optionCategory.Value(), chainType.Value(), priceType.Value(),
+			eTradeClient, symbol, expiryYear, expiryMonth, expiryDay, strikePriceNear, noOfStrikes, includeWeekly,
+			skipAdjusted, optionCategory, chainType, priceType,
 		); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
@@ -487,15 +425,12 @@ func (s *eTradeServer) GetOptionExpire(w http.ResponseWriter, r *http.Request) {
 		s.WriteError(w, errors.New("missing symbol"))
 		return
 	}
-
-	expiryType := *newEnumFlagValue(optionExpiryTypeMap, constants.OptionExpiryTypeNil)
-	if err := setEnumFlagFromValues(&expiryType, r.URL.Query(), "expiryType"); err != nil {
-		s.WriteError(w, err)
-		return
-	}
+	expiryType := getEnumFlagWithDefaultFromValues(
+		r.URL.Query(), "expiryType", optionExpiryTypeMap, constants.OptionExpiryTypeNil,
+	)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
-		if response, err := GetOptionExpireDates(eTradeClient, symbol, expiryType.Value()); err == nil {
+		if response, err := GetOptionExpireDates(eTradeClient, symbol, expiryType); err == nil {
 			s.WriteJsonMap(w, response)
 		} else {
 			s.WriteError(w, err)
@@ -593,9 +528,11 @@ func getDateWithDefaultFromValues(v url.Values, key string, layout string, defau
 	}
 }
 
-func setEnumFlagFromValues(value EnumFlagValue, v url.Values, key string) error {
+func getEnumFlagWithDefaultFromValues[T comparable](
+	v url.Values, key string, enumMap enumValueWithHelpMap[T], defaultValue T,
+) T {
 	if !v.Has(key) {
-		return nil
+		return defaultValue
 	}
-	return value.Set(v.Get(key))
+	return enumMap.GetEnumValueWithDefault(v.Get(key), defaultValue)
 }

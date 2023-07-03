@@ -2,17 +2,17 @@ package cmd
 
 import "github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 
-var sortOrderMap = map[string]enumValueWithHelp[constants.SortOrder]{
+var sortOrderMap = enumValueWithHelpMap[constants.SortOrder]{
 	"ascending":  {constants.SortOrderAsc, "sort in ascending order"},
 	"descending": {constants.SortOrderDesc, "sort in descending order"},
 }
 
-var marketSessionMap = map[string]enumValueWithHelp[constants.MarketSession]{
+var marketSessionMap = enumValueWithHelpMap[constants.MarketSession]{
 	"regular":  {constants.MarketSessionRegular, "regular market session"},
 	"extended": {constants.MarketSessionExtended, "extended market session"},
 }
 
-var portfolioViewMap = map[string]enumValueWithHelp[constants.PortfolioView]{
+var portfolioViewMap = enumValueWithHelpMap[constants.PortfolioView]{
 	"performance":  {constants.PortfolioViewPerformance, "performance view"},
 	"fundamental":  {constants.PortfolioViewFundamental, "fundamentals view"},
 	"optionsWatch": {constants.PortfolioViewOptionsWatch, "options watch view"},
@@ -20,7 +20,7 @@ var portfolioViewMap = map[string]enumValueWithHelp[constants.PortfolioView]{
 	"complete":     {constants.PortfolioViewComplete, "complete view"},
 }
 
-var portfolioSortByMap = map[string]enumValueWithHelp[constants.PortfolioSortBy]{
+var portfolioSortByMap = enumValueWithHelpMap[constants.PortfolioSortBy]{
 	"symbol":           {constants.PortfolioSortBySymbol, "sort by the symbol"},
 	"typeName":         {constants.PortfolioSortByTypeName, "sort by the type name"},
 	"exchangeName":     {constants.PortfolioSortByExchangeName, "sort by the exchange name"},
@@ -113,7 +113,7 @@ var portfolioSortByMap = map[string]enumValueWithHelp[constants.PortfolioSortBy]
 	"expandCollapseFlag":  {constants.PortfolioSortByExpandCollapseFlag, "sort by the expand/collapse flag"},
 }
 
-var orderStatusMap = map[string]enumValueWithHelp[constants.OrderStatus]{
+var orderStatusMap = enumValueWithHelpMap[constants.OrderStatus]{
 	"open":            {constants.OrderStatusOpen, "only open orders"},
 	"executed":        {constants.OrderStatusExecuted, "only executed orders"},
 	"canceled":        {constants.OrderStatusCanceled, "only canceled orders"},
@@ -123,14 +123,14 @@ var orderStatusMap = map[string]enumValueWithHelp[constants.OrderStatus]{
 	"rejected":        {constants.OrderStatusRejected, "only rejected orders"},
 }
 
-var orderSecurityTypeMap = map[string]enumValueWithHelp[constants.OrderSecurityType]{
+var orderSecurityTypeMap = enumValueWithHelpMap[constants.OrderSecurityType]{
 	"equity":          {constants.OrderSecurityTypeEquity, "only equity orders"},
 	"option":          {constants.OrderSecurityTypeOption, "only option orders"},
 	"mutualFund":      {constants.OrderSecurityTypeMutualFund, "only mutual fund orders"},
 	"moneyMarketFund": {constants.OrderSecurityTypeMoneyMarketFund, "only money market fund orders"},
 }
 
-var orderTransactionTypeMap = map[string]enumValueWithHelp[constants.OrderTransactionType]{
+var orderTransactionTypeMap = enumValueWithHelpMap[constants.OrderTransactionType]{
 	"extendedHours":      {constants.OrderTransactionTypeExtendedHours, "only extended hours orders"},
 	"buy":                {constants.OrderTransactionTypeBuy, "only buy orders"},
 	"sell":               {constants.OrderTransactionTypeSell, "only sell orders"},
@@ -139,18 +139,18 @@ var orderTransactionTypeMap = map[string]enumValueWithHelp[constants.OrderTransa
 	"mutualFundExchange": {constants.OrderTransactionTypeMutualFundExchange, "only mutual fund exchange orders"},
 }
 
-var alertCategoryMap = map[string]enumValueWithHelp[constants.AlertCategory]{
+var alertCategoryMap = enumValueWithHelpMap[constants.AlertCategory]{
 	"stock":   {constants.AlertCategoryStock, "only stock-related alerts"},
 	"account": {constants.AlertCategoryAccount, "only account-related alerts"},
 }
 
-var alertStatusMap = map[string]enumValueWithHelp[constants.AlertStatus]{
+var alertStatusMap = enumValueWithHelpMap[constants.AlertStatus]{
 	"read":    {constants.AlertStatusRead, "only read alerts"},
 	"unread":  {constants.AlertStatusUnread, "only unread alerts"},
 	"deleted": {constants.AlertStatusDeleted, "only deleted alerts"},
 }
 
-var quoteDetailMap = map[string]enumValueWithHelp[constants.QuoteDetailFlag]{
+var quoteDetailMap = enumValueWithHelpMap[constants.QuoteDetailFlag]{
 	"all":         {constants.QuoteDetailAll, "get all details"},
 	"fundamental": {constants.QuoteDetailFundamental, "get fundamental details"},
 	"intraday":    {constants.QuoteDetailIntraday, "get intraday details"},
@@ -159,24 +159,24 @@ var quoteDetailMap = map[string]enumValueWithHelp[constants.QuoteDetailFlag]{
 	"mutualFund":  {constants.QuoteDetailMutualFund, "get mutual fund details"},
 }
 
-var optionCategoryMap = map[string]enumValueWithHelp[constants.OptionCategory]{
+var optionCategoryMap = enumValueWithHelpMap[constants.OptionCategory]{
 	"standard": {constants.OptionCategoryStandard, "only standard options"},
 	"all":      {constants.OptionCategoryAll, "all options"},
 	"mini":     {constants.OptionCategoryMini, "only mini options"},
 }
 
-var optionChainTypeMap = map[string]enumValueWithHelp[constants.OptionChainType]{
+var optionChainTypeMap = enumValueWithHelpMap[constants.OptionChainType]{
 	"call":    {constants.OptionChainTypeCall, "only call options"},
 	"put":     {constants.OptionChainTypePut, "only put options"},
 	"callPut": {constants.OptionChainTypeCallPut, "call and put options"},
 }
 
-var optionPriceTypeMap = map[string]enumValueWithHelp[constants.OptionPriceType]{
+var optionPriceTypeMap = enumValueWithHelpMap[constants.OptionPriceType]{
 	"extendedHours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
 	"all":           {constants.OptionPriceTypeAll, "all price types"},
 }
 
-var optionExpiryTypeMap = map[string]enumValueWithHelp[constants.OptionExpiryType]{
+var optionExpiryTypeMap = enumValueWithHelpMap[constants.OptionExpiryType]{
 	"unspecified": {constants.OptionExpiryTypeUnspecified, "unspecified expiry type"},
 	"daily":       {constants.OptionExpiryTypeDaily, "daily expiry type"},
 	"weekly":      {constants.OptionExpiryTypeWeekly, "weekly expiry type"},

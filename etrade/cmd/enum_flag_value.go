@@ -11,32 +11,22 @@ type enumValueWithHelp[T comparable] struct {
 	Help  string
 }
 
-type EnumFlagValue interface {
-	String() string
-	Set(value string) error
-	Type() string
-	AllowedValues() []string
-	JoinAllowedValues(separator string) string
-	AllowedValuesWithHelp() []string
-}
+type enumValueWithHelpMap[T comparable] map[string]enumValueWithHelp[T]
 
 type enumFlagValue[T comparable] struct {
 	StringValue           string
 	EnumValue             T
-	valueMap              map[string]enumValueWithHelp[T]
+	valueMap              enumValueWithHelpMap[T]
 	allowedValues         []string
 	allowedValuesWithHelp []string
 }
 
 // newEnumFlagValue creates a new enumFlagValue with the default value set to defaultValue
-func newEnumFlagValue[T comparable](
-	valueMap map[string]enumValueWithHelp[T], defaultEnumValue T,
-) *enumFlagValue[T] {
+func newEnumFlagValue[T comparable](valueMap enumValueWithHelpMap[T], defaultEnumValue T) *enumFlagValue[T] {
 	defaultStringValue := ""
 	allowedValues := make([]string, 0, len(valueMap))
 	allowedValuesWithHelp := make([]string, 0, len(valueMap))
 
-	// TODO: Don't build help in this function. Do it dynamically when needed.
 	for k, v := range valueMap {
 		// Add the value to the list of allowed values
 		allowedValues = append(allowedValues, k)
@@ -74,12 +64,12 @@ func (m *enumFlagValue[T]) String() string {
 }
 
 func (m *enumFlagValue[T]) Set(value string) error {
-	enumValue, ok := m.valueMap[value]
-	if !ok {
+	enumValue, err := m.valueMap.GetEnumValue(value)
+	if err != nil {
 		return fmt.Errorf("%s is not one of the allowed values: [%s]", value, strings.Join(m.allowedValues, ", "))
 	}
 	m.StringValue = value
-	m.EnumValue = enumValue.Value
+	m.EnumValue = enumValue
 	return nil
 }
 
@@ -101,4 +91,21 @@ func (m *enumFlagValue[T]) AllowedValuesWithHelp() []string {
 
 func (m *enumFlagValue[T]) Value() T {
 	return m.EnumValue
+}
+
+func (m enumValueWithHelpMap[T]) GetEnumValue(name string) (T, error) {
+	enumValue, ok := m[name]
+	if !ok {
+		var emptyVal T
+		return emptyVal, fmt.Errorf("invalid enum name '%s'", name)
+	}
+	return enumValue.Value, nil
+}
+
+func (m enumValueWithHelpMap[T]) GetEnumValueWithDefault(name string, defaultValue T) T {
+	enumValue, ok := m[name]
+	if !ok {
+		return defaultValue
+	}
+	return enumValue.Value
 }

@@ -51,7 +51,7 @@ func (c *RootCommand) Command() *cobra.Command {
 	return cmd
 }
 
-var outputFormatMap = map[string]enumValueWithHelp[outputFormat]{
+var outputFormatMap = enumValueWithHelpMap[outputFormat]{
 	"csv":        {outputFormatCsv, "CSV output"},
 	"json":       {outputFormatJson, "raw JSON output"},
 	"jsonPretty": {outputFormatJsonPretty, "formatted JSON output"},
