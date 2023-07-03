@@ -44,6 +44,15 @@ func TestCreateETradeAuthenticationStatus(t *testing.T) {
 			},
 		},
 		{
+			name: "Fails With Unexpected Status",
+			testJson: `
+{
+  "status": "bad status"
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
 			name: "Fails Without Status",
 			testJson: `
 {
@@ -86,6 +95,39 @@ func TestCreateETradeAuthenticationStatus(t *testing.T) {
 			},
 		)
 	}
+}
+
+func TestETradeAuthenticationStatus_NeedAuthorization(t *testing.T) {
+	testAuthObject := &eTradeAuthenticationStatus{
+		authorizationUrl: "test url",
+		jsonMap: jsonmap.JsonMap{
+			"status":           "authorize",
+			"authorizationUrl": "test url",
+		},
+	}
+
+	testSuccessObject := &eTradeAuthenticationStatus{
+		authorizationUrl: "",
+		jsonMap: jsonmap.JsonMap{
+			"status":           "success",
+			"authorizationUrl": "",
+		},
+	}
+
+	assert.True(t, testAuthObject.NeedAuthorization())
+	assert.False(t, testSuccessObject.NeedAuthorization())
+}
+
+func TestETradeAuthenticationStatus_GetAuthorizationUrl(t *testing.T) {
+	testAuthObject := &eTradeAuthenticationStatus{
+		authorizationUrl: "test url",
+		jsonMap: jsonmap.JsonMap{
+			"status":           "authorize",
+			"authorizationUrl": "test url",
+		},
+	}
+
+	assert.Equal(t, "test url", testAuthObject.GetAuthorizationUrl())
 }
 
 func TestETradeAuthenticationStatus_AsJsonMap(t *testing.T) {

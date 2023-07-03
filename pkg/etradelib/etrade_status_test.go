@@ -46,6 +46,15 @@ func TestCreateETradeStatus(t *testing.T) {
 			},
 		},
 		{
+			name: "Fails With Unexpected Status",
+			testJson: `
+{
+  "status": "bad status"
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
 			name: "Fails Without Status",
 			testJson: `
 {
@@ -88,6 +97,41 @@ func TestCreateETradeStatus(t *testing.T) {
 			},
 		)
 	}
+}
+
+func TestETradeStatus_IsSuccess(t *testing.T) {
+	testSuccessStatus := eTradeStatus{
+		isSuccess:    true,
+		errorMessage: "",
+		jsonMap: jsonmap.JsonMap{
+			"status": "success",
+		},
+	}
+
+	testErrorStatus := eTradeStatus{
+		isSuccess:    false,
+		errorMessage: "test error message",
+		jsonMap: jsonmap.JsonMap{
+			"status": "error",
+			"error":  "test error message",
+		},
+	}
+
+	assert.True(t, testSuccessStatus.IsSuccess())
+	assert.False(t, testErrorStatus.IsSuccess())
+}
+
+func TestETradeStatus_GetErrorMessage(t *testing.T) {
+	testErrorStatus := eTradeStatus{
+		isSuccess:    false,
+		errorMessage: "test error message",
+		jsonMap: jsonmap.JsonMap{
+			"status": "error",
+			"error":  "test error message",
+		},
+	}
+
+	assert.Equal(t, "test error message", testErrorStatus.GetErrorMessage())
 }
 
 func TestETradeStatus_AsJsonMap(t *testing.T) {
