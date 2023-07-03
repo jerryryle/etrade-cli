@@ -49,7 +49,7 @@ func TestJsonSlice_New(t *testing.T) {
 		{
 			name: "New Slice From String",
 			testFn: func() (JsonSlice, error) {
-				return NewSliceFromJsonString(testValidJsonString)
+				return NewJsonSliceFromJsonString(testValidJsonString)
 			},
 			expectErr:   false,
 			expectValue: testValidJsonExpectedSlice,
@@ -57,7 +57,7 @@ func TestJsonSlice_New(t *testing.T) {
 		{
 			name: "New Slice From Invalid String Fails",
 			testFn: func() (JsonSlice, error) {
-				return NewSliceFromJsonString(`[{"TestString": TestStringValue1]`)
+				return NewJsonSliceFromJsonString(`[{"TestString": TestStringValue1]`)
 			},
 			expectErr:   true,
 			expectValue: nil,
@@ -66,8 +66,8 @@ func TestJsonSlice_New(t *testing.T) {
 			name: "New Slice From Top-Level Map String Fails",
 			testFn: func() (JsonSlice, error) {
 				// This string represents a top-level map, so it would need
-				// NewMapFromJsonString() instead of NewSliceFromJsonString()
-				return NewSliceFromJsonString(`{"TestKey":["TestValue"]}`)
+				// NewJsonMapFromJsonString() instead of NewJsonSliceFromJsonString()
+				return NewJsonSliceFromJsonString(`{"TestKey":["TestValue"]}`)
 			},
 			expectErr:   true,
 			expectValue: nil,
@@ -75,10 +75,19 @@ func TestJsonSlice_New(t *testing.T) {
 		{
 			name: "New Slice From Bytes",
 			testFn: func() (JsonSlice, error) {
-				return NewSliceFromJsonBytes([]byte(testValidJsonString))
+				return NewJsonSliceFromJsonBytes([]byte(testValidJsonString))
 			},
 			expectErr:   false,
 			expectValue: testValidJsonExpectedSlice,
+		},
+		{
+			name: "New Slice From Slice",
+			testFn: func() (JsonSlice, error) {
+				testSlice := []int64{1, 2, 3, 4}
+				return NewJsonSliceFromSlice(testSlice), nil
+			},
+			expectErr:   false,
+			expectValue: JsonSlice{int64(1), int64(2), int64(3), int64(4)},
 		},
 	}
 

@@ -40,7 +40,7 @@ func TestJsonSlice_GetValue(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := testSlice.GetValue(tt.testIndex)
@@ -484,7 +484,7 @@ func TestJsonSlice_GetType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testSlice)
@@ -533,7 +533,7 @@ func TestJsonSlice_GetValueWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue := testSlice.GetValueWithDefault(tt.testIndex, tt.testDefault)
@@ -891,7 +891,7 @@ func TestJsonSlice_GetTypeWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testSlice)
@@ -982,7 +982,7 @@ func TestJsonSlice_GetValueAtPath(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := testSlice.GetValueAtPath(tt.testPath)
@@ -1237,7 +1237,7 @@ func TestJsonSlice_GetTypeAtPath(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testSlice)
@@ -1328,7 +1328,7 @@ func TestJsonSlice_GetValueAtPathWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue := testSlice.GetValueAtPathWithDefault(tt.testPath, tt.testDefault)
@@ -1686,7 +1686,7 @@ func TestJsonSlice_GetTypeAtPathWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testSlice, err := NewSliceFromJsonString(tt.testJson)
+				testSlice, err := NewJsonSliceFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testSlice)
