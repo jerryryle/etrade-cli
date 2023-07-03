@@ -89,8 +89,8 @@ func CreateETradeOptionChainPairListFromResponse(response []byte) (ETradeOptionC
 	return CreateETradeOptionChainPairList(responseMap)
 }
 
-func CreateETradeOptionChainPairList(lookupListResponseMap jsonmap.JsonMap) (ETradeOptionChainPairList, error) {
-	optionChainPairsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPath(optionChainPairListOptionChainPairsResponsePath)
+func CreateETradeOptionChainPairList(responseMap jsonmap.JsonMap) (ETradeOptionChainPairList, error) {
+	optionChainPairsSlice, err := responseMap.GetSliceOfMapsAtPath(optionChainPairListOptionChainPairsResponsePath)
 	if err != nil {
 		return nil, err
 	}
@@ -103,28 +103,28 @@ func CreateETradeOptionChainPairList(lookupListResponseMap jsonmap.JsonMap) (ETr
 		allOptionChainPairs = append(allOptionChainPairs, optionChainPair)
 	}
 
-	timeStamp, err := lookupListResponseMap.GetIntAtPathWithDefault(
+	timeStamp, err := responseMap.GetIntAtPathWithDefault(
 		optionChainPairListTimeStampResponsePath, 0,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	quoteType, err := lookupListResponseMap.GetStringAtPathWithDefault(
+	quoteType, err := responseMap.GetStringAtPathWithDefault(
 		optionChainPairListQuoteTypeResponsePath, "",
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	nearPrice, err := lookupListResponseMap.GetFloatAtPathWithDefault(
+	nearPrice, err := responseMap.GetFloatAtPathWithDefault(
 		optionChainPairListNearPriceResponsePath, 0,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	selected, err := lookupListResponseMap.GetMapAtPathWithDefault(
+	selected, err := responseMap.GetMapAtPathWithDefault(
 		optionChainPairListSelectedResponsePath, nil,
 	)
 	if err != nil {
