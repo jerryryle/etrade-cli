@@ -48,6 +48,7 @@ func NewMapFromJsonString(jsonString string) (JsonMap, error) {
 
 func (m *JsonMap) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
 	encoder := json.NewEncoder(jsonWriter)
+	encoder.SetEscapeHTML(false)
 	if pretty {
 		encoder.SetIndent("", "  ")
 	}
