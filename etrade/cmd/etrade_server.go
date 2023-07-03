@@ -441,7 +441,7 @@ func (s *eTradeServer) GetOptionExpire(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *eTradeServer) WriteJsonMap(w http.ResponseWriter, jsonMap jsonmap.JsonMap) {
-	responseBytes, err := jsonMap.ToJsonBytes(false)
+	responseBytes, err := jsonMap.ToJsonBytes(false, false)
 	if err != nil {
 		s.logger.Error(err.Error())
 		return
@@ -457,7 +457,7 @@ func (s *eTradeServer) WriteJsonMap(w http.ResponseWriter, jsonMap jsonmap.JsonM
 func (s *eTradeServer) WriteError(w http.ResponseWriter, err error) {
 	s.logger.Error(err.Error())
 	responseMap := NewStatusResponseMap("error", "error", err.Error())
-	responseBytes, err := responseMap.ToJsonBytes(false)
+	responseBytes, err := responseMap.ToJsonBytes(false, false)
 	if err != nil {
 		s.logger.Error(err.Error())
 		return

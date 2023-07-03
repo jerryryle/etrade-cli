@@ -46,9 +46,9 @@ func NewMapFromJsonString(jsonString string) (JsonMap, error) {
 	return NewMapFromIoReader(strings.NewReader(jsonString))
 }
 
-func (m *JsonMap) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
+func (m *JsonMap) ToIoWriter(jsonWriter io.Writer, pretty bool, escapeHtml bool) error {
 	encoder := json.NewEncoder(jsonWriter)
-	encoder.SetEscapeHTML(false)
+	encoder.SetEscapeHTML(escapeHtml)
 	if pretty {
 		encoder.SetIndent("", "  ")
 	}
@@ -59,18 +59,18 @@ func (m *JsonMap) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
 	return nil
 }
 
-func (m *JsonMap) ToJsonBytes(pretty bool) ([]byte, error) {
+func (m *JsonMap) ToJsonBytes(pretty bool, escapeHtml bool) ([]byte, error) {
 	var byteBuffer bytes.Buffer
-	err := m.ToIoWriter(&byteBuffer, pretty)
+	err := m.ToIoWriter(&byteBuffer, pretty, escapeHtml)
 	if err != nil {
 		return nil, err
 	}
 	return byteBuffer.Bytes(), nil
 }
 
-func (m *JsonMap) ToJsonString(pretty bool) (string, error) {
+func (m *JsonMap) ToJsonString(pretty bool, escapeHtml bool) (string, error) {
 	var byteBuffer bytes.Buffer
-	err := m.ToIoWriter(&byteBuffer, pretty)
+	err := m.ToIoWriter(&byteBuffer, pretty, escapeHtml)
 	if err != nil {
 		return "", err
 	}

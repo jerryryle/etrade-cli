@@ -23,8 +23,7 @@ func TestJsonSlice_New(t *testing.T) {
     "TestInt": 456,
     "TestBool": false
   }
-]
-`
+]`
 
 	var testValidJsonExpectedSlice = JsonSlice{
 		JsonMap{
@@ -112,6 +111,7 @@ func TestJsonSlice_ToJsonString(t *testing.T) {
 			"TestFloat":  json.Number("456.789"),
 			"TestInt":    json.Number("456"),
 			"TestBool":   false,
+			"TestUrl":    "https://moo.com?foo=1&loo=2",
 		},
 	}
 
@@ -126,21 +126,26 @@ func TestJsonSlice_ToJsonString(t *testing.T) {
     "TestBool": false,
     "TestFloat": 456.789,
     "TestInt": 456,
-    "TestString": "TestStringValue2"
+    "TestString": "TestStringValue2",
+    "TestUrl": "https://moo.com?foo=1&loo=2"
   }
-]
-`
+]` + "\n"
 
-	const expectedJsonStringUgly = `[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue1"},{"TestBool":false,"TestFloat":456.789,"TestInt":456,"TestString":"TestStringValue2"}]
-`
+	const expectedJsonStringUgly = `[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue1"},{"TestBool":false,"TestFloat":456.789,"TestInt":456,"TestString":"TestStringValue2","TestUrl":"https://moo.com?foo=1&loo=2"}]` + "\n"
 
-	actualValue, err := testJsonSlice.ToJsonString(true)
+	const expectedJsonStringEscapeHtml = `[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue1"},{"TestBool":false,"TestFloat":456.789,"TestInt":456,"TestString":"TestStringValue2","TestUrl":"https://moo.com?foo=1\u0026loo=2"}]` + "\n"
+
+	actualValue, err := testJsonSlice.ToJsonString(true, false)
 	assert.Nil(t, err)
 	assert.Equal(t, expectedJsonStringPretty, actualValue)
 
-	actualValue, err = testJsonSlice.ToJsonString(false)
+	actualValue, err = testJsonSlice.ToJsonString(false, false)
 	assert.Nil(t, err)
 	assert.Equal(t, expectedJsonStringUgly, actualValue)
+
+	actualValue, err = testJsonSlice.ToJsonString(false, true)
+	assert.Nil(t, err)
+	assert.Equal(t, expectedJsonStringEscapeHtml, actualValue)
 }
 
 func TestJsonSlice_ToJsonBytes(t *testing.T) {
@@ -156,6 +161,7 @@ func TestJsonSlice_ToJsonBytes(t *testing.T) {
 			"TestFloat":  json.Number("456.789"),
 			"TestInt":    json.Number("456"),
 			"TestBool":   false,
+			"TestUrl":    "https://moo.com?foo=1&loo=2",
 		},
 	}
 
@@ -170,19 +176,24 @@ func TestJsonSlice_ToJsonBytes(t *testing.T) {
     "TestBool": false,
     "TestFloat": 456.789,
     "TestInt": 456,
-    "TestString": "TestStringValue2"
+    "TestString": "TestStringValue2",
+    "TestUrl": "https://moo.com?foo=1&loo=2"
   }
-]
-`
+]` + "\n"
 
-	const expectedJsonStringUgly = `[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue1"},{"TestBool":false,"TestFloat":456.789,"TestInt":456,"TestString":"TestStringValue2"}]
-`
+	const expectedJsonStringUgly = `[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue1"},{"TestBool":false,"TestFloat":456.789,"TestInt":456,"TestString":"TestStringValue2","TestUrl":"https://moo.com?foo=1&loo=2"}]` + "\n"
 
-	actualValue, err := testJsonSlice.ToJsonBytes(true)
+	const expectedJsonStringEscapeHtml = `[{"TestBool":true,"TestFloat":123.456,"TestInt":123,"TestString":"TestStringValue1"},{"TestBool":false,"TestFloat":456.789,"TestInt":456,"TestString":"TestStringValue2","TestUrl":"https://moo.com?foo=1\u0026loo=2"}]` + "\n"
+
+	actualValue, err := testJsonSlice.ToJsonBytes(true, false)
 	assert.Nil(t, err)
 	assert.Equal(t, []byte(expectedJsonStringPretty), actualValue)
 
-	actualValue, err = testJsonSlice.ToJsonBytes(false)
+	actualValue, err = testJsonSlice.ToJsonBytes(false, false)
 	assert.Nil(t, err)
 	assert.Equal(t, []byte(expectedJsonStringUgly), actualValue)
+
+	actualValue, err = testJsonSlice.ToJsonBytes(false, true)
+	assert.Nil(t, err)
+	assert.Equal(t, []byte(expectedJsonStringEscapeHtml), actualValue)
 }

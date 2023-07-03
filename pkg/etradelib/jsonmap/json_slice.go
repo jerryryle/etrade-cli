@@ -46,8 +46,9 @@ func NewSliceFromJsonString(jsonString string) (JsonSlice, error) {
 	return NewSliceFromIoReader(strings.NewReader(jsonString))
 }
 
-func (s *JsonSlice) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
+func (s *JsonSlice) ToIoWriter(jsonWriter io.Writer, pretty bool, escapeHtml bool) error {
 	encoder := json.NewEncoder(jsonWriter)
+	encoder.SetEscapeHTML(escapeHtml)
 	if pretty {
 		encoder.SetIndent("", "  ")
 	}
@@ -58,18 +59,18 @@ func (s *JsonSlice) ToIoWriter(jsonWriter io.Writer, pretty bool) error {
 	return nil
 }
 
-func (s *JsonSlice) ToJsonBytes(pretty bool) ([]byte, error) {
+func (s *JsonSlice) ToJsonBytes(pretty bool, escapeHtml bool) ([]byte, error) {
 	var byteBuffer bytes.Buffer
-	err := s.ToIoWriter(&byteBuffer, pretty)
+	err := s.ToIoWriter(&byteBuffer, pretty, escapeHtml)
 	if err != nil {
 		return nil, err
 	}
 	return byteBuffer.Bytes(), nil
 }
 
-func (s *JsonSlice) ToJsonString(pretty bool) (string, error) {
+func (s *JsonSlice) ToJsonString(pretty bool, escapeHtml bool) (string, error) {
 	var byteBuffer bytes.Buffer
-	err := s.ToIoWriter(&byteBuffer, pretty)
+	err := s.ToIoWriter(&byteBuffer, pretty, escapeHtml)
 	if err != nil {
 		return "", err
 	}
