@@ -25,11 +25,8 @@ func (c *CommandCfgList) Command(globalFlags *globalFlags) *cobra.Command {
 			return c.context.Close()
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if response, err := GetCustomerList(c.context.CustomerConfigurationStore); err == nil {
-				return c.context.Renderer.Render(response, cfgListDescriptor)
-			} else {
-				return err
-			}
+			response := GetCustomerList(c.context.CustomerConfigurationStore)
+			return c.context.Renderer.Render(response, cfgListDescriptor)
 		},
 	}
 	return cmd

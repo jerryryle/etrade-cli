@@ -558,7 +558,7 @@ func NewStatusMap(status string, keysAndValues ...string) jsonmap.JsonMap {
 		for i := 0; i < len(keysAndValues); i += 2 {
 			key := keysAndValues[i]
 			value := keysAndValues[i+1]
-			_ = responseMap.SetString(key, value)
+			responseMap.SetString(key, value)
 		}
 	}
 	return responseMap

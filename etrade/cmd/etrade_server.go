@@ -103,11 +103,8 @@ func (s *eTradeServer) RemoveClientForCustomer(customerId string) {
 }
 
 func (s *eTradeServer) GetCustomerList(w http.ResponseWriter, _ *http.Request) {
-	if responseMap, err := GetCustomerList(s.cfgStore); err == nil {
-		s.WriteJsonMap(w, responseMap)
-	} else {
-		s.WriteError(w, err)
-	}
+	responseMap := GetCustomerList(s.cfgStore)
+	s.WriteJsonMap(w, responseMap)
 }
 
 func (s *eTradeServer) Login(w http.ResponseWriter, r *http.Request) {

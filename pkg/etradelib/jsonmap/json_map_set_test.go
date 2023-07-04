@@ -12,7 +12,6 @@ func TestJsonMap_SetValue(t *testing.T) {
 		startingValue JsonMap
 		testKey       string
 		testValue     interface{}
-		expectErr     bool
 		expectValue   JsonMap
 	}{
 		{
@@ -20,7 +19,6 @@ func TestJsonMap_SetValue(t *testing.T) {
 			startingValue: JsonMap{},
 			testKey:       "TestKey",
 			testValue:     "TestValue",
-			expectErr:     false,
 			expectValue:   JsonMap{"TestKey": "TestValue"},
 		},
 		{
@@ -28,16 +26,14 @@ func TestJsonMap_SetValue(t *testing.T) {
 			startingValue: JsonMap{"TestKey": "OldValue"},
 			testKey:       "TestKey",
 			testValue:     "TestValue",
-			expectErr:     false,
 			expectValue:   JsonMap{"TestKey": "TestValue"},
 		},
 		{
-			name:          "Empty Key Fails",
+			name:          "Empty Key Succeeds",
 			startingValue: JsonMap{},
 			testKey:       "",
 			testValue:     "TestValue",
-			expectErr:     true,
-			expectValue:   JsonMap{},
+			expectValue:   JsonMap{"": "TestValue"},
 		},
 	}
 
@@ -46,12 +42,7 @@ func TestJsonMap_SetValue(t *testing.T) {
 			tt.name, func(t *testing.T) {
 				actualValue := tt.startingValue
 				// Call the Method Under Test
-				err := actualValue.SetValue(tt.testKey, tt.testValue)
-				if tt.expectErr {
-					assert.Error(t, err)
-				} else {
-					assert.Nil(t, err)
-				}
+				actualValue.SetValue(tt.testKey, tt.testValue)
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)
@@ -59,66 +50,59 @@ func TestJsonMap_SetValue(t *testing.T) {
 }
 
 func TestJsonMap_SetType(t *testing.T) {
-	type testFn func(m *JsonMap) error
+	type testFn func(m *JsonMap)
 	tests := []struct {
 		name          string
 		startingValue JsonMap
 		testFn        testFn
-		expectErr     bool
 		expectValue   JsonMap
 	}{
 		{
 			name:          "SetString Sets String",
 			startingValue: JsonMap{},
-			testFn: func(m *JsonMap) error {
-				return m.SetString("TestKey", "StringValue")
+			testFn: func(m *JsonMap) {
+				m.SetString("TestKey", "StringValue")
 			},
-			expectErr:   false,
 			expectValue: JsonMap{"TestKey": "StringValue"},
 		},
 		{
 			name:          "SetInt Sets Int",
 			startingValue: JsonMap{},
-			testFn: func(m *JsonMap) error {
-				return m.SetInt("TestKey", 1234)
+			testFn: func(m *JsonMap) {
+				m.SetInt("TestKey", 1234)
 			},
-			expectErr:   false,
 			expectValue: JsonMap{"TestKey": json.Number("1234")},
 		},
 		{
 			name:          "SetFloat Sets Float",
 			startingValue: JsonMap{},
-			testFn: func(m *JsonMap) error {
-				return m.SetFloat("TestKey", 1234.5678)
+			testFn: func(m *JsonMap) {
+				m.SetFloat("TestKey", 1234.5678)
 			},
-			expectErr:   false,
 			expectValue: JsonMap{"TestKey": json.Number("1234.5678")},
 		},
 		{
 			name:          "SetBool Sets Bool",
 			startingValue: JsonMap{},
-			testFn: func(m *JsonMap) error {
-				return m.SetBool("TestKey", true)
+			testFn: func(m *JsonMap) {
+				m.SetBool("TestKey", true)
 			},
-			expectErr:   false,
 			expectValue: JsonMap{"TestKey": true},
 		},
 		{
 			name:          "SetMap Sets Map",
 			startingValue: JsonMap{},
-			testFn: func(m *JsonMap) error {
-				return m.SetMap("TestKey", JsonMap{"Foo": "Bar"})
+			testFn: func(m *JsonMap) {
+				m.SetMap("TestKey", JsonMap{"Foo": "Bar"})
 			},
-			expectErr:   false,
 			expectValue: JsonMap{"TestKey": JsonMap{"Foo": "Bar"}},
 		},
 		{
 			name:          "SetSlice Sets Slice",
 			startingValue: JsonMap{},
-			testFn: func(m *JsonMap) error {
-				return m.SetSlice("TestKey", JsonSlice{1, 2, 3, 4})
+			testFn: func(m *JsonMap) {
+				m.SetSlice("TestKey", JsonSlice{1, 2, 3, 4})
 			},
-			expectErr:   false,
 			expectValue: JsonMap{"TestKey": JsonSlice{1, 2, 3, 4}},
 		},
 	}
@@ -128,12 +112,7 @@ func TestJsonMap_SetType(t *testing.T) {
 			tt.name, func(t *testing.T) {
 				actualValue := tt.startingValue
 				// Call the Method Under Test
-				err := tt.testFn(&actualValue)
-				if tt.expectErr {
-					assert.Error(t, err)
-				} else {
-					assert.Nil(t, err)
-				}
+				tt.testFn(&actualValue)
 				assert.Equal(t, tt.expectValue, actualValue)
 			},
 		)

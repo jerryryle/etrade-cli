@@ -28,7 +28,6 @@ func TestGetCustomerList(t *testing.T) {
 		},
 	}
 
-	actualResult, err := GetCustomerList(&testCfgStore)
-	assert.Nil(t, err)
+	actualResult := GetCustomerList(&testCfgStore)
 	assert.Equal(t, expectedResult, actualResult)
 }

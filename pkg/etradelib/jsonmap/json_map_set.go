@@ -2,44 +2,38 @@ package jsonmap
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 )
 
 // SetString sets a string with the specified key in the map.
-// It will only return an error if an empty key is provided.
-func (m *JsonMap) SetString(key string, value string) error {
-	return m.SetValue(key, value)
+func (m *JsonMap) SetString(key string, value string) {
+	m.SetValue(key, value)
 }
 
 // SetInt sets an int with the specified key in the map.
-// It will only return an error if an empty key is provided.
-func (m *JsonMap) SetInt(key string, value int64) error {
+func (m *JsonMap) SetInt(key string, value int64) {
 	valueNumber := json.Number(fmt.Sprintf("%d", value))
-	return m.SetValue(key, valueNumber)
+	m.SetValue(key, valueNumber)
 }
 
 // SetFloat sets a float with the specified key in the map.
-// It will only return an error if an empty key is provided.
-func (m *JsonMap) SetFloat(key string, value float64) error {
+func (m *JsonMap) SetFloat(key string, value float64) {
 	valueNumber := json.Number(strconv.FormatFloat(value, 'f', -1, 64))
-	return m.SetValue(key, valueNumber)
+	m.SetValue(key, valueNumber)
 }
 
 // SetBool sets a bool with the specified key in the map.
-// It will only return an error if an empty key is provided.
-func (m *JsonMap) SetBool(key string, value bool) error {
-	return m.SetValue(key, value)
+func (m *JsonMap) SetBool(key string, value bool) {
+	m.SetValue(key, value)
 }
 
 // SetMap sets a map with the specified key in the map.
-// It will only return an error if an empty key is provided.
 // Use caution with this method. If you add a map that contains invalid Json
 // elements (e.g. arbitrary structs or pointers to objects), then you may
 // break the ability to traverse the map.
-func (m *JsonMap) SetMap(key string, value JsonMap) error {
-	return m.SetValue(key, value)
+func (m *JsonMap) SetMap(key string, value JsonMap) {
+	m.SetValue(key, value)
 }
 
 // SetSlice sets a slice with the specified key in the map.
@@ -47,21 +41,16 @@ func (m *JsonMap) SetMap(key string, value JsonMap) error {
 // Use caution with this method. If you add a slice that contains invalid Json
 // elements (e.g. arbitrary structs or pointers to objects), then you may
 // break the ability to traverse the map.
-func (m *JsonMap) SetSlice(key string, value JsonSlice) error {
-	return m.SetValue(key, value)
+func (m *JsonMap) SetSlice(key string, value JsonSlice) {
+	m.SetValue(key, value)
 }
 
 // SetValue sets an object of any type with the specified key in the map.
-// It will only return an error if an empty key is provided.
 // Use caution with this method. If you add an object that contains invalid
 // Json elements (e.g. arbitrary structs or pointers to objects), then you may
 // break the ability to traverse the map.
-func (m *JsonMap) SetValue(key string, value interface{}) error {
-	if key == "" {
-		return errors.New("no key provided")
-	}
+func (m *JsonMap) SetValue(key string, value interface{}) {
 	(*m)[key] = value
-	return nil
 }
 
 // SetStringAtPath sets a string value in the map at the specified path.
