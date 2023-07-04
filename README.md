@@ -17,9 +17,9 @@ Quick Start:
 9. `etrade --customer-id --format json <your customer ID> accounts portfolio <account ID>` - Get portfolio for an account in JSON format
 
 Server Mode:
-You can run the application in server mode with: `etrade server`
-In this mode, the server listens for HTTP requests on port 8888. You can change the listen IP address and port using the --addr flag (e.g. --addr=:4444 to listen on all interfaces with port 4444 or --addr=192.168.1.2:4444 to listen on the interface with the IP address 192.168.1.2).
-Stop the server with SIGINT (ctrl-C).
+* You can run the application in server mode with: `etrade server`
+* In this mode, the server listens for HTTP requests on port 8888. You can change the listen IP address and port using the --addr flag (e.g. --addr=:4444 to listen on all interfaces with port 4444 or --addr=192.168.1.2:4444 to listen on the interface with the IP address 192.168.1.2).
+* Stop the server with SIGINT (ctrl-C).
 
 The following documents the server's API:
 * /customers
