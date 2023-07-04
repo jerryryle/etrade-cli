@@ -18,11 +18,13 @@ type eTradeTransactionList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "transactions": [
-	//   {
-	//     <transaction info>
-	//   }
-	// ]
+	// {
+	//   "transactions": [
+	//     {
+	//       <transaction info>
+	//     }
+	//   ]
+	// }
 
 	// TransactionListTransactionsPath is the path to a slice of transactions.
 	TransactionListTransactionsPath = ".transactions"
