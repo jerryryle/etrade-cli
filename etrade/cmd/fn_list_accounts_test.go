@@ -17,7 +17,7 @@ func TestListAccounts(t *testing.T) {
 		expectValue interface{}
 	}{
 		{
-			name: "Gets Quotes",
+			name: "Lists Accounts",
 			testFn: func(mockClient *client.ETradeClientMock) (interface{}, error) {
 				testAccountList := []byte(`
 {
