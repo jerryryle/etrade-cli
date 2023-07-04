@@ -18,11 +18,13 @@ type eTradeOrderList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "orders": [
-	//   {
-	//     <order info>
-	//   }
-	// ]
+	// {
+	//   "orders": [
+	//     {
+	//       <order info>
+	//     }
+	//   ]
+	// }
 
 	// OrderListOrdersPath is the path to a slice of
 	// orders.
