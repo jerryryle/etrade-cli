@@ -280,7 +280,7 @@ func (s *eTradeServer) ListTransactionDetails(w http.ResponseWriter, r *http.Req
 
 func (s *eTradeServer) ListOrders(w http.ResponseWriter, r *http.Request) {
 	accountId := chi.URLParam(r, "accountId")
-	symbols := r.URL.Query()["symbols"]
+	symbols := r.URL.Query()["symbol"]
 
 	fromDate := getDateWithDefaultFromValues(r.URL.Query(), "fromDate", "01022006", nil)
 	toDate := getDateWithDefaultFromValues(r.URL.Query(), "toDate", "01022006", nil)
@@ -309,7 +309,7 @@ func (s *eTradeServer) ListOrders(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *eTradeServer) ListAlerts(w http.ResponseWriter, r *http.Request) {
-	count := getIntWithDefaultFromValues(r.URL.Query(), "search", -1)
+	count := getIntWithDefaultFromValues(r.URL.Query(), "count", -1)
 	search := getStringWithDefaultFromValues(r.URL.Query(), "search", "")
 	category := getEnumFlagWithDefaultFromValues(
 		r.URL.Query(), "category", alertCategoryMap, constants.AlertCategoryNil,
