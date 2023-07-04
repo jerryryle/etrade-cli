@@ -44,7 +44,7 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 				timeStamp: 1234,
 				quoteType: "1234",
 				nearPrice: 123.4,
-				selected: jsonmap.JsonMap{
+				selectedED: jsonmap.JsonMap{
 					"key2": "value2",
 				},
 			},
@@ -70,7 +70,7 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 				timeStamp:        1234,
 				quoteType:        "1234",
 				nearPrice:        123.4,
-				selected: jsonmap.JsonMap{
+				selectedED: jsonmap.JsonMap{
 					"key1": "value1",
 				},
 			},
@@ -135,7 +135,7 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 				timeStamp: 0,
 				quoteType: "1234",
 				nearPrice: 123.4,
-				selected: jsonmap.JsonMap{
+				selectedED: jsonmap.JsonMap{
 					"key2": "value2",
 				},
 			},
@@ -170,7 +170,7 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 				timeStamp: 1234,
 				quoteType: "",
 				nearPrice: 123.4,
-				selected: jsonmap.JsonMap{
+				selectedED: jsonmap.JsonMap{
 					"key2": "value2",
 				},
 			},
@@ -205,7 +205,7 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 				timeStamp: 1234,
 				quoteType: "1234",
 				nearPrice: 0,
-				selected: jsonmap.JsonMap{
+				selectedED: jsonmap.JsonMap{
 					"key2": "value2",
 				},
 			},
@@ -237,10 +237,10 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 						},
 					},
 				},
-				timeStamp: 1234,
-				quoteType: "1234",
-				nearPrice: 123.4,
-				selected:  nil,
+				timeStamp:  1234,
+				quoteType:  "1234",
+				nearPrice:  123.4,
+				selectedED: nil,
 			},
 		},
 		{
@@ -412,7 +412,7 @@ func TestETradeOptionChainPairList_AsJsonMap(t *testing.T) {
 		timeStamp: 1234,
 		quoteType: "1234",
 		nearPrice: 123.4,
-		selected: jsonmap.JsonMap{
+		selectedED: jsonmap.JsonMap{
 			"key2": "value2",
 		},
 	}
@@ -426,7 +426,7 @@ func TestETradeOptionChainPairList_AsJsonMap(t *testing.T) {
 		"timeStamp": json.Number("1234"),
 		"quoteType": "1234",
 		"nearPrice": json.Number("123.4"),
-		"selected": jsonmap.JsonMap{
+		"selectedED": jsonmap.JsonMap{
 			"key2": "value2",
 		},
 	}

@@ -14,7 +14,7 @@ type eTradeOptionChainPairList struct {
 	timeStamp        int64
 	quoteType        string
 	nearPrice        float64
-	selected         jsonmap.JsonMap
+	selectedED       jsonmap.JsonMap
 }
 
 const (
@@ -28,8 +28,8 @@ const (
 	//   "timeStamp": 1234,
 	//   "quoteType": "Type",
 	//   "nearPrice": 123.4,
-	//   "selected": {
-	//       <selected info>
+	//   "selectedED": {
+	//       <selectedED info>
 	//   }
 	// }
 
@@ -45,8 +45,8 @@ const (
 	// OptionChainPairListNearPricePath is the path to near price.
 	OptionChainPairListNearPricePath = ".nearPrice"
 
-	// OptionChainPairListSelectedPath is the path to selected map.
-	OptionChainPairListSelectedPath = ".selected"
+	// OptionChainPairListSelectedEDPath is the path to selectedED map.
+	OptionChainPairListSelectedEDPath = ".selectedED"
 )
 
 const (
@@ -61,8 +61,8 @@ const (
 	//     "timeStamp": 1234
 	//     "quoteType": "Type"
 	//     "nearPrice": 123.4
-	//     "selected": {
-	//         <selected info>
+	//     "SelectedED": {
+	//         <selectedED info>
 	//     }
 	//   }
 	// }
@@ -79,8 +79,8 @@ const (
 	// optionChainPairListNearPriceResponsePath is the path to near price.
 	optionChainPairListNearPriceResponsePath = ".optionChainResponse.nearPrice"
 
-	// optionChainPairListSelectedResponsePath is the path to selected map
-	optionChainPairListSelectedResponsePath = ".optionChainResponse.selectedED"
+	// optionChainPairListSelectedEDResponsePath is the path to selectedED map
+	optionChainPairListSelectedEDResponsePath = ".optionChainResponse.selectedED"
 )
 
 func CreateETradeOptionChainPairListFromResponse(response []byte) (ETradeOptionChainPairList, error) {
@@ -126,8 +126,8 @@ func CreateETradeOptionChainPairList(responseMap jsonmap.JsonMap) (ETradeOptionC
 		return nil, err
 	}
 
-	selected, err := responseMap.GetMapAtPathWithDefault(
-		optionChainPairListSelectedResponsePath, nil,
+	selectedED, err := responseMap.GetMapAtPathWithDefault(
+		optionChainPairListSelectedEDResponsePath, nil,
 	)
 	if err != nil {
 		return nil, err
@@ -138,7 +138,7 @@ func CreateETradeOptionChainPairList(responseMap jsonmap.JsonMap) (ETradeOptionC
 		timeStamp:        timeStamp,
 		quoteType:        quoteType,
 		nearPrice:        nearPrice,
-		selected:         selected,
+		selectedED:       selectedED,
 	}, nil
 }
 
@@ -175,7 +175,7 @@ func (e *eTradeOptionChainPairList) AsJsonMap() jsonmap.JsonMap {
 		panic(err)
 	}
 
-	err = optionChainPairListMap.SetMapAtPath(OptionChainPairListSelectedPath, e.selected)
+	err = optionChainPairListMap.SetMapAtPath(OptionChainPairListSelectedEDPath, e.selectedED)
 	if err != nil {
 		panic(err)
 	}
