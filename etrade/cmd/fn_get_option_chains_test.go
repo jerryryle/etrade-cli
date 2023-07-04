@@ -36,8 +36,7 @@ func TestGetOptionChains(t *testing.T) {
 		"testKey2": "testValue2"
 	}
   }
-}
-`)
+}`)
 				mockClient.On(
 					"GetOptionChains", "TestSymbol", 1, 2, 3, 4, 5, true, true, constants.OptionCategoryNil,
 					constants.OptionChainTypeNil, constants.OptionPriceTypeNil,
@@ -99,8 +98,7 @@ func TestGetOptionChains(t *testing.T) {
 		"testKey2": "testValue2"
 	}
   }
-}
-`)
+}`)
 				mockClient.On(
 					"GetOptionChains", "TestSymbol", 1, 2, 3, 4, 5, true, true, constants.OptionCategoryNil,
 					constants.OptionChainTypeNil, constants.OptionPriceTypeNil,
