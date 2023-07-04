@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -70,15 +69,15 @@ func TestSaveCachedCredentialsSucceeds(t *testing.T) {
 		AccessSecret: "TestSecret",
 		LastUpdated:  lastUpdated,
 	}
-	expectedJsonData := `{
+	expectedJson := `{
   "accessToken": "TestToken",
   "accessSecret": "TestSecret",
   "lastUpdated": "2021-02-18T21:54:42.123Z"
 }` + "\n"
 
-	buffer := &bytes.Buffer{}
-	err := SaveCachedCredentials(buffer, &credentials)
+	actualJson := strings.Builder{}
+	err := SaveCachedCredentials(&actualJson, &credentials)
 	assert.Nil(t, err)
 
-	assert.Equal(t, expectedJsonData, buffer.String())
+	assert.Equal(t, expectedJson, actualJson.String())
 }
