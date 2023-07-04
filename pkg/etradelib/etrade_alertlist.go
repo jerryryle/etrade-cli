@@ -14,11 +14,13 @@ type eTradeAlertList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "alerts": [
-	//   {
-	//     <alert info>
-	//   }
-	// ]
+	// {
+	//   "alerts": [
+	//     {
+	//       <alert info>
+	//     }
+	//   ]
+	// }
 
 	// AlertListAlertsPath is the path to a slice of alerts.
 	AlertListAlertsPath = ".alerts"
