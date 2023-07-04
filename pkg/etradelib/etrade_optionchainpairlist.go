@@ -19,16 +19,18 @@ type eTradeOptionChainPairList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "optionChainPairs": [
-	//   {
-	//     <optionChainPair info>
+	// {
+	//   "optionChainPairs": [
+	//     {
+	//       <optionChainPair info>
+	//     }
+	//   ]
+	//   "timeStamp": 1234,
+	//   "quoteType": "Type",
+	//   "nearPrice": 123.4,
+	//   "selected": {
+	//       <selected info>
 	//   }
-	// ]
-	// "timeStamp": 1234
-	// "quoteType": "Type"
-	// "nearPrice": 123.4
-	// "selected": {
-	//     <selected info>
 	// }
 
 	// OptionChainPairListOptionChainPairsPath is the path to a slice of optionChainPairs.
