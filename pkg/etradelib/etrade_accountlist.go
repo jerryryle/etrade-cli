@@ -16,11 +16,13 @@ type eTradeAccountList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "accounts": [
-	//   {
-	//     <account info>
-	//   }
-	// ]
+	// {
+	//   "accounts": [
+	//     {
+	//       <account info>
+	//     }
+	//   ]
+	// }
 
 	// AccountsListAccountsPath is the path to a slice of accounts.
 	AccountsListAccountsPath = "accounts"
@@ -28,13 +30,15 @@ const (
 
 const (
 	// The account list response JSON looks like this:
-	// "accountListResponse": {
-	//   "accounts": {
-	//     "account": [
-	//       {
-	//         <account info>
-	//       }
-	//     ]
+	// {
+	//   "AccountListResponse": {
+	//     "Accounts": {
+	//       "Account": [
+	//         {
+	//           <account info>
+	//         }
+	//       ]
+	//     }
 	//   }
 	// }
 
