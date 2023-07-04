@@ -38,9 +38,7 @@ func TestDeleteAlerts(t *testing.T) {
 			testFn: func(mockClient *client.ETradeClientMock) (interface{}, error) {
 				testDeleteAlertsResponse := []byte(`
 {
-  "MISSING": {
-    "result": "SUCCESS"
-  }
+  "AlertsResponse": {
 }`)
 				mockClient.On("DeleteAlerts", []string{"1234"}).Return(testDeleteAlertsResponse, nil)
 				return DeleteAlerts(mockClient, []string{"1234"})
