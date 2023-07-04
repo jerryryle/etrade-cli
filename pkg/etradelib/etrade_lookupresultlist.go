@@ -13,11 +13,13 @@ type eTradeLookupResultList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "results": [
-	//   {
-	//     <lookup info>
-	//   }
-	// ]
+	// {
+	//   "results": [
+	//     {
+	//       <lookup info>
+	//     }
+	//   ]
+	// }
 
 	// LookupResultListResultsPath is the path to a slice of lookup results.
 	LookupResultListResultsPath = ".results"
