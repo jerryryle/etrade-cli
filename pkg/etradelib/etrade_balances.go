@@ -31,8 +31,8 @@ func CreateETradeBalancesFromResponse(response []byte) (ETradeBalances, error) {
 	return CreateETradeBalances(responseMap)
 }
 
-func CreateETradeBalances(positionListResponseMap jsonmap.JsonMap) (ETradeBalances, error) {
-	balancesMap, err := positionListResponseMap.GetMapAtPath(balancesBalanceResponsePath)
+func CreateETradeBalances(responseMap jsonmap.JsonMap) (ETradeBalances, error) {
+	balancesMap, err := responseMap.GetMapAtPath(balancesBalanceResponsePath)
 	if err != nil {
 		return nil, err
 	}

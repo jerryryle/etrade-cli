@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -28,7 +27,16 @@ func (c *CommandMarketOptionChains) Command() *cobra.Command {
 		Long:  "Get option chains for a specific underlying instrument",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.GetOptionChains(args[0])
+			symbol := args[0]
+			if response, err := GetOptionChains(
+				c.Context.Client, symbol, c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,
+				c.flags.strikePriceNear, c.flags.noOfStrikes, c.flags.includeWeekly, c.flags.skipAdjusted,
+				c.flags.optionCategory.Value(), c.flags.chainType.Value(), c.flags.priceType.Value(),
+			); err == nil {
+				return c.Context.Renderer.Render(response, optionChainsDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 
@@ -43,8 +51,8 @@ func (c *CommandMarketOptionChains) Command() *cobra.Command {
 
 	// Initialize Enum Flag Values
 	c.flags.optionCategory = *newEnumFlagValue(optionCategoryMap, constants.OptionCategoryNil)
-	c.flags.chainType = *newEnumFlagValue(chainTypeMap, constants.OptionChainTypeNil)
-	c.flags.priceType = *newEnumFlagValue(priceTypeMap, constants.OptionPriceTypeNil)
+	c.flags.chainType = *newEnumFlagValue(optionChainTypeMap, constants.OptionChainTypeNil)
+	c.flags.priceType = *newEnumFlagValue(optionPriceTypeMap, constants.OptionPriceTypeNil)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
@@ -81,44 +89,6 @@ func (c *CommandMarketOptionChains) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-func (c *CommandMarketOptionChains) GetOptionChains(symbol string) error {
-	response, err := c.Context.Client.GetOptionChains(
-		symbol,
-		c.flags.expiryYear, c.flags.expiryMonth, c.flags.expiryDay,
-		c.flags.strikePriceNear, c.flags.noOfStrikes, c.flags.includeWeekly, c.flags.skipAdjusted,
-		c.flags.optionCategory.Value(), c.flags.chainType.Value(), c.flags.priceType.Value(),
-	)
-	if err != nil {
-		return err
-	}
-	optionChains, err := etradelib.CreateETradeOptionChainPairListFromResponse(response)
-	if err != nil {
-		return err
-	}
-	err = c.Context.Renderer.Render(optionChains.AsJsonMap(), optionChainsDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-var optionCategoryMap = map[string]enumValueWithHelp[constants.OptionCategory]{
-	"standard": {constants.OptionCategoryStandard, "only standard options"},
-	"all":      {constants.OptionCategoryAll, "all options"},
-	"mini":     {constants.OptionCategoryMini, "only mini options"},
-}
-
-var chainTypeMap = map[string]enumValueWithHelp[constants.OptionChainType]{
-	"call":    {constants.OptionChainTypeCall, "only call options"},
-	"put":     {constants.OptionChainTypePut, "only put options"},
-	"callPut": {constants.OptionChainTypeCallPut, "call and put options"},
-}
-
-var priceTypeMap = map[string]enumValueWithHelp[constants.OptionPriceType]{
-	"extendedHours": {constants.OptionPriceTypeExtendedHours, "only extended hours price types"},
-	"all":           {constants.OptionPriceTypeAll, "all price types"},
 }
 
 var optionChainsDescriptor = []RenderDescriptor{

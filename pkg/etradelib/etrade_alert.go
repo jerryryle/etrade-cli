@@ -25,15 +25,15 @@ const (
 	alertAlertIdResponseKey = "id"
 )
 
-func CreateETradeAlert(alertJsonMap jsonmap.JsonMap) (ETradeAlert, error) {
-	alertId, err := alertJsonMap.GetInt(alertAlertIdResponseKey)
+func CreateETradeAlert(responseMap jsonmap.JsonMap) (ETradeAlert, error) {
+	alertId, err := responseMap.GetInt(alertAlertIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeAlert{
 		id:      alertId,
-		jsonMap: alertJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

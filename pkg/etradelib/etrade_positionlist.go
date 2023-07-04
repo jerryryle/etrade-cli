@@ -6,7 +6,7 @@ type ETradePositionList interface {
 	GetAllPositions() []ETradePosition
 	GetPositionById(positionID int64) ETradePosition
 	NextPage() string
-	AddPage(positionListResponseMap jsonmap.JsonMap) error
+	AddPage(responseMap jsonmap.JsonMap) error
 	AddPageFromResponse(response []byte) error
 	AsJsonMap() jsonmap.JsonMap
 }
@@ -67,8 +67,8 @@ const (
 	// positionListPositionsResponsePath is the path to a slice of positions.
 	positionListPositionsResponsePath = ".portfolioResponse.accountPortfolio[0].position"
 
-	// positionListNextPagePath is the path to the next page number string
-	positionListNextPagePath = ".portfolioResponse.accountPortfolio[0].nextPageNo"
+	// positionListNextPageResponsePath is the path to the next page number string
+	positionListNextPageResponsePath = ".portfolioResponse.accountPortfolio[0].nextPageNo"
 )
 
 func CreateETradePositionListFromResponse(response []byte) (ETradePositionList, error) {
@@ -79,9 +79,9 @@ func CreateETradePositionListFromResponse(response []byte) (ETradePositionList, 
 	return CreateETradePositionList(responseMap)
 }
 
-func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePositionList, error) {
+func CreateETradePositionList(responseMap jsonmap.JsonMap) (ETradePositionList, error) {
 	// the totals are optional, so ignore any error and accept a possibly-nil map.
-	totalsMap, _ := positionListResponseMap.GetMapAtPath(positionListTotalsResponsePath)
+	totalsMap, _ := responseMap.GetMapAtPath(positionListTotalsResponsePath)
 
 	// Create a new positionList with the totals and everything else
 	// initialized to its zero value.
@@ -90,7 +90,7 @@ func CreateETradePositionList(positionListResponseMap jsonmap.JsonMap) (ETradePo
 		totalsMap: totalsMap,
 		nextPage:  "",
 	}
-	err := positionList.AddPage(positionListResponseMap)
+	err := positionList.AddPage(responseMap)
 	if err != nil {
 		return nil, err
 	}
@@ -122,15 +122,15 @@ func (e *eTradePositionList) AddPageFromResponse(response []byte) error {
 	return e.AddPage(responseMap)
 }
 
-func (e *eTradePositionList) AddPage(positionListResponseMap jsonmap.JsonMap) error {
-	positionsSlice, err := positionListResponseMap.GetSliceOfMapsAtPath(positionListPositionsResponsePath)
+func (e *eTradePositionList) AddPage(responseMap jsonmap.JsonMap) error {
+	positionsSlice, err := responseMap.GetSliceOfMapsAtPath(positionListPositionsResponsePath)
 	if err != nil {
 		return err
 	}
 
 	// the nextPage key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
-	nextPage, _ := positionListResponseMap.GetStringAtPath(positionListNextPagePath)
+	nextPage, _ := responseMap.GetStringAtPath(positionListNextPageResponsePath)
 
 	allPositions := make([]ETradePosition, 0, len(positionsSlice))
 	for _, positionJsonMap := range positionsSlice {

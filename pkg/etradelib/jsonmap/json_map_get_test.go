@@ -33,7 +33,7 @@ func TestJsonMap_GetValue(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := testMap.GetValue(tt.testKey)
@@ -477,7 +477,7 @@ func TestJsonMap_GetType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testMap)
@@ -526,7 +526,7 @@ func TestJsonMap_GetValueWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue := testMap.GetValueWithDefault(tt.testKey, tt.testDefault)
@@ -875,7 +875,7 @@ func TestJsonMap_GetTypeWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testMap)
@@ -980,7 +980,7 @@ func TestJsonMap_GetValueAtPath(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := testMap.GetValueAtPath(tt.testPath)
@@ -1226,7 +1226,7 @@ func TestJsonMap_GetTypeAtPath(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testMap)
@@ -1331,7 +1331,7 @@ func TestJsonMap_GetValueAtPathWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue := testMap.GetValueAtPathWithDefault(tt.testPath, tt.testDefault)
@@ -1680,7 +1680,7 @@ func TestJsonMap_GetTypeAtPathWithDefault(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(
 			tt.name, func(t *testing.T) {
-				testMap, err := NewMapFromJsonString(tt.testJson)
+				testMap, err := NewJsonMapFromJsonString(tt.testJson)
 				assert.Nil(t, err)
 				// Call the Method Under Test
 				actualValue, err := tt.testFn(&testMap)

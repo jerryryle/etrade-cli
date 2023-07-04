@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 	"os"
 	"time"
@@ -33,16 +33,24 @@ func (c *CommandAuthLogin) Login(customerId string) error {
 		return err
 	}
 
-	authUrl, err := eTradeClient.Authenticate()
+	response, err := eTradeClient.Authenticate()
 	if err != nil {
 		return err
 	}
-	if authUrl != "" {
-		// If the Authenticate() method returns an auth url, then show it to
-		// the user and get a validation code
-		_, _ = fmt.Fprintf(os.Stderr, "Visit this URL to get a validation code:\n%s\n\n", authUrl)
-		// Prompt the user to visit the auth URL to get a validation code.
-		// Then wait for them to input the code.
+	authStatus, err := etradelib.CreateETradeAuthenticationStatusFromResponse(response)
+	if err != nil {
+		return err
+	}
+
+	statusMap := authStatus.AsJsonMap()
+
+	if authStatus.NeedAuthorization() {
+		// If the Authenticate() method requires authorization, then prompt the
+		// user to visit the authorization URL and get a validation code.
+		_, _ = fmt.Fprintf(
+			os.Stderr, "Visit this URL to get a validation code:\n%s\n\n", authStatus.GetAuthorizationUrl(),
+		)
+		// Wait for the user to input the code.
 		var validationCode string
 		_, _ = fmt.Fprintf(os.Stderr, "Enter validation code: ")
 		_, err = fmt.Scanln(&validationCode)
@@ -54,10 +62,15 @@ func (c *CommandAuthLogin) Login(customerId string) error {
 		}
 
 		// Verify the code.
-		err = eTradeClient.Verify(validationCode)
+		response, err = eTradeClient.Verify(validationCode)
 		if err != nil {
 			return err
 		}
+		verifyStatus, err := etradelib.CreateETradeStatusFromResponse(response)
+		if err != nil {
+			return err
+		}
+		statusMap = verifyStatus.AsJsonMap()
 	}
 	// Store new or renewed credentials to the cache file.
 	consumerKey, _, accessToken, accessSecret := eTradeClient.GetKeys()
@@ -67,10 +80,7 @@ func (c *CommandAuthLogin) Login(customerId string) error {
 		return err
 	}
 
-	resultMap := jsonmap.JsonMap{
-		"status": "success",
-	}
-	return c.Context.Renderer.Render(resultMap, loginDescriptor)
+	return c.Context.Renderer.Render(statusMap, loginDescriptor)
 }
 
 var loginDescriptor = []RenderDescriptor{

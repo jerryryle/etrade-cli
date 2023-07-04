@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 )
 
@@ -16,26 +15,15 @@ func (c *CommandMarketLookup) Command() *cobra.Command {
 		Long:  "Look up products based on a full or partial match of any part of the company name.",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.Lookup(args[0])
+			search := args[0]
+			if response, err := Lookup(c.Context.Client, search); err == nil {
+				return c.Context.Renderer.Render(response, resultListDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	return cmd
-}
-
-func (c *CommandMarketLookup) Lookup(search string) error {
-	response, err := c.Context.Client.LookupProduct(search)
-	if err != nil {
-		return err
-	}
-	lookupResultsList, err := etradelib.CreateETradeLookupResultListFromResponse(response)
-	if err != nil {
-		return err
-	}
-	err = c.Context.Renderer.Render(lookupResultsList.AsJsonMap(), resultListDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var resultListDescriptor = []RenderDescriptor{

@@ -31,34 +31,34 @@ func createMockClient(
 }
 
 func TestETradeClient_Authenticate(t *testing.T) {
-	type testFn func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (string, error)
+	type testFn func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) ([]byte, error)
 
 	tests := []struct {
 		name            string
 		testConsumerKey string
 		testFn          testFn
-		expectAuthUrl   string
+		expectResponse  []byte
 		expectErr       bool
 	}{
 		{
 			name:            "Authenticate Returns Empty Auth URL On Successful Renewal",
 			testConsumerKey: "TestConsumerKey",
 			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (
-				string, error,
+				[]byte, error,
 			) {
 				clientMock.On(
 					"Do", "GET", "https://api.etrade.com/oauth/renew_access_token",
 				).Return(http.StatusOK, "", nil)
 				return testClient.Authenticate()
 			},
-			expectAuthUrl: "",
-			expectErr:     false,
+			expectResponse: []byte(`{"status":"success"}` + "\n"),
+			expectErr:      false,
 		},
 		{
 			name:            "Authenticate Returns Auth URL On Unsuccessful Renewal",
 			testConsumerKey: "TestConsumerKey",
 			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (
-				string, error,
+				[]byte, error,
 			) {
 				clientMock.On(
 					"Do", "GET", "https://api.etrade.com/oauth/renew_access_token",
@@ -66,28 +66,28 @@ func TestETradeClient_Authenticate(t *testing.T) {
 				configMock.On("RequestToken").Return("TestToken", "TestKey", nil)
 				return testClient.Authenticate()
 			},
-			expectAuthUrl: "https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=TestToken",
-			expectErr:     false,
+			expectResponse: []byte(`{"authorizationUrl":"https://us.etrade.com/e/t/etws/authorize?key=TestConsumerKey&token=TestToken","status":"authorize"}` + "\n"),
+			expectErr:      false,
 		},
 		{
 			name:            "Authenticate Fails On HTTP Error",
 			testConsumerKey: "TestConsumerKey",
 			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (
-				string, error,
+				[]byte, error,
 			) {
 				clientMock.On(
 					"Do", "GET", "https://api.etrade.com/oauth/renew_access_token",
 				).Return(http.StatusBadRequest, "", nil)
 				return testClient.Authenticate()
 			},
-			expectAuthUrl: "",
-			expectErr:     true,
+			expectResponse: nil,
+			expectErr:      true,
 		},
 		{
 			name:            "Authenticate Returns Error On RequestToken Failure",
 			testConsumerKey: "TestConsumerKey",
 			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (
-				string, error,
+				[]byte, error,
 			) {
 				clientMock.On(
 					"Do", "GET", "https://api.etrade.com/oauth/renew_access_token",
@@ -95,8 +95,8 @@ func TestETradeClient_Authenticate(t *testing.T) {
 				configMock.On("RequestToken").Return("", "", errors.New("test error"))
 				return testClient.Authenticate()
 			},
-			expectAuthUrl: "",
-			expectErr:     true,
+			expectResponse: nil,
+			expectErr:      true,
 		},
 	}
 
@@ -107,13 +107,13 @@ func TestETradeClient_Authenticate(t *testing.T) {
 				clientMock := new(httpClientMock)
 				testClient := createMockClient(clientMock, configMock, true, tt.testConsumerKey, "", "", "", "", "")
 				// Call the Method Under Test
-				actualAuthUrl, err := tt.testFn(testClient, clientMock, configMock)
+				actualResponse, err := tt.testFn(testClient, clientMock, configMock)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
-				assert.Equal(t, tt.expectAuthUrl, actualAuthUrl)
+				assert.Equal(t, tt.expectResponse, actualResponse)
 				clientMock.AssertExpectations(t)
 				configMock.AssertExpectations(t)
 			},
@@ -122,20 +122,23 @@ func TestETradeClient_Authenticate(t *testing.T) {
 }
 
 func TestETradeClient_Verify(t *testing.T) {
-	type testFn func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) error
+	type testFn func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) ([]byte, error)
 
 	tests := []struct {
 		name              string
 		testRequestToken  string
 		testRequestSecret string
 		testFn            testFn
+		expectResponse    []byte
 		expectErr         bool
 	}{
 		{
 			name:              "Verify Succeeds",
 			testRequestToken:  "TestRequestToken",
 			testRequestSecret: "TestRequestSecret",
-			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) error {
+			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (
+				[]byte, error,
+			) {
 				configMock.On(
 					"AccessToken", "TestRequestToken", "TestRequestSecret", "TestVerifyKey",
 				).Return("TestAccessToken", "TestAccessSecret", nil)
@@ -144,19 +147,23 @@ func TestETradeClient_Verify(t *testing.T) {
 				).Return(&http.Client{}, nil)
 				return testClient.Verify("TestVerifyKey")
 			},
-			expectErr: false,
+			expectResponse: []byte(`{"status":"success"}` + "\n"),
+			expectErr:      false,
 		},
 		{
 			name:              "Verify Fails On Access Token Error",
 			testRequestToken:  "TestRequestToken",
 			testRequestSecret: "TestRequestSecret",
-			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) error {
+			testFn: func(testClient ETradeClient, clientMock *httpClientMock, configMock *oAuthConfigMock) (
+				[]byte, error,
+			) {
 				configMock.On(
 					"AccessToken", "TestRequestToken", "TestRequestSecret", "TestVerifyKey",
 				).Return("", "", errors.New("test error"))
 				return testClient.Verify("TestVerifyKey")
 			},
-			expectErr: true,
+			expectResponse: nil,
+			expectErr:      true,
 		},
 	}
 
@@ -173,12 +180,13 @@ func TestETradeClient_Verify(t *testing.T) {
 					tt.testRequestSecret, "", "",
 				)
 				// Call the Method Under Test
-				err := tt.testFn(testClient, clientMock, configMock)
+				actualResponse, err := tt.testFn(testClient, clientMock, configMock)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {
 					assert.Nil(t, err)
 				}
+				assert.Equal(t, tt.expectResponse, actualResponse)
 				clientMock.AssertExpectations(t)
 				configMock.AssertExpectations(t)
 			},

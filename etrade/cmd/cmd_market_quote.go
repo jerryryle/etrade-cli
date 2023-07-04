@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -24,7 +23,28 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 		Long:  "Get quotes for one or more symbols",
 		Args:  cobra.MatchAll(cobra.MaximumNArgs(50)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.GetQuotes(args)
+			symbols := args
+			if response, err := GetQuotes(
+				c.Context.Client, symbols, c.flags.detail.Value(), c.flags.requireEarningsDate,
+				c.flags.skipMiniOptionsCheck,
+			); err == nil {
+				renderDescriptor := quoteListAllDescriptor
+				switch c.flags.detail.Value() {
+				case constants.QuoteDetailFundamental:
+					renderDescriptor = quoteListFundamentalDescriptor
+				case constants.QuoteDetailIntraday:
+					renderDescriptor = quoteListIntradayDescriptor
+				case constants.QuoteDetailOptions:
+					renderDescriptor = quoteListOptionDescriptor
+				case constants.QuoteDetailWeek52:
+					renderDescriptor = quoteListWeek52Descriptor
+				case constants.QuoteDetailMutualFund:
+					renderDescriptor = quoteListMutualFundDescriptor
+				}
+				return c.Context.Renderer.Render(response, renderDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	// Add Flags
@@ -37,7 +57,7 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 	)
 
 	// Initialize Enum Flag Values
-	c.flags.detail = *newEnumFlagValue(detailMap, constants.QuoteDetailAll)
+	c.flags.detail = *newEnumFlagValue(quoteDetailMap, constants.QuoteDetailAll)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
@@ -52,48 +72,6 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-func (c *CommandMarketQuote) GetQuotes(symbols []string) error {
-	response, err := c.Context.Client.GetQuotes(
-		symbols, c.flags.detail.Value(), c.flags.requireEarningsDate, c.flags.skipMiniOptionsCheck,
-	)
-	if err != nil {
-		return err
-	}
-	quoteList, err := etradelib.CreateETradeQuoteListFromResponse(response)
-	if err != nil {
-		return err
-	}
-
-	renderDescriptor := quoteListAllDescriptor
-	switch c.flags.detail.Value() {
-	case constants.QuoteDetailFundamental:
-		renderDescriptor = quoteListFundamentalDescriptor
-	case constants.QuoteDetailIntraday:
-		renderDescriptor = quoteListIntradayDescriptor
-	case constants.QuoteDetailOptions:
-		renderDescriptor = quoteListOptionDescriptor
-	case constants.QuoteDetailWeek52:
-		renderDescriptor = quoteListWeek52Descriptor
-	case constants.QuoteDetailMutualFund:
-		renderDescriptor = quoteListMutualFundDescriptor
-	}
-
-	err = c.Context.Renderer.Render(quoteList.AsJsonMap(), renderDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-var detailMap = map[string]enumValueWithHelp[constants.QuoteDetailFlag]{
-	"all":         {constants.QuoteDetailAll, "get all details"},
-	"fundamental": {constants.QuoteDetailFundamental, "get fundamental details"},
-	"intraday":    {constants.QuoteDetailIntraday, "get intraday details"},
-	"options":     {constants.QuoteDetailOptions, "get options details"},
-	"week52":      {constants.QuoteDetailWeek52, "get 52-week details"},
-	"mutualFund":  {constants.QuoteDetailMutualFund, "get mutual fund details"},
 }
 
 var quoteListMessagesDescriptor = RenderDescriptor{

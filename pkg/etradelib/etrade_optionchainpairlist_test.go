@@ -243,6 +243,90 @@ func TestCreateETradeOptionChainPairListFromResponse(t *testing.T) {
 				selected:  nil,
 			},
 		},
+		{
+			name: "Fails If Wrong Type For timeStamp",
+			testJson: `
+{
+  "OptionChainResponse": {
+    "OptionPair": [
+      {
+        "key1": "value1"
+      }
+    ],
+    "timeStamp": [1234],
+    "quoteType": "1234",
+    "nearPrice": 123.4,
+    "SelectedED": {
+      "key2": "value2"
+    }
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails If Wrong Type For quoteType",
+			testJson: `
+{
+  "OptionChainResponse": {
+    "OptionPair": [
+      {
+        "key1": "value1"
+      }
+    ],
+    "timeStamp": 1234,
+    "quoteType": ["1234"],
+    "nearPrice": 123.4,
+    "SelectedED": {
+      "key2": "value2"
+    }
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails If Wrong Type For nearPrice",
+			testJson: `
+{
+  "OptionChainResponse": {
+    "OptionPair": [
+      {
+        "key1": "value1"
+      }
+    ],
+    "timeStamp": 1234,
+    "quoteType": "1234",
+    "nearPrice": [123.4],
+    "SelectedED": {
+      "key2": "value2"
+    }
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
+		{
+			name: "Fails If Wrong Type For SelectedED",
+			testJson: `
+{
+  "OptionChainResponse": {
+    "OptionPair": [
+      {
+        "key1": "value1"
+      }
+    ],
+    "timeStamp": 1234,
+    "quoteType": "1234",
+    "nearPrice": 123.4,
+    "SelectedED": [{
+      "key2": "value2"
+    }]
+  }
+}`,
+			expectErr:   true,
+			expectValue: nil,
+		},
 	}
 
 	for _, tt := range tests {

@@ -50,14 +50,14 @@ func CreateETradeAccountListFromResponse(response []byte) (ETradeAccountList, er
 	return CreateETradeAccountList(responseMap)
 }
 
-func CreateETradeAccountList(accountListResponseMap jsonmap.JsonMap) (ETradeAccountList, error) {
-	accountsSlice, err := accountListResponseMap.GetSliceOfMapsAtPath(accountsListAccountsResponsePath)
+func CreateETradeAccountList(responseMap jsonmap.JsonMap) (ETradeAccountList, error) {
+	accountsSlice, err := responseMap.GetSliceOfMapsAtPath(accountsListAccountsResponsePath)
 	if err != nil {
 		return nil, err
 	}
 	allAccounts := make([]ETradeAccount, 0, len(accountsSlice))
 	for _, accountJsonMap := range accountsSlice {
-		account, err := CreateETradeAccount(accountJsonMap)
+		account, err := CreateETradeAccountFromMap(accountJsonMap)
 		if err != nil {
 			return nil, err
 		}

@@ -4,7 +4,7 @@ import "github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 
 type ETradePosition interface {
 	GetId() int64
-	AddLots(lotsResponseMap jsonmap.JsonMap) error
+	AddLots(responseMap jsonmap.JsonMap) error
 	AddLotsFromResponse(response []byte) error
 	AsJsonMap() jsonmap.JsonMap
 }
@@ -56,15 +56,15 @@ const (
 	positionLotsPositionLotResponsePath = "positionLotsResponse.positionLot"
 )
 
-func CreateETradePosition(positionJsonMap jsonmap.JsonMap) (ETradePosition, error) {
-	positionId, err := positionJsonMap.GetInt(positionPositionIdResponseKey)
+func CreateETradePosition(responseMap jsonmap.JsonMap) (ETradePosition, error) {
+	positionId, err := responseMap.GetInt(positionPositionIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradePosition{
 		id:      positionId,
-		jsonMap: positionJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 
@@ -76,8 +76,8 @@ func (e *eTradePosition) AsJsonMap() jsonmap.JsonMap {
 	return e.jsonMap
 }
 
-func (e *eTradePosition) AddLots(lotsResponseMap jsonmap.JsonMap) error {
-	lotsSlice, err := lotsResponseMap.GetSliceAtPath(positionLotsPositionLotResponsePath)
+func (e *eTradePosition) AddLots(responseMap jsonmap.JsonMap) error {
+	lotsSlice, err := responseMap.GetSliceAtPath(positionLotsPositionLotResponsePath)
 	if err != nil {
 		return err
 	}

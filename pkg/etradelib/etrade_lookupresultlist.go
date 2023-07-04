@@ -47,8 +47,8 @@ func CreateETradeLookupResultListFromResponse(response []byte) (ETradeLookupResu
 	return CreateETradeLookupResultList(responseMap)
 }
 
-func CreateETradeLookupResultList(lookupListResponseMap jsonmap.JsonMap) (ETradeLookupResultList, error) {
-	resultsSlice, err := lookupListResponseMap.GetSliceOfMapsAtPath(lookupResultListResultsResponsePath)
+func CreateETradeLookupResultList(responseMap jsonmap.JsonMap) (ETradeLookupResultList, error) {
+	resultsSlice, err := responseMap.GetSliceOfMapsAtPath(lookupResultListResultsResponsePath)
 	if err != nil {
 		return nil, err
 	}

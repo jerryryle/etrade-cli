@@ -12,9 +12,9 @@ type eTradeOptionChainPair struct {
 	jsonMap jsonmap.JsonMap
 }
 
-func CreateETradeOptionChainPair(lookupJsonMap jsonmap.JsonMap) (ETradeOptionChainPair, error) {
+func CreateETradeOptionChainPair(responseMap jsonmap.JsonMap) (ETradeOptionChainPair, error) {
 	return &eTradeOptionChainPair{
-		jsonMap: lookupJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

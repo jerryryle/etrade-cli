@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 )
@@ -23,12 +22,17 @@ func (c *CommandMarketOptionExpire) Command() *cobra.Command {
 		Long:  "Get option expire dates for a specific underlying instrument",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.GetOptionExpireDates(args[0])
+			symbol := args[0]
+			if response, err := GetOptionExpireDates(c.Context.Client, symbol, c.flags.expiryType.Value()); err == nil {
+				return c.Context.Renderer.Render(response, optionExpireDatesDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 
 	// Initialize Enum Flag Values
-	c.flags.expiryType = *newEnumFlagValue(expiryTypeMap, constants.OptionExpiryTypeNil)
+	c.flags.expiryType = *newEnumFlagValue(optionExpiryTypeMap, constants.OptionExpiryTypeNil)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(
@@ -43,33 +47,6 @@ func (c *CommandMarketOptionExpire) Command() *cobra.Command {
 	)
 
 	return cmd
-}
-
-func (c *CommandMarketOptionExpire) GetOptionExpireDates(symbol string) error {
-	response, err := c.Context.Client.GetOptionExpireDates(symbol, c.flags.expiryType.Value())
-	if err != nil {
-		return err
-	}
-	optionExpireDates, err := etradelib.CreateETradeOptionExpireDateListFromResponse(response)
-	if err != nil {
-		return err
-	}
-	err = c.Context.Renderer.Render(optionExpireDates.AsJsonMap(), optionExpireDatesDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-var expiryTypeMap = map[string]enumValueWithHelp[constants.OptionExpiryType]{
-	"unspecified": {constants.OptionExpiryTypeUnspecified, "unspecified expiry type"},
-	"daily":       {constants.OptionExpiryTypeDaily, "daily expiry type"},
-	"weekly":      {constants.OptionExpiryTypeWeekly, "weekly expiry type"},
-	"monthly":     {constants.OptionExpiryTypeMonthly, "monthly expiry type"},
-	"quarterly":   {constants.OptionExpiryTypeQuarterly, "quarterly expiry type"},
-	"vix":         {constants.OptionExpiryTypeVix, "VIX expiry type"},
-	"all":         {constants.OptionExpiryTypeAll, "all expiry types"},
-	"monthEnd":    {constants.OptionExpiryTypeMonthEnd, "month-end expiry type"},
 }
 
 var optionExpireDatesDescriptor = []RenderDescriptor{

@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"github.com/spf13/cobra"
 )
 
@@ -26,35 +25,14 @@ func (c *CommandCfgList) Command(globalFlags *globalFlags) *cobra.Command {
 			return c.context.Close()
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.ListConfig()
+			if response, err := GetCustomerList(c.context.CustomerConfigurationStore); err == nil {
+				return c.context.Renderer.Render(response, cfgListDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	return cmd
-}
-
-func (c *CommandCfgList) ListConfig() error {
-	customerSlice := jsonmap.JsonSlice{}
-	for customerId, customerConfig := range c.context.CustomerConfigurationStore.GetAllConfigurations() {
-		customerMap := jsonmap.JsonMap{}
-		if err := customerMap.SetString("customerId", customerId); err != nil {
-			return err
-		}
-		if err := customerMap.SetString("customerName", customerConfig.CustomerName); err != nil {
-			return err
-		}
-		if err := customerMap.SetBool("productionAccess", customerConfig.CustomerProduction); err != nil {
-			return err
-		}
-		customerSlice = append(customerSlice, customerMap)
-	}
-
-	resultMap := jsonmap.JsonMap{
-		"customers": customerSlice,
-	}
-	if err := c.context.Renderer.Render(resultMap, cfgListDescriptor); err != nil {
-		return err
-	}
-	return nil
 }
 
 var cfgListDescriptor = []RenderDescriptor{

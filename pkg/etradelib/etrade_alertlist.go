@@ -48,8 +48,8 @@ func CreateETradeAlertListFromResponse(response []byte) (ETradeAlertList, error)
 	return CreateETradeAlertList(responseMap)
 }
 
-func CreateETradeAlertList(alertListResponseMap jsonmap.JsonMap) (ETradeAlertList, error) {
-	alertsSlice, err := alertListResponseMap.GetSliceOfMapsAtPath(alertListAlertsResponsePath)
+func CreateETradeAlertList(responseMap jsonmap.JsonMap) (ETradeAlertList, error) {
+	alertsSlice, err := responseMap.GetSliceOfMapsAtPath(alertListAlertsResponsePath)
 	if err != nil {
 		return nil, err
 	}

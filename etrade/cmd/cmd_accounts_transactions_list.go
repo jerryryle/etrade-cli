@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
+	"fmt"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
 	"github.com/spf13/cobra"
 	"time"
@@ -11,6 +11,7 @@ import (
 type accountsTransactionsListFlags struct {
 	startDate string
 	endDate   string
+	sortOrder enumFlagValue[constants.SortOrder]
 }
 
 type CommandAccountsTransactionsList struct {
@@ -25,71 +26,52 @@ func (c *CommandAccountsTransactionsList) Command() *cobra.Command {
 		Long:  "List transactions for account",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			accountId := args[0]
 			var startDate, endDate *time.Time = nil, nil
-			var err error
 			if c.flags.startDate != "" {
+				var err error
 				*startDate, err = time.Parse("01022006", c.flags.startDate)
 				if err != nil {
 					return errors.New("start date must be in format MMDDYYYY")
 				}
 			}
 			if c.flags.endDate != "" {
+				var err error
 				*endDate, err = time.Parse("01022006", c.flags.startDate)
 				if err != nil {
 					return errors.New("end date must be in format MMDDYYYY")
 				}
 			}
-			return c.ListTransactions(args[0], startDate, endDate)
+			if response, err := ListTransactions(
+				c.Context.Client, accountId, startDate, endDate, c.flags.sortOrder.Value(),
+			); err == nil {
+				return c.Context.Renderer.Render(response, transactionListDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
+
+	// Add Flags
 	cmd.Flags().StringVarP(&c.flags.startDate, "start-date", "s", "", "start date (MMDDYYYY)")
 	cmd.Flags().StringVarP(&c.flags.endDate, "end-date", "e", "", "end date (MMDDYYYY)")
-	return cmd
-}
 
-func (c *CommandAccountsTransactionsList) ListTransactions(
-	accountId string, startDate *time.Time, endDate *time.Time,
-) error {
-	// This determines how many transaction items will be retrieved in each
-	// request. This should normally be set to the max for efficiency, but can
-	// be lowered to test the pagination logic.
-	const countPerRequest = constants.TransactionsMaxCount
+	// Initialize Enum Flag Values
+	c.flags.sortOrder = *newEnumFlagValue(sortOrderMap, constants.SortOrderNil)
 
-	account, err := GetAccountById(c.Context.Client, accountId)
-	if err != nil {
-		return err
-	}
-	response, err := c.Context.Client.ListTransactions(
-		account.GetIdKey(),
-		startDate, endDate, constants.SortOrderAsc, "", countPerRequest,
+	// Add Enum Flags
+	cmd.Flags().VarP(
+		&c.flags.sortOrder, "sort-order", "o",
+		fmt.Sprintf("sort order (%s)", c.flags.sortOrder.JoinAllowedValues(", ")),
 	)
-	if err != nil {
-		return err
-	}
-	transactionList, err := etradelib.CreateETradeTransactionListFromResponse(response)
-	if err != nil {
-		return err
-	}
+	_ = cmd.RegisterFlagCompletionFunc(
+		"sort-order",
+		func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return c.flags.sortOrder.AllowedValuesWithHelp(), cobra.ShellCompDirectiveDefault
+		},
+	)
 
-	for transactionList.NextPage() != "" {
-		response, err = c.Context.Client.ListTransactions(
-			account.GetIdKey(),
-			startDate, endDate, constants.SortOrderAsc, transactionList.NextPage(), countPerRequest,
-		)
-		if err != nil {
-			return err
-		}
-		err = transactionList.AddPageFromResponse(response)
-		if err != nil {
-			return err
-		}
-	}
-
-	err = c.Context.Renderer.Render(transactionList.AsJsonMap(), transactionListDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
+	return cmd
 }
 
 var transactionListDescriptor = []RenderDescriptor{

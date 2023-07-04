@@ -11,7 +11,7 @@ type jsonRenderer struct {
 }
 
 func (j *jsonRenderer) Render(jsonMap jsonmap.JsonMap, _ []RenderDescriptor) error {
-	return jsonMap.ToIoWriter(j.outputFile, j.pretty)
+	return jsonMap.ToIoWriter(j.outputFile, j.pretty, false)
 }
 
 func (j *jsonRenderer) Close() error {

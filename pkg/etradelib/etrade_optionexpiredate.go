@@ -12,9 +12,9 @@ type eTradeOptionExpireDate struct {
 	jsonMap jsonmap.JsonMap
 }
 
-func CreateETradeOptionExpireDate(lookupJsonMap jsonmap.JsonMap) (ETradeOptionExpireDate, error) {
+func CreateETradeOptionExpireDate(responseMap jsonmap.JsonMap) (ETradeOptionExpireDate, error) {
 	return &eTradeOptionExpireDate{
-		jsonMap: lookupJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

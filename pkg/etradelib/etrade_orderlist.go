@@ -6,7 +6,7 @@ type ETradeOrderList interface {
 	GetAllOrders() []ETradeOrder
 	GetOrderById(orderID int64) ETradeOrder
 	NextPage() string
-	AddPage(orderListResponseMap jsonmap.JsonMap) error
+	AddPage(responseMap jsonmap.JsonMap) error
 	AddPageFromResponse(response []byte) error
 	AsJsonMap() jsonmap.JsonMap
 }
@@ -59,13 +59,13 @@ func CreateETradeOrderListFromResponse(response []byte) (
 	return CreateETradeOrderList(responseMap)
 }
 
-func CreateETradeOrderList(orderListResponseMap jsonmap.JsonMap) (ETradeOrderList, error) {
+func CreateETradeOrderList(responseMap jsonmap.JsonMap) (ETradeOrderList, error) {
 	// Create a new orderList with everything initialized to its zero value.
 	orderList := eTradeOrderList{
 		orders:   []ETradeOrder{},
 		nextPage: "",
 	}
-	err := orderList.AddPage(orderListResponseMap)
+	err := orderList.AddPage(responseMap)
 	if err != nil {
 		return nil, err
 	}
@@ -97,15 +97,15 @@ func (e *eTradeOrderList) AddPageFromResponse(response []byte) error {
 	return e.AddPage(responseMap)
 }
 
-func (e *eTradeOrderList) AddPage(orderListResponseMap jsonmap.JsonMap) error {
-	ordersSlice, err := orderListResponseMap.GetSliceOfMapsAtPath(orderListOrdersResponsePath)
+func (e *eTradeOrderList) AddPage(responseMap jsonmap.JsonMap) error {
+	ordersSlice, err := responseMap.GetSliceOfMapsAtPath(orderListOrdersResponsePath)
 	if err != nil {
 		return err
 	}
 
 	// the marker key only appears if there are more pages, so ignore any
 	// error and accept a possibly-zero int.
-	nextPage, _ := orderListResponseMap.GetStringAtPath(orderListMarkerResponsePath)
+	nextPage, _ := responseMap.GetStringAtPath(orderListMarkerResponsePath)
 
 	allOrders := make([]ETradeOrder, 0, len(ordersSlice))
 	for _, orderJsonMap := range ordersSlice {

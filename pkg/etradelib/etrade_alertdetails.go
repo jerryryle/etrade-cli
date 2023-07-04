@@ -35,22 +35,22 @@ func CreateETradeAlertDetailsFromResponse(response []byte) (ETradeAlertDetails, 
 	return CreateETradeAlertDetails(responseMap)
 }
 
-func CreateETradeAlertDetails(alertDetailsJsonMap jsonmap.JsonMap) (ETradeAlertDetails, error) {
+func CreateETradeAlertDetails(responseMap jsonmap.JsonMap) (ETradeAlertDetails, error) {
 	var err error
 	// Flatten the response by removing the "alertDetailsResponse" level
-	alertDetailsJsonMap, err = alertDetailsJsonMap.GetMap(alertDetailsAlertDetailsResponseKey)
+	responseMap, err = responseMap.GetMap(alertDetailsAlertDetailsResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
-	alertId, err := alertDetailsJsonMap.GetInt(alertDetailsAlertIdResponseKey)
+	alertId, err := responseMap.GetInt(alertDetailsAlertIdResponseKey)
 	if err != nil {
 		return nil, err
 	}
 
 	return &eTradeAlertDetails{
 		id:      alertId,
-		jsonMap: alertDetailsJsonMap,
+		jsonMap: responseMap,
 	}, nil
 }
 

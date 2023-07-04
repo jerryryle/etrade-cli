@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestCreateETradeAccount(t *testing.T) {
+func TestCreateETradeAccountFromMap(t *testing.T) {
 	tests := []struct {
 		name        string
 		testJson    string
@@ -42,7 +42,7 @@ func TestCreateETradeAccount(t *testing.T) {
 			expectValue: nil,
 		},
 		{
-			name: "CreateETradeAccount Fails If Missing Account ID Key",
+			name: "CreateETradeAccountFromMap Fails If Missing Account ID Key",
 			testJson: `
 {
   "accountId": "Account 1 ID",
@@ -59,7 +59,7 @@ func TestCreateETradeAccount(t *testing.T) {
 				responseMap, err := NewNormalizedJsonMap([]byte(tt.testJson))
 				require.Nil(t, err)
 				// Call the Method Under Test
-				actualValue, err := CreateETradeAccount(responseMap)
+				actualValue, err := CreateETradeAccountFromMap(responseMap)
 				if tt.expectErr {
 					assert.Error(t, err)
 				} else {

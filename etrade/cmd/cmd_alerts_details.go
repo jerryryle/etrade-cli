@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"github.com/jerryryle/etrade-cli/pkg/etradelib"
 	"github.com/spf13/cobra"
 )
 
@@ -16,26 +15,15 @@ func (c *CommandAlertsDetails) Command() *cobra.Command {
 		Long:  "Show alert details for alert with ID",
 		Args:  cobra.MatchAll(cobra.ExactArgs(1)),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return c.ListAlertDetails(args[0])
+			alertId := args[0]
+			if response, err := ListAlertDetails(c.Context.Client, alertId); err == nil {
+				return c.Context.Renderer.Render(response, alertDetailsDescriptor)
+			} else {
+				return err
+			}
 		},
 	}
 	return cmd
-}
-
-func (c *CommandAlertsDetails) ListAlertDetails(alertId string) error {
-	response, err := c.Context.Client.ListAlertDetails(alertId, false)
-	if err != nil {
-		return err
-	}
-	alertDetails, err := etradelib.CreateETradeAlertDetailsFromResponse(response)
-	if err != nil {
-		return err
-	}
-	err = c.Context.Renderer.Render(alertDetails.AsJsonMap(), alertDetailsDescriptor)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 var alertDetailsDescriptor = []RenderDescriptor{

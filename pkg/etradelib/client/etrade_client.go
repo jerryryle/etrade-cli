@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/dghubble/oauth1"
 	"github.com/jerryryle/etrade-cli/pkg/etradelib/client/constants"
+	"github.com/jerryryle/etrade-cli/pkg/etradelib/jsonmap"
 	"golang.org/x/exp/slog"
 	"io"
 	"net/http"
@@ -14,9 +15,9 @@ import (
 )
 
 type ETradeClient interface {
-	Authenticate() (string, error)
+	Authenticate() ([]byte, error)
 
-	Verify(verifyKey string) error
+	Verify(verifyKey string) ([]byte, error)
 
 	GetKeys() (consumerKey string, consumerSecret string, accessToken string, accessSecret string)
 
@@ -128,21 +129,21 @@ func IsAuthFailed(err error) bool {
 
 const queryDateLayout = "01022006"
 
-func (c *eTradeClient) Authenticate() (string, error) {
+func (c *eTradeClient) Authenticate() ([]byte, error) {
 	_, err := c.doRequest("GET", c.urls.RenewAccessTokenUrl(), nil)
 	// If access token renewal succeeded, then we're done. Return success.
 	if err == nil {
-		return "", nil
+		return NewStatusResponse("success"), nil
 	}
 	// If the error is anything other than an auth failure, then fail.
 	if !IsAuthFailed(err) {
-		return "", err
+		return nil, err
 	}
 	// If access token renewal failed, then begin a new auth session by
 	// requesting a new token.
 	c.requestToken, c.requestSecret, err = c.config.RequestToken()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	// Format and return the authorization string
 	authorizeUrl, err := url.Parse(c.urls.AuthorizeApplicationUrl())
@@ -150,20 +151,20 @@ func (c *eTradeClient) Authenticate() (string, error) {
 	values.Add("key", c.consumerKey)
 	values.Add("token", c.requestToken)
 	authorizeUrl.RawQuery = values.Encode()
-	return authorizeUrl.String(), nil
+	return NewStatusResponse("authorize", "authorizationUrl", authorizeUrl.String()), nil
 }
 
-func (c *eTradeClient) Verify(verifyKey string) error {
+func (c *eTradeClient) Verify(verifyKey string) ([]byte, error) {
 	var err error
 	c.accessToken, c.accessSecret, err = c.config.AccessToken(
 		c.requestToken, oauth1.PercentEncode(c.requestSecret), verifyKey,
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	token := oauth1.NewToken(c.accessToken, oauth1.PercentEncode(c.accessSecret))
 	c.httpClient = c.config.Client(oauth1.NoContext, token)
-	return nil
+	return NewStatusResponse("success"), nil
 }
 
 func (c *eTradeClient) GetKeys() (consumerKey string, consumerSecret string, accessToken string, accessSecret string) {
@@ -547,4 +548,27 @@ func (c *eTradeClient) doRequest(method string, baseUrl string, queryValues url.
 	}
 	c.logger.Debug(string(responseBytes))
 	return responseBytes, nil
+}
+
+func NewStatusMap(status string, keysAndValues ...string) jsonmap.JsonMap {
+	responseMap := jsonmap.JsonMap{
+		"status": status,
+	}
+	if len(keysAndValues)%2 == 0 {
+		for i := 0; i < len(keysAndValues); i += 2 {
+			key := keysAndValues[i]
+			value := keysAndValues[i+1]
+			_ = responseMap.SetString(key, value)
+		}
+	}
+	return responseMap
+}
+
+func NewStatusResponse(status string, keysAndValues ...string) []byte {
+	responseMap := NewStatusMap(status, keysAndValues...)
+	if response, err := responseMap.ToJsonBytes(false, false); err == nil {
+		return response
+	} else {
+		return []byte(`{"status":"error","error":"unknown error marshaling response"}`)
+	}
 }
