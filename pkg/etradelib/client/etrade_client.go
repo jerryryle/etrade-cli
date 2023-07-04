@@ -365,7 +365,7 @@ func (c *eTradeClient) GetQuotes(
 	}
 	queryValues.Add("requireEarningsDate", fmt.Sprintf("%t", requireEarningsDate))
 	queryValues.Add("skipMiniOptionsCheck", fmt.Sprintf("%t", skipMiniOptionsCheck))
-	if detailFlag != constants.QuoteDetailNil {
+	if detailFlag != constants.QuoteDetailFlagNil {
 		queryValues.Add("detailFlag", detailFlag.String())
 	}
 

@@ -30,15 +30,15 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 			); err == nil {
 				renderDescriptor := quoteListAllDescriptor
 				switch c.flags.detail.Value() {
-				case constants.QuoteDetailFundamental:
+				case constants.QuoteDetailFlagFundamental:
 					renderDescriptor = quoteListFundamentalDescriptor
-				case constants.QuoteDetailIntraday:
+				case constants.QuoteDetailFlagIntraday:
 					renderDescriptor = quoteListIntradayDescriptor
-				case constants.QuoteDetailOptions:
+				case constants.QuoteDetailFlagOptions:
 					renderDescriptor = quoteListOptionDescriptor
-				case constants.QuoteDetailWeek52:
+				case constants.QuoteDetailFlagWeek52:
 					renderDescriptor = quoteListWeek52Descriptor
-				case constants.QuoteDetailMutualFund:
+				case constants.QuoteDetailFlagMutualFund:
 					renderDescriptor = quoteListMutualFundDescriptor
 				}
 				return c.Context.Renderer.Render(response, renderDescriptor)
@@ -57,7 +57,7 @@ func (c *CommandMarketQuote) Command() *cobra.Command {
 	)
 
 	// Initialize Enum Flag Values
-	c.flags.detail = *newEnumFlagValue(quoteDetailMap, constants.QuoteDetailAll)
+	c.flags.detail = *newEnumFlagValue(quoteDetailMap, constants.QuoteDetailFlagAll)
 
 	// Add Enum Flags
 	cmd.Flags().VarP(

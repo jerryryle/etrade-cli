@@ -151,12 +151,12 @@ var alertStatusMap = enumValueWithHelpMap[constants.AlertStatus]{
 }
 
 var quoteDetailMap = enumValueWithHelpMap[constants.QuoteDetailFlag]{
-	"all":         {constants.QuoteDetailAll, "get all details"},
-	"fundamental": {constants.QuoteDetailFundamental, "get fundamental details"},
-	"intraday":    {constants.QuoteDetailIntraday, "get intraday details"},
-	"options":     {constants.QuoteDetailOptions, "get options details"},
-	"week52":      {constants.QuoteDetailWeek52, "get 52-week details"},
-	"mutualFund":  {constants.QuoteDetailMutualFund, "get mutual fund details"},
+	"all":         {constants.QuoteDetailFlagAll, "get all details"},
+	"fundamental": {constants.QuoteDetailFlagFundamental, "get fundamental details"},
+	"intraday":    {constants.QuoteDetailFlagIntraday, "get intraday details"},
+	"options":     {constants.QuoteDetailFlagOptions, "get options details"},
+	"week52":      {constants.QuoteDetailFlagWeek52, "get 52-week details"},
+	"mutualFund":  {constants.QuoteDetailFlagMutualFund, "get mutual fund details"},
 }
 
 var optionCategoryMap = enumValueWithHelpMap[constants.OptionCategory]{

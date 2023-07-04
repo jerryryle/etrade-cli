@@ -581,7 +581,7 @@ func TestETradeClient(t *testing.T) {
 					"https://api.etrade.com/v1/market/quote/GOOG?detailFlag=ALL&requireEarningsDate=true&skipMiniOptionsCheck=false",
 				).Return(http.StatusOK, testResponseData, nil)
 
-				return testClient.GetQuotes([]string{"GOOG"}, constants.QuoteDetailAll, true, false)
+				return testClient.GetQuotes([]string{"GOOG"}, constants.QuoteDetailFlagAll, true, false)
 			},
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -594,7 +594,7 @@ func TestETradeClient(t *testing.T) {
 					"https://api.etrade.com/v1/market/quote/GOOG?requireEarningsDate=true&skipMiniOptionsCheck=false",
 				).Return(http.StatusOK, testResponseData, nil)
 
-				return testClient.GetQuotes([]string{"GOOG"}, constants.QuoteDetailNil, true, false)
+				return testClient.GetQuotes([]string{"GOOG"}, constants.QuoteDetailFlagNil, true, false)
 			},
 			expectResponse: []byte(testResponseData),
 			expectErr:      false,
@@ -607,7 +607,7 @@ func TestETradeClient(t *testing.T) {
 					"https://api.etrade.com/v1/market/quote/GOOG?requireEarningsDate=true&skipMiniOptionsCheck=false",
 				).Return(0, "", errors.New("test error"))
 
-				return testClient.GetQuotes([]string{"GOOG"}, constants.QuoteDetailNil, true, false)
+				return testClient.GetQuotes([]string{"GOOG"}, constants.QuoteDetailFlagNil, true, false)
 			},
 			expectResponse: []byte(nil),
 			expectErr:      true,
@@ -615,7 +615,7 @@ func TestETradeClient(t *testing.T) {
 		{
 			name: "Get Quotes Fails Without Symbols",
 			testFn: func(testClient ETradeClient, clientMock *httpClientMock) ([]byte, error) {
-				return testClient.GetQuotes([]string{}, constants.QuoteDetailNil, true, false)
+				return testClient.GetQuotes([]string{}, constants.QuoteDetailFlagNil, true, false)
 			},
 			expectResponse: nil,
 			expectErr:      true,
@@ -632,7 +632,7 @@ func TestETradeClient(t *testing.T) {
 					[]string{
 						"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17",
 						"18", "19", "20", "21", "22", "23", "24", "25", "26",
-					}, constants.QuoteDetailAll, true, false,
+					}, constants.QuoteDetailFlagAll, true, false,
 				)
 			},
 			expectResponse: []byte(testResponseData),
@@ -647,7 +647,7 @@ func TestETradeClient(t *testing.T) {
 						"18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33",
 						"34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49",
 						"50", "51",
-					}, constants.QuoteDetailAll, true, false,
+					}, constants.QuoteDetailFlagAll, true, false,
 				)
 			},
 			expectResponse: nil,

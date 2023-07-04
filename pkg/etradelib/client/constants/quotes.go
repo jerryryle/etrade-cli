@@ -14,42 +14,42 @@ const GetQuotesMaxSymbols = 50
 type QuoteDetailFlag int
 
 const (
-	// QuoteDetailNil indicates no quote detail
+	// QuoteDetailFlagNil indicates no quote detail
 	// (e.g. to make a query use the default value from ETrade)
-	QuoteDetailNil QuoteDetailFlag = iota
+	QuoteDetailFlagNil QuoteDetailFlag = iota
 
-	// QuoteDetailAll gets all available quote detail
+	// QuoteDetailFlagAll gets all available quote detail
 	// See https://apisb.etrade.com/docs/api/market/api-quote-v1.html#/definitions/AllQuoteDetails
-	QuoteDetailAll
+	QuoteDetailFlagAll
 
-	// QuoteDetailFundamental gets fundamental quote detail
+	// QuoteDetailFlagFundamental gets fundamental quote detail
 	// See https://apisb.etrade.com/docs/api/market/api-quote-v1.html#/definitions/FundamentalQuoteDetails
-	QuoteDetailFundamental
+	QuoteDetailFlagFundamental
 
-	// QuoteDetailIntraday gets intraday quote detail
+	// QuoteDetailFlagIntraday gets intraday quote detail
 	// See https://apisb.etrade.com/docs/api/market/api-quote-v1.html#/definitions/IntradayQuoteDetails
-	QuoteDetailIntraday
+	QuoteDetailFlagIntraday
 
-	// QuoteDetailOptions gets options quote detail
+	// QuoteDetailFlagOptions gets options quote detail
 	// See https://apisb.etrade.com/docs/api/market/api-quote-v1.html#/definitions/OptionQuoteDetails
-	QuoteDetailOptions
+	QuoteDetailFlagOptions
 
-	// QuoteDetailWeek52 gets 52-week quote detail
+	// QuoteDetailFlagWeek52 gets 52-week quote detail
 	// See https://apisb.etrade.com/docs/api/market/api-quote-v1.html#/definitions/Week52QuoteDetails
-	QuoteDetailWeek52
+	QuoteDetailFlagWeek52
 
-	// QuoteDetailMutualFund gets mutual fund quote detail
+	// QuoteDetailFlagMutualFund gets mutual fund quote detail
 	// See https://apisb.etrade.com/docs/api/market/api-quote-v1.html#/definitions/MutualFund
-	QuoteDetailMutualFund
+	QuoteDetailFlagMutualFund
 )
 
 var quoteDetailFlagToString = map[QuoteDetailFlag]string{
-	QuoteDetailAll:         "ALL",
-	QuoteDetailFundamental: "FUNDAMENTAL",
-	QuoteDetailIntraday:    "INTRADAY",
-	QuoteDetailOptions:     "OPTIONS",
-	QuoteDetailWeek52:      "WEEK_52",
-	QuoteDetailMutualFund:  "MF_DETAIL",
+	QuoteDetailFlagAll:         "ALL",
+	QuoteDetailFlagFundamental: "FUNDAMENTAL",
+	QuoteDetailFlagIntraday:    "INTRADAY",
+	QuoteDetailFlagOptions:     "OPTIONS",
+	QuoteDetailFlagWeek52:      "WEEK_52",
+	QuoteDetailFlagMutualFund:  "MF_DETAIL",
 }
 
 // String converts a QuoteDetailFlag to its string representation.

@@ -378,7 +378,7 @@ func (s *eTradeServer) Lookup(w http.ResponseWriter, r *http.Request) {
 func (s *eTradeServer) GetQuote(w http.ResponseWriter, r *http.Request) {
 	symbols := r.URL.Query()["symbol"]
 
-	detail := getEnumFlagWithDefaultFromValues(r.URL.Query(), "detail", quoteDetailMap, constants.QuoteDetailAll)
+	detail := getEnumFlagWithDefaultFromValues(r.URL.Query(), "detail", quoteDetailMap, constants.QuoteDetailFlagAll)
 	requireEarningsDate := getBoolWithDefaultFromValues(r.URL.Query(), "requireEarningsDate", true)
 	skipMiniOptionsCheck := getBoolWithDefaultFromValues(r.URL.Query(), "skipMiniOptionsCheck", false)
 
