@@ -62,13 +62,7 @@ func TestGetOptionExpireDates(t *testing.T) {
 			testFn: func(mockClient *client.ETradeClientMock) (interface{}, error) {
 				testGetOptionExpireDatesResponse := []byte(`
 {
-  "MISSING": {
-    "ExpirationDate": [
-      {
-        "testKey": "testValue"
-      }
-    ]
-  }
+  "OptionExpireDateResponse": {
 }`)
 				mockClient.On(
 					"GetOptionExpireDates", "TestSymbol", constants.OptionExpiryTypeNil,

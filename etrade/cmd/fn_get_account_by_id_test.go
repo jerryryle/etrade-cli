@@ -60,15 +60,6 @@ func TestGetAccountById(t *testing.T) {
 				testAccountList := []byte(`
 {
   "AccountListResponse": {
-    "Accounts": {
-      "Account": [
-        {
-          "MISSING": "1234",
-          "accountIdKey": "test key"
-        }
-      ]
-    }
-  }
 }`)
 				mockClient.On("ListAccounts").Return(testAccountList, nil)
 				return GetAccountById(mockClient, "1234")

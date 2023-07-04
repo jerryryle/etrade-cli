@@ -85,19 +85,7 @@ func TestGetOptionChains(t *testing.T) {
 			testFn: func(mockClient *client.ETradeClientMock) (interface{}, error) {
 				testGetOptionChainsResponse := []byte(`
 {
-  "MISSING": {
-	"OptionPair": [
-	  {
-		"testKey": "testValue"
-	  }
-	],
-	"timeStamp": 1234,
-	"quoteType": "Type",
-	"nearPrice": 123.4,
-	"SelectedED": {
-		"testKey2": "testValue2"
-	}
-  }
+  "OptionChainResponse": {
 }`)
 				mockClient.On(
 					"GetOptionChains", "TestSymbol", 1, 2, 3, 4, 5, true, true, constants.OptionCategoryNil,

@@ -68,13 +68,11 @@ func TestGetAccountBalances(t *testing.T) {
 			expectValue: jsonmap.JsonMap(nil),
 		},
 		{
-			name: "Fails On Bad Balance Response",
+			name: "Fails On Bad Response",
 			testFn: func(mockClient *client.ETradeClientMock) (interface{}, error) {
 				testBalances := []byte(`
 {
-  "MISSING": {
-    "testBalanceKey": "testBalanceValue"
-  }
+  "BalanceResponse": {
 }`)
 				mockClient.On("ListAccounts").Return(testAccountList, nil)
 				mockClient.On("GetAccountBalances", "TestKey", true).Return(testBalances, nil)
