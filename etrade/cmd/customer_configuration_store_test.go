@@ -6,100 +6,176 @@ import (
 	"testing"
 )
 
-func TestCustomerConfigurationStoreLoadSucceedsWithGoodJson(t *testing.T) {
-	jsonData := `{
-  "TestCfg1": {
-    "customerName": "TestName1",
+func TestLoadCustomerConfigurationStore(t *testing.T) {
+	tests := []struct {
+		name        string
+		testJson    string
+		expectErr   bool
+		expectValue interface{}
+	}{
+		{
+			name: "Can Load Store From Json",
+			testJson: `{
+  "TestCustomerId": {
+    "customerName": "TestName",
     "customerProduction": true,
-    "customerConsumerKey": "TestKey1",
-    "customerConsumerSecret": "TestSecret1"
-  },
-  "TestCfg2": {
-    "customerName": "TestName2",
-    "customerProduction": true,
-    "customerConsumerKey": "TestKey2",
-    "customerConsumerSecret": "TestSecret2"
+    "customerConsumerKey": "TestKey",
+    "customerConsumerSecret": "TestSecret"
   }
-}`
-	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationStore(reader)
-	assert.Nil(t, err)
+}`,
+			expectErr: false,
+			expectValue: &CustomerConfigurationStore{
+				customerConfigMap: map[string]CustomerConfiguration{
+					"TestCustomerId": {
+						CustomerName:           "TestName",
+						CustomerProduction:     true,
+						CustomerConsumerKey:    "TestKey",
+						CustomerConsumerSecret: "TestSecret",
+					},
+				},
+			},
+		},
+		{
+			name: "Load Succeeds With Missing Fields",
+			testJson: `{
+}`,
+			expectErr: false,
+			expectValue: &CustomerConfigurationStore{
+				customerConfigMap: map[string]CustomerConfiguration{},
+			},
+		},
+		{
+			name: "Load Succeeds With Extra Fields",
+			testJson: `{
+  "TestCustomerId": {
+    "customerName": "TestName",
+    "customerProduction": true,
+    "customerConsumerKey": "TestKey",
+    "customerConsumerSecret": "TestSecret",
+    "unexpectedField": "TestUnexpected"
+  }
+}`,
+			expectErr: false,
+			expectValue: &CustomerConfigurationStore{
+				customerConfigMap: map[string]CustomerConfiguration{
+					"TestCustomerId": {
+						CustomerName:           "TestName",
+						CustomerProduction:     true,
+						CustomerConsumerKey:    "TestKey",
+						CustomerConsumerSecret: "TestSecret",
+					},
+				},
+			},
+		},
+		{
+			name: "Load Fails With Bad JSON",
+			testJson: `{
+  "TestCustomerId": {
+}`,
+			expectErr:   true,
+			expectValue: (*CustomerConfigurationStore)(nil),
+		},
+	}
 
-	configuration, err := ccs.GetCustomerConfigurationById("TestCfg1")
-	assert.Nil(t, err)
-	assert.Equal(t, "TestName1", configuration.CustomerName)
-	assert.Equal(t, true, configuration.CustomerProduction)
-	assert.Equal(t, "TestKey1", configuration.CustomerConsumerKey)
-	assert.Equal(t, "TestSecret1", configuration.CustomerConsumerSecret)
-
-	configuration, err = ccs.GetCustomerConfigurationById("TestCfg2")
-	assert.Nil(t, err)
-	assert.Equal(t, "TestName2", configuration.CustomerName)
-	assert.Equal(t, true, configuration.CustomerProduction)
-	assert.Equal(t, "TestKey2", configuration.CustomerConsumerKey)
-	assert.Equal(t, "TestSecret2", configuration.CustomerConsumerSecret)
-
-	configuration, err = ccs.GetCustomerConfigurationById("TestCfg3")
-	assert.Nil(t, configuration)
-	assert.Error(t, err, "configuration not found")
+	for _, tt := range tests {
+		t.Run(
+			tt.name, func(t *testing.T) {
+				reader := strings.NewReader(tt.testJson)
+				// Call the Method Under Test
+				actualValue, err := LoadCustomerConfigurationStore(reader)
+				if tt.expectErr {
+					assert.Error(t, err)
+				} else {
+					assert.Nil(t, err)
+				}
+				assert.Equal(t, tt.expectValue, actualValue)
+			},
+		)
+	}
 }
 
-func TestCustomerConfigurationStoreLoadSucceedsWithMissingFields(t *testing.T) {
-	jsonData := `{
-}`
-	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationStore(reader)
+func TestSaveCustomerConfigurationStore(t *testing.T) {
+	testStore := CustomerConfigurationStore{
+		customerConfigMap: map[string]CustomerConfiguration{
+			"TestCustomerId": {
+				CustomerName:           "TestName",
+				CustomerProduction:     true,
+				CustomerConsumerKey:    "TestKey",
+				CustomerConsumerSecret: "TestSecret",
+			},
+		},
+	}
+
+	expectedJson := `{
+  "TestCustomerId": {
+    "customerName": "TestName",
+    "customerProduction": true,
+    "customerConsumerKey": "TestKey",
+    "customerConsumerSecret": "TestSecret"
+  }
+}` + "\n"
+
+	actualJson := strings.Builder{}
+	err := SaveCustomerConfigurationStore(&actualJson, &testStore)
 	assert.Nil(t, err)
-	assert.NotNil(t, ccs)
+	assert.Equal(t, expectedJson, actualJson.String())
 }
 
-func TestCustomerConfigurationStoreLoadSucceedsWithExtraFields(t *testing.T) {
-	jsonData := `{
-  "TestCfg1": {
-    "customerName": "TestName1",
-    "customerProduction": true,
-    "customerConsumerKey": "TestKey1",
-    "customerConsumerSecret": "TestSecret1",
-    "unexpectedField": "TestUnexpected1"
-  },
-  "TestCfg2": {
-    "customerName": "TestName2",
-    "customerProduction": true,
-    "customerConsumerKey": "TestKey2",
-    "customerConsumerSecret": "TestSecret2"
-  }
-}`
-	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationStore(reader)
-	assert.Nil(t, err)
+func TestCustomerConfigurationStore_GetCustomerConfigurationById(t *testing.T) {
+	expectedConfig := CustomerConfiguration{
+		CustomerName:           "TestName",
+		CustomerProduction:     true,
+		CustomerConsumerKey:    "TestKey",
+		CustomerConsumerSecret: "TestSecret",
+	}
 
-	configuration, err := ccs.GetCustomerConfigurationById("TestCfg1")
-	assert.Nil(t, err)
-	assert.Equal(t, "TestName1", configuration.CustomerName)
-	assert.Equal(t, true, configuration.CustomerProduction)
-	assert.Equal(t, "TestKey1", configuration.CustomerConsumerKey)
-	assert.Equal(t, "TestSecret1", configuration.CustomerConsumerSecret)
+	testStore := CustomerConfigurationStore{
+		customerConfigMap: map[string]CustomerConfiguration{
+			"TestCustomerId": expectedConfig,
+		},
+	}
 
-	configuration, err = ccs.GetCustomerConfigurationById("TestCfg2")
+	actualConfig, err := testStore.GetCustomerConfigurationById("TestCustomerId")
 	assert.Nil(t, err)
-	assert.Equal(t, "TestName2", configuration.CustomerName)
-	assert.Equal(t, true, configuration.CustomerProduction)
-	assert.Equal(t, "TestKey2", configuration.CustomerConsumerKey)
-	assert.Equal(t, "TestSecret2", configuration.CustomerConsumerSecret)
+	assert.Equal(t, &expectedConfig, actualConfig)
 }
 
-func TestCustomerConfigurationStoreLoadFailsWithBadJson(t *testing.T) {
-	// Malformed JSON
-	jsonData := `{
-  "BogusCfg1": {
-    "customerName": TestName1,
-    "customerProduction": 
-    "customerConsumerKey":
-    "customerConsumerSecret":
-  }
-}`
-	reader := strings.NewReader(jsonData)
-	ccs, err := LoadCustomerConfigurationStore(reader)
-	assert.NotNil(t, err)
-	assert.Nil(t, ccs)
+func TestCustomerConfigurationStore_SetCustomerConfigurationForId(t *testing.T) {
+	testConfig := CustomerConfiguration{
+		CustomerName:           "TestName",
+		CustomerProduction:     true,
+		CustomerConsumerKey:    "TestKey",
+		CustomerConsumerSecret: "TestSecret",
+	}
+
+	actualStore := CustomerConfigurationStore{
+		customerConfigMap: map[string]CustomerConfiguration{},
+	}
+
+	expectedStore := CustomerConfigurationStore{
+		customerConfigMap: map[string]CustomerConfiguration{
+			"TestCustomerId": testConfig,
+		},
+	}
+
+	actualStore.SetCustomerConfigurationForId("TestCustomerId", &testConfig)
+	assert.Equal(t, expectedStore, actualStore)
+}
+
+func TestCustomerConfigurationStore_GetAllConfigurations(t *testing.T) {
+	expectedMap := map[string]CustomerConfiguration{
+		"TestCustomerId1": {
+			CustomerName:           "TestName1",
+			CustomerProduction:     true,
+			CustomerConsumerKey:    "TestKey1",
+			CustomerConsumerSecret: "TestSecret1",
+		},
+	}
+
+	testStore := CustomerConfigurationStore{
+		customerConfigMap: expectedMap,
+	}
+
+	actualMap := testStore.GetAllConfigurations()
+	assert.Equal(t, expectedMap, actualMap)
 }
