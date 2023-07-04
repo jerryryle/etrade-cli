@@ -419,7 +419,7 @@ func (s *eTradeServer) GetOptionChains(w http.ResponseWriter, r *http.Request) {
 		r.URL.Query(), "chainType", optionChainTypeMap, constants.OptionChainTypeNil,
 	)
 	priceType := getEnumFlagWithDefaultFromValues(
-		r.URL.Query(), "chainType", optionPriceTypeMap, constants.OptionPriceTypeNil,
+		r.URL.Query(), "priceType", optionPriceTypeMap, constants.OptionPriceTypeNil,
 	)
 
 	if eTradeClient, ok := r.Context().Value("eTradeClient").(client.ETradeClient); ok {
