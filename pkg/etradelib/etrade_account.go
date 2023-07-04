@@ -31,7 +31,7 @@ const (
 	accountAccountIdKeyResponseKey = "accountIdKey"
 )
 
-func CreateETradeAccount(responseMap jsonmap.JsonMap) (ETradeAccount, error) {
+func CreateETradeAccountFromMap(responseMap jsonmap.JsonMap) (ETradeAccount, error) {
 	accountId, err := responseMap.GetString(accountAccountIdResponseKey)
 	if err != nil {
 		return nil, err
@@ -40,12 +40,15 @@ func CreateETradeAccount(responseMap jsonmap.JsonMap) (ETradeAccount, error) {
 	if err != nil {
 		return nil, err
 	}
+	return CreateETradeAccount(accountId, accountIdKey, responseMap), nil
+}
 
+func CreateETradeAccount(id string, idKey string, jsonMap jsonmap.JsonMap) ETradeAccount {
 	return &eTradeAccount{
-		id:      accountId,
-		idKey:   accountIdKey,
-		jsonMap: responseMap,
-	}, nil
+		id:      id,
+		idKey:   idKey,
+		jsonMap: jsonMap,
+	}
 }
 
 func (e *eTradeAccount) GetId() string {
