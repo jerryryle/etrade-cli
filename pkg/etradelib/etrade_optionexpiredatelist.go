@@ -13,11 +13,13 @@ type eTradeOptionExpireDateList struct {
 
 const (
 	// The AsJsonMap() map looks like this:
-	// "optionExpireDates": [
-	//   {
-	//     <optionExpireDate info>
-	//   }
-	// ]
+	// {
+	//   "optionExpireDates": [
+	//     {
+	//       <optionExpireDate info>
+	//     }
+	//   ]
+	// }
 
 	// OptionExpireDateListOptionExpireDatesPath is the path to a slice of optionExpireDates.
 	OptionExpireDateListOptionExpireDatesPath = ".optionExpireDates"
