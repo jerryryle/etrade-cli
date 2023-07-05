@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 	"github.com/spf13/cobra"
 	"net/http"
 	"os"
@@ -34,6 +35,9 @@ func (c *CommandServer) Command(globalFlags *globalFlags) *cobra.Command {
 			return c.context.Close()
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+
+			_, _ = fmt.Fprintf(os.Stderr, "Listening on: \"%s\"\n", c.flags.listenAddr)
+
 			server := NewETradeServer(
 				c.flags.listenAddr, c.context.Logger, c.context.ConfigurationFolder,
 				c.context.CustomerConfigurationStore,
