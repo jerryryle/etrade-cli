@@ -20,12 +20,17 @@ Server Mode:
 * You can run the application in server mode with: `etrade server`
 * In this mode, the server listens for HTTP requests on port 8888. You can change the listen IP address and port using the --addr flag (e.g. --addr=:4444 to listen on all interfaces with port 4444 or --addr=192.168.1.2:4444 to listen on the interface with the IP address 192.168.1.2).
 * Stop the server with SIGINT (ctrl-C).
+* To quickly test the server using curl:
+  1. `curl -X POST http://127.0.0.1:8888/customers/[CUSTOMER_ID]/auth` - Begin authentication. This will either return success (if cached credentials are still valid, in which case you can skip step 2) or a URL for authorization. Visit the URL to get an auth code.
+  2. `curl -X POST http://127.0.0.1:8888/customers/[CUSTOMER_ID]/auth -d 'verifyCode=[VERIFY_CODE]'` - Verify using the code obtained from the authorization URL.
+  3. `curl http://127.0.0.1:8888/customers/[CUSTOMER_ID]/accounts` - List accounts 
+  4. `curl -X DELETE http://127.0.0.1:8888/customers/[CUSTOMER_ID]/auth` - Delete authentication. 
 
 The following documents the server's API:
 * /customers
     * GET - Get Customer List
         * No parameters
-* /customers/[CUSTOMERID]/auth
+* /customers/[CUSTOMER ID]/auth
     * POST - Begin/Complete authentication
         * Form Parameters:
             * No Form Parameters - Begin authentication
