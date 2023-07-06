@@ -145,7 +145,7 @@ func (s *eTradeServer) Login(w http.ResponseWriter, r *http.Request) {
 		s.WriteJsonMap(w, authStatus.AsJsonMap())
 		return
 	} else {
-		// If the form does not include "verifyCode" then perform verification.
+		// If the form includes "verifyCode" then perform verification.
 		response, err := eTradeClient.Verify(r.Form.Get("verifyCode"))
 		if err != nil {
 			// Verification failed. Respond with the error.
