@@ -36,7 +36,7 @@ func (c *CommandServer) Command(globalFlags *globalFlags) *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 
-			_, _ = fmt.Fprintf(os.Stderr, "Listening on: \"%s\"\n", c.flags.listenAddr)
+			_, _ = fmt.Fprintf(os.Stderr, "Starting server on: \"%s\"\n", c.flags.listenAddr)
 
 			server := NewETradeServer(
 				c.flags.listenAddr, c.context.Logger, c.context.ConfigurationFolder,
@@ -52,14 +52,14 @@ func (c *CommandServer) Command(globalFlags *globalFlags) *cobra.Command {
 				// Shut down upon receiving an interrupt signal
 				if err := server.Shutdown(context.Background()); err != nil {
 					// Error from closing listeners, or context timeout:
-					c.context.Logger.Error("HTTP server Shutdown: %v", err)
+					c.context.Logger.Error(fmt.Errorf("http server Shutdown() failed (%w)", err).Error())
 				}
 				close(idleConnsClosed)
 			}()
 
 			if err := server.ListenAndServe(); err != http.ErrServerClosed {
 				// Error starting or closing listener:
-				c.context.Logger.Error("HTTP server ListenAndServe: %v", err)
+				c.context.Logger.Error(fmt.Errorf("http server ListenAndServe() failed (%w)", err).Error())
 				return err
 			}
 

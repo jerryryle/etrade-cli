@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"golang.org/x/exp/slog"
 	"io"
 	"os"
@@ -37,9 +38,9 @@ func LoadCustomerConfigurationStoreFromFile(filename string, logger *slog.Logger
 	file, err := os.Open(filename)
 	if file != nil {
 		defer func(file *os.File) {
-			err := file.Close()
+			err = file.Close()
 			if err != nil && logger != nil {
-				logger.Error(err.Error())
+				logger.Error(fmt.Errorf("closing configuration store file failed (%w)", err).Error())
 			}
 		}(file)
 	}
@@ -68,9 +69,9 @@ func SaveCustomerConfigurationStoreToFile(
 	file, err := os.OpenFile(filename, openFlags, 0666)
 	if file != nil {
 		defer func(file *os.File) {
-			err := file.Close()
+			err = file.Close()
 			if err != nil && logger != nil {
-				logger.Error(err.Error())
+				logger.Error(fmt.Errorf("closing configuration store file failed (%w)", err).Error())
 			}
 		}(file)
 	}

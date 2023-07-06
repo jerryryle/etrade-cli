@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"fmt"
 	"golang.org/x/exp/slog"
 	"io"
 	"os"
@@ -31,9 +32,9 @@ func LoadCachedCredentialsFromFile(filename string, logger *slog.Logger) (*Cache
 	file, err := os.Open(filename)
 	if file != nil {
 		defer func(file *os.File) {
-			err := file.Close()
+			err = file.Close()
 			if err != nil {
-				logger.Error(err.Error())
+				logger.Error(fmt.Errorf("closing credential cache file failed (%w)", err).Error())
 			}
 		}(file)
 	}
@@ -61,9 +62,9 @@ func SaveCachedCredentialsToFile(filename string, credentials *CachedCredentials
 	file, err := os.Create(filename)
 	if file != nil {
 		defer func(file *os.File) {
-			err := file.Close()
+			err = file.Close()
 			if err != nil {
-				logger.Error(err.Error())
+				logger.Error(fmt.Errorf("closing credential cache file failed (%w)", err).Error())
 			}
 		}(file)
 	}

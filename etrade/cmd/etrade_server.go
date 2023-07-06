@@ -138,7 +138,7 @@ func (s *eTradeServer) Login(w http.ResponseWriter, r *http.Request) {
 			if err = s.cfgFolder.SaveCachedCredentialsToFile(
 				consumerKey, &CachedCredentials{accessToken, accessSecret, time.Now()}, s.logger,
 			); err != nil {
-				s.logger.Error(err.Error())
+				s.logger.Error(fmt.Errorf("saving credential cache to file failed (%w)", err).Error())
 			}
 		}
 		// Respond with the authentication status. If authentication requires
@@ -164,7 +164,7 @@ func (s *eTradeServer) Login(w http.ResponseWriter, r *http.Request) {
 		if err = s.cfgFolder.SaveCachedCredentialsToFile(
 			consumerKey, &CachedCredentials{accessToken, accessSecret, time.Now()}, s.logger,
 		); err != nil {
-			s.logger.Error(err.Error())
+			s.logger.Error(fmt.Errorf("saving credential cache to file failed (%w)", err).Error())
 		}
 		// Respond with the verification status.
 		s.WriteJsonMap(w, verifyStatus.AsJsonMap())
@@ -623,30 +623,30 @@ func (s *eTradeServer) GetOptionExpire(w http.ResponseWriter, r *http.Request) {
 func (s *eTradeServer) WriteJsonMap(w http.ResponseWriter, jsonMap jsonmap.JsonMap) {
 	responseBytes, err := jsonMap.ToJsonBytes(false, false)
 	if err != nil {
-		s.logger.Error(err.Error())
+		s.logger.Error(fmt.Errorf("marshaling JSON response failed (%w)", err).Error())
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	if _, err = w.Write(responseBytes); err != nil {
-		s.logger.Error(err.Error())
+		s.logger.Error(fmt.Errorf("writing JSON response failed (%w)", err).Error())
 	}
 }
 
 func (s *eTradeServer) WriteError(w http.ResponseWriter, err error) {
-	s.logger.Error(err.Error())
+	s.logger.Error(fmt.Errorf("server encountered an error processing request (%w)", err).Error())
 	responseMap := client.NewStatusMap("error", "error", err.Error())
 	responseBytes, err := responseMap.ToJsonBytes(false, false)
 	if err != nil {
-		s.logger.Error(err.Error())
+		s.logger.Error(fmt.Errorf("marshaling JSON error response failed (%w)", err).Error())
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(http.StatusInternalServerError)
 	if _, err = w.Write(responseBytes); err != nil {
-		s.logger.Error(err.Error())
+		s.logger.Error(fmt.Errorf("writing JSON error response failed (%w)", err).Error())
 	}
 }
 
