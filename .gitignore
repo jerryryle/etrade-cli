@@ -19,3 +19,11 @@ etrade/etrade
 
 # Go workspace file
 go.work
+
+# Python Virtualenv
+.venv/
+
+# Python Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
