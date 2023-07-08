@@ -20,7 +20,7 @@ const (
 	// The authenticate response JSON looks like this:
 	// {
 	//   "status": "authorize" || "success"
-	//   "verifyUrl": "<verify URL>" (if status=="verify")
+	//   "authorizationUrl": "<verify URL>" (if status=="authorize")
 	// }
 
 	// authenticationStatusStatusResponseKey is the status key
