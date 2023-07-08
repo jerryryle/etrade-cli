@@ -5,7 +5,7 @@ This is a hobby project to create a command-line ETrade client in Go.
 
 USE THIS AT YOUR OWN RISK. The ETrade API is poorly-documented and ETrade's test environment is inadequate; therefore, I cannot guarantee the accuracy of this client implementation. Using it with your ETrade account could result in financial disaster.   
 
-Quick Start:
+## Quick Start
 1. Install Go 1.20 or later: https://go.dev/doc/install
 2. `make install` - Build and install the binary to your Go install path.
 3. `export PATH=$PATH:/path/to/your/install/directory` - Ensure Go install path is in your system path.
@@ -16,7 +16,9 @@ Quick Start:
 8. `etrade --customer-id <your customer ID> accounts portfolio <account ID>` - Get portfolio for an account in CSV format
 9. `etrade --customer-id --format json <your customer ID> accounts portfolio <account ID>` - Get portfolio for an account in JSON format
 
-Server Mode:
+## Server Mode
+Want to use the ETrade API with an extra level of indirection? Then server mode is for you! In this mode, the etrade command runs a small, insecure web server that will expose your financial institution accounts to the world if you're not careful. Why? Well, because I could, mostly. But I suppose it's useful if you'd like to script some functionality via http requests without having to deal with the details of ETrade's OAuth implementation. Have fun!   
+
 * You can run the application in server mode with: `etrade server`
 * In this mode, the server listens for HTTP requests on port 8888. You can change the listen IP address and port using the --addr flag (e.g. --addr=:4444 to listen on all interfaces with port 4444 or --addr=192.168.1.2:4444 to listen on the interface with the IP address 192.168.1.2).
 * Stop the server with SIGINT (ctrl-C).
