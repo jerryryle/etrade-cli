@@ -1,17 +1,17 @@
 all: test build
 
 test:
-        go test ./...
+	go test ./...
 
 build:
-        go build -C ./etrade
+	go build -C ./etrade
 
 install:
-        @printf "Installing to: "
-        @go list -f '{{.Target}}' ./etrade
-        @go install -ldflags "-s -w" ./etrade
-        @echo "Done!"
+	@printf "Installing to: "
+	@go list -f '{{.Target}}' ./etrade
+	@go install -ldflags "-s -w" ./etrade
+	@echo "Done!"
 
 clean:
-        go clean
-        rm -f ./etrade/etrade
+	go clean
+	rm -f ./etrade/etrade
