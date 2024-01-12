@@ -8,7 +8,7 @@ build:
 
 install:
 	@printf "Installing to: "
-	@go list -f '{{.Target}}' -C ./etrade
+	@go list -C ./etrade -f '{{.Target}}'
 	@go install -ldflags "-s -w" ./etrade
 	@echo "Done!"
 
